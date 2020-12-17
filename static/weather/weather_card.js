@@ -106,7 +106,7 @@ class WeatherCard {
       this.leafMask.attr({
         x: this.sizes.card.offset.left,
         y: 0,
-        width: this.sizes.container.width - this.sizes.card.offset.left,
+        width: this.sizes.container.width,
         height: this.sizes.container.height }
       );
 
