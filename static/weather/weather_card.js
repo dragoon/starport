@@ -1,7 +1,22 @@
 class WeatherCard {
   constructor(container) {
-      let elem_id = container.id;
-      this.container = $(container);
+
+        // in an object so the values can be animated in tweenmax
+        this.settings = {
+          windSpeed: 2,
+          rainCount: 0,
+          hailCount: 0,
+          leafCount: 0,
+          snowCount: 0,
+          fogCount: 0,
+          cloudHeight: 100,
+          cloudSpace: 30,
+          cloudArch: 50,
+          renewCheck: 10,
+          splashBounce: 80 };
+
+        let elem_id = container.id;
+        this.container = $(container);
         this.card = $(`#${elem_id} .card`);
         this.outerSVG = Snap(`#${elem_id} .outer`);
         this.innerSVG = Snap(`#${elem_id} .card .inner`);
@@ -59,7 +74,6 @@ class WeatherCard {
         this.tempFormat = $(`#${elem_id} .card #format`);
         this.leaf = Snap.select(`#${elem_id} .card #leaf`);
         this.sun = Snap.select(`#${elem_id} .card #sun`);
-        this.sunburst = Snap.select(`#${elem_id} #sunburst`);
     }
 
   resize() {
@@ -96,11 +110,6 @@ class WeatherCard {
         height: this.sizes.container.height }
       );
 
-      TweenMax.set(this.sunburst.node, {
-        transformOrigin: "50% 50%",
-        x: this.sizes.card.width / 2,
-        y: this.sizes.card.height / 2});
-      TweenMax.fromTo(this.sunburst.node, 20, { rotation: 0 }, { rotation: 360, repeat: -1, ease: Power0.easeInOut });
   }
 
   updateDateText(d) {
@@ -121,9 +130,9 @@ class WeatherCard {
     card.
 
     */
-    var space = settings.cloudSpace * i;
-    var height = space + settings.cloudHeight;
-    var arch = height + settings.cloudArch + Math.random() * settings.cloudArch;
+    var space = this.settings.cloudSpace * i;
+    var height = space + this.settings.cloudHeight;
+    var arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
     var width = this.sizes.card.width;
 
     var points = [];
@@ -154,9 +163,9 @@ class WeatherCard {
     	card.
 
     	*/
-    var space = settings.cloudSpace * i;
-    var height = space + settings.cloudHeight;
-    var arch = height + settings.cloudArch + Math.random() * settings.cloudArch;
+    var space = this.settings.cloudSpace * i;
+    var height = space + this.settings.cloudHeight;
+    var arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
     var width = this.sizes.card.width;
     var bottom = this.sizes.card.height;
     var top = this.sizes.card.height - height;
@@ -213,7 +222,7 @@ class WeatherCard {
 
     // Start the falling animation, calls onRainEnd when the
     // animation finishes.
-    var windOffset = settings.windSpeed * 10;
+    var windOffset = this.settings.windSpeed * 10;
     TweenMax.fromTo(line.node, 1,
       {
         x: x - windOffset,
@@ -242,7 +251,7 @@ class WeatherCard {
     // If there is less rain than the rainCount we should
     // make more.
 
-    if (this.rain.length < settings.rainCount) {
+    if (this.rain.length < this.settings.rainCount) {
       this.makeRain();
 
       // 💦 If the line width was more than 2 we also create a
@@ -386,14 +395,14 @@ class WeatherCard {
       if (!this.leafs[i].paper) this.leafs.splice(i, 1);
     }
 
-    if (this.leafs.length < settings.leafCount)
+    if (this.leafs.length < this.settings.leafCount)
     {
       this.makeLeaf();
     }
   }
 
   makeHail() {
-    var windOffset = settings.windSpeed * 10;
+    var windOffset = this.settings.windSpeed * 10;
     var offset = 0.25 * this.currentWeather.intensity;
     var scale = offset + Math.random() * offset;
     var newHail;
@@ -411,7 +420,7 @@ class WeatherCard {
         fill: this.currentWeather.type == 'sleet' || this.currentWeather.type.indexOf('mix') > -1 ? '#86a3f9' : '#FFF' });
 
       endY = this.sizes.container.height + 10;
-      //y = sizes.card.offset.top + settings.cloudHeight;
+      //y = sizes.card.offset.top + this.settings.cloudHeight;
       x = x + this.sizes.card.offset.left;
       //xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
       //endX = sizes.container.width + 50;
@@ -463,7 +472,7 @@ class WeatherCard {
     // If there is less rain than the rainCount we should
     // make more.
 
-    if (this.hail.length < settings.hailCount)
+    if (this.hail.length < this.settings.hailCount)
     {
       this.makeHail();
     }
@@ -486,7 +495,7 @@ class WeatherCard {
         fill: 'white' });
 
       endY = this.sizes.container.height + 10;
-      y = this.sizes.card.offset.top + settings.cloudHeight;
+      y = this.sizes.card.offset.top + this.settings.cloudHeight;
       x = x + this.sizes.card.offset.left;
       //xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
       //endX = sizes.container.width + 50;
@@ -520,7 +529,7 @@ class WeatherCard {
       if (!this.snow[i].paper) this.snow.splice(i, 1);
     }
 
-    if (this.snow.length < settings.snowCount)
+    if (this.snow.length < this.settings.snowCount)
     {
       this.makeSnow();
     }
@@ -544,17 +553,17 @@ class WeatherCard {
       case 'severe':
       case 'wind':
       case 'smoke':
-        TweenMax.to(settings, 3, { windSpeed: 3 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { windSpeed: 3 * weather.intensity, ease: Power2.easeInOut });
         break;
       case 'sun':
-        TweenMax.to(settings, 3, { windSpeed: 20, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { windSpeed: 20, ease: Power2.easeInOut });
         break;
       case 'haze':
       case 'cloud':
-        TweenMax.to(settings, 3, { windSpeed: 1, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { windSpeed: 1, ease: Power2.easeInOut });
         break;
       default:
-        TweenMax.to(settings, 3, { windSpeed: 0.5, ease: Power2.easeOut });
+        TweenMax.to(this.settings, 3, { windSpeed: 0.5, ease: Power2.easeOut });
         break;}
 
 
@@ -566,17 +575,17 @@ class WeatherCard {
       case 'mix-rain-snow':
       case 'mix-rain-sleet':
       case 'rain':
-        TweenMax.to(settings, 3, { rainCount: 20 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { rainCount: 20 * weather.intensity, ease: Power2.easeInOut });
         break;
       case 'hail':
-        TweenMax.to(settings, 3, { rainCount: 5 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { rainCount: 5 * weather.intensity, ease: Power2.easeInOut });
         break;
       case 'severe':
       case 'thunder':
-        TweenMax.to(settings, 3, { rainCount: 30 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { rainCount: 30 * weather.intensity, ease: Power2.easeInOut });
         break;
       default:
-        TweenMax.to(settings, 1, { rainCount: 0, ease: Power2.easeOut });
+        TweenMax.to(this.settings, 1, { rainCount: 0, ease: Power2.easeOut });
         break;}
 
 
@@ -585,23 +594,23 @@ class WeatherCard {
     switch (weather.type) {
 
       case 'mix':
-        TweenMax.to(settings, 3, { hailCount: 3 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { hailCount: 3 * weather.intensity, ease: Power2.easeInOut });
         break;
       case 'mix-snow-sleet':
       case 'mix-rain-sleet':
-        TweenMax.to(settings, 3, { hailCount: 10 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { hailCount: 10 * weather.intensity, ease: Power2.easeInOut });
         break;
       case 'sleet':
-        TweenMax.to(settings, 3, { hailCount: 20 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { hailCount: 20 * weather.intensity, ease: Power2.easeInOut });
         break;
       case 'severe':
-        TweenMax.to(settings, 3, { hailCount: 3 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { hailCount: 3 * weather.intensity, ease: Power2.easeInOut });
         break;
       case 'hail':
-        TweenMax.to(settings, 3, { hailCount: 20 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { hailCount: 20 * weather.intensity, ease: Power2.easeInOut });
         break;
       default:
-        TweenMax.to(settings, 1, { hailCount: 0, ease: Power2.easeOut });
+        TweenMax.to(this.settings, 1, { hailCount: 0, ease: Power2.easeOut });
         break;}
 
 
@@ -611,10 +620,10 @@ class WeatherCard {
 
       case 'severe':
       case 'wind':
-        TweenMax.to(settings, 3, { leafCount: 5 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { leafCount: 5 * weather.intensity, ease: Power2.easeInOut });
         break;
       default:
-        TweenMax.to(settings, 1, { leafCount: 0, ease: Power2.easeOut });
+        TweenMax.to(this.settings, 1, { leafCount: 0, ease: Power2.easeOut });
         break;}
 
 
@@ -626,10 +635,10 @@ class WeatherCard {
       case 'mix-rain-snow':
       case 'mix-snow-sleet':
       case 'snow':
-        TweenMax.to(settings, 3, { snowCount: 40 * weather.intensity, ease: Power2.easeInOut });
+        TweenMax.to(this.settings, 3, { snowCount: 40 * weather.intensity, ease: Power2.easeInOut });
         break;
       default:
-        TweenMax.to(settings, 1, { snowCount: 0, ease: Power2.easeOut });
+        TweenMax.to(this.settings, 1, { snowCount: 0, ease: Power2.easeOut });
         break;}
 
 
@@ -642,32 +651,17 @@ class WeatherCard {
           x: this.sizes.card.width / 2,
           y: this.sizes.card.height / 2,
           ease: Power2.easeInOut });
-        TweenMax.to(this.sunburst.node, 4, {
-          scale: 1, opacity: 0.8,
-          x: this.sizes.card.width / 2,
-          y: this.sizes.card.height / 2,
-          ease: Power2.easeInOut });
         break;
       case 'cloud':
         var ypos = this.sizes.card.height / 2 - this.sizes.card.height / 2 * weather.intensity;
         TweenMax.to(this.sun.node, 4, {
           x: this.sizes.card.width / 2,
           y: ypos, ease: Power2.easeInOut });
-        TweenMax.to(this.sunburst.node, 2, {
-          scale: 0.1, opacity: 0,
-          x: this.sizes.card.width / 2,
-          y: ypos,
-          ease: Power2.easeInOut });
         break;
       default:
         TweenMax.to(this.sun.node, 2, {
           x: this.sizes.card.width / 2,
           y: -100, leafCount: 0,
-          ease: Power2.easeInOut });
-        TweenMax.to(this.sunburst.node, 2, {
-          scale: 0.1, opacity: 0,
-          x: this.sizes.card.width / 2,
-          y: this.sizes.container.height / 2 - 100,
           ease: Power2.easeInOut });
         break;}
 
@@ -735,7 +729,6 @@ class WeatherCard {
 
     // ☀️ set initial sun attr
     TweenMax.set(this.sun.node, { x: this.sizes.card.width / 2, y: -100 });
-    TweenMax.set(this.sunburst.node, { opacity: 0 });
   }
 
   reset() {
@@ -745,12 +738,12 @@ class WeatherCard {
 
   tick() {
     this.tickCount++;
-    var check = this.tickCount % settings.renewCheck;
+    var check = this.tickCount % this.settings.renewCheck;
     if (check) {
-      if (this.rain.length < settings.rainCount) this.makeRain();
-      if (this.leafs.length < settings.leafCount) this.makeLeaf();
-      if (this.snow.length < settings.snowCount) this.makeSnow();
-      if (this.hail.length < settings.hailCount) this.makeHail();
+      if (this.rain.length < this.settings.rainCount) this.makeRain();
+      if (this.leafs.length < this.settings.leafCount) this.makeLeaf();
+      if (this.snow.length < this.settings.snowCount) this.makeSnow();
+      if (this.hail.length < this.settings.hailCount) this.makeHail();
     }
 
     if (this.currentWeather != undefined) {
@@ -758,11 +751,11 @@ class WeatherCard {
         {
           if (this.currentWeather.type == 'sun')
           {
-            if (this.clouds[i].offset > -(this.sizes.card.width * 1.5)) this.clouds[i].offset += settings.windSpeed / (i + 1);
+            if (this.clouds[i].offset > -(this.sizes.card.width * 1.5)) this.clouds[i].offset += this.settings.windSpeed / (i + 1);
             if (this.clouds[i].offset > this.sizes.card.width * 2.5) this.clouds[i].offset = -(this.sizes.card.width * 1.5);
             this.clouds[i].group.transform('t' + this.clouds[i].offset + ',' + 0);
           } else {
-            this.clouds[i].offset += settings.windSpeed / (i + 1);
+            this.clouds[i].offset += this.settings.windSpeed / (i + 1);
             if (this.clouds[i].offset > this.sizes.card.width) this.clouds[i].offset = 0 + (this.clouds[i].offset - this.sizes.card.width);
             this.clouds[i].group.transform('t' + this.clouds[i].offset + ',' + 0);
           }
@@ -773,15 +766,15 @@ class WeatherCard {
         {
           if (this.currentWeather.type == 'haze' || this.currentWeather.type == 'smoke')
           {
-            this.fog[i].offset += settings.windSpeed / (i + 1);
+            this.fog[i].offset += this.settings.windSpeed / (i + 1);
             if (this.fog[i].offset > this.sizes.card.width) this.fog[i].offset = 0 + (this.fog[i].offset - this.sizes.card.width);
-            this.fog[i].group.transform('t' + this.fog[i].offset + ',' + (this.sizes.card.height - settings.cloudHeight - settings.cloudSpace * i));
+            this.fog[i].group.transform('t' + this.fog[i].offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
           } else
 
           {
-            if (this.fog[i].offset > -(this.sizes.card.width * 1.5)) this.fog[i].offset += settings.windSpeed / (i + 1);
+            if (this.fog[i].offset > -(this.sizes.card.width * 1.5)) this.fog[i].offset += this.settings.windSpeed / (i + 1);
             if (this.fog[i].offset > this.sizes.card.width * 2.5) this.fog[i].offset = -(this.sizes.card.width * 1.5);
-            this.fog[i].group.transform('t' + this.fog[i].offset + ',' + (this.sizes.card.height - settings.cloudHeight - settings.cloudSpace * i));
+            this.fog[i].group.transform('t' + this.fog[i].offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
           }
         }
     }

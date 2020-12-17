@@ -1,19 +1,3 @@
-// in an object so the values can be animated in tweenmax
-
-var settings = {
-  windSpeed: 2,
-  rainCount: 0,
-  hailCount: 0,
-  leafCount: 0,
-  snowCount: 0,
-  fogCount: 0,
-  cloudHeight: 100,
-  cloudSpace: 30,
-  cloudArch: 50,
-  renewCheck: 10,
-  splashBounce: 80 };
-
-
 const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-snow-sleet", "sleet", "wind", "rain", "hail", "thunder", "severe", "cloud", "sun", "haze", "smoke"]
 const classes = ['night', 'day', 'hot', 'cold'];
 
