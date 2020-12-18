@@ -30,7 +30,8 @@ $(function() {
   function getLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(onGetLocation, function error(message) {
-        console.log(message)
+        console.log(message);
+        onGetLocation({"coords": {"latitude": 47.3386721, "longitude": 8.5198395}})
       });
     } else {
       console.log("Geolocation is not supported by this browser.");
