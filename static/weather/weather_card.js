@@ -25,7 +25,7 @@ class WeatherCard {
         this.weatherContainer1 = Snap.select(`#${elem_id} .card #layer1`);
         this.weatherContainer2 = Snap.select(`#${elem_id} .card #layer2`);
         this.weatherContainer3 = Snap.select(`#${elem_id} .card #layer3`);
-        ;
+
         this.innerRainHolder1 = this.weatherContainer1.group();
         this.innerRainHolder2 = this.weatherContainer2.group();
         this.innerRainHolder3 = this.weatherContainer3.group();
@@ -120,8 +120,8 @@ class WeatherCard {
 
     updateDateText(d) {
         // d is a Date
-        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         this.date.html(days[d.getDay()] + " " + d.getDate() + " " + months[d.getMonth()]);
         TweenMax.fromTo(this.date, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
     }
@@ -136,12 +136,12 @@ class WeatherCard {
         card.
 
         */
-        var space = this.settings.cloudSpace * i;
-        var height = space + this.settings.cloudHeight;
-        var arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
-        var width = this.sizes.card.width;
+        let space = this.settings.cloudSpace * i;
+        let height = space + this.settings.cloudHeight;
+        let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
+        let width = this.sizes.card.width;
 
-        var points = [];
+        let points = [];
         points.push('M' + [-width, 0].join(','));
         points.push([width, 0].join(','));
         points.push('Q' + [width * 2, height / 2].join(','));
@@ -170,14 +170,14 @@ class WeatherCard {
             card.
 
             */
-        var space = this.settings.cloudSpace * i;
-        var height = space + this.settings.cloudHeight;
-        var arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
-        var width = this.sizes.card.width;
-        var bottom = this.sizes.card.height;
-        var top = this.sizes.card.height - height;
-        var half = this.sizes.card.height - height / 2;
-        var points = [];
+        let space = this.settings.cloudSpace * i;
+        let height = space + this.settings.cloudHeight;
+        let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
+        let width = this.sizes.card.width;
+        let bottom = this.sizes.card.height;
+        let top = this.sizes.card.height - height;
+        let half = this.sizes.card.height - height / 2;
+        let points = [];
         points.push('M' + [-width, height].join(','));
         points.push([width, height].join(','));
         points.push('Q' + [width * 2, height / 2].join(','));
@@ -189,7 +189,7 @@ class WeatherCard {
         points.push('Q' + [-(width * 2), height / 2].join(','));
         points.push([-width, height].join(','));
 
-        var path = points.join(' ');
+        let path = points.join(' ');
         if (!cloud.path) cloud.path = cloud.group.path();
         cloud.path.animate({
                 d: path
