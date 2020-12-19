@@ -43,7 +43,7 @@ $(function () {
         $.getJSON(weather_url).done(function (weather) {
             cards.forEach((card, i) => {
                 day_weather = weather.daily[i];
-                card.updateTempText(Math.round(day_weather.temp.day), "°C");
+                card.updateTempText(day_weather.temp, "°C");
                 card.updateDateText(new Date(day_weather.dt * 1000));
                 card.changeWeather({
                     "type": day_weather.ui_params.type,

@@ -59,6 +59,24 @@ html, body {
     transition: color 2s ease;
 }
 
+.card-container .card .details-bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 16px 20px;
+    color: #6f6f6f;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-transition: color 2s ease;
+    transition: color 2s ease;
+}
+
+
 .night .card .details, .smoke .card .details, .hail .card .details, .severe .card .details, .thunder .card .details {
     color: #ddd;
 }
