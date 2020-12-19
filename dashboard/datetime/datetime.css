@@ -1,0 +1,23 @@
+.datetime-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5%;
+    margin-left: 40px;
+    position: fixed;
+}
+
+.datetime-container .time {
+    font-size: 100px;
+    line-height: 100px;
+    font-weight: 600;
+}
+
+.datetime-container .date {
+    font-size: 40px;
+    line-height: 40px;
+    font-weight: 600;
+}
+
+.night .datetime-container {
+    color: white;
+}

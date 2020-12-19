@@ -3,18 +3,24 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="weather/weather.css"/>
     <link rel="stylesheet" href="background/nightsky.css"/>
+    <link rel="stylesheet" href="datetime/datetime.css"/>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.js"></script>
     <script type="text/javascript" src="weather/weather.js"></script>
     <script type="text/javascript" src="weather/weather_card.js"></script>
+    <script type="text/javascript" src="datetime/time.js"></script>
     <title>Weather Cards</title>
 </head>
 <body>
-<div class="canvas">
+<div class="canvas night">
     <div class="sky"></div>
-    <div class="foreground">
+    <div class="datetime-container">
+        <div class="time"></div>
+        <div class="date"></div>
+    </div>
+    <div class="weather-cards">
         <div class="container" id="card-weather-1">
             <svg class="back">
                 <radialGradient id="SVGID_1_" cx="0" cy="0" r="320.8304" gradientUnits="userSpaceOnUse">
@@ -22,7 +28,7 @@
                     <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
                 </radialGradient>
             </svg>
-            <div class="card-container night">
+            <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
                         <defs>
@@ -63,7 +69,7 @@
                     <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
                 </radialGradient>
             </svg>
-            <div class="card-container night">
+            <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
                         <defs>
@@ -105,7 +111,7 @@
                     <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
                 </radialGradient>
             </svg>
-            <div class="card-container night">
+            <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
                         <defs>
@@ -147,7 +153,7 @@
                     <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
                 </radialGradient>
             </svg>
-            <div class="card-container night">
+            <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
                         <defs>
@@ -189,7 +195,7 @@
                     <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
                 </radialGradient>
             </svg>
-            <div class="card-container night">
+            <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
                         <defs>
@@ -208,7 +214,7 @@
                         <g id="fog1" class="fog"></g>
                     </svg>
                     <div class="details">
-                       <div class="temp">
+                        <div class="temp">
                             <span id="temperature"></span><span class="temp-degrees"></span>
                             <span class="temperature-night"></span><span class="temp-degrees"></span>
                         </div>
