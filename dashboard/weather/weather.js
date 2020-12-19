@@ -41,9 +41,16 @@ $(function () {
     function onGetLocation(position) {
         var weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
         $.getJSON(weather_url).done(function (weather) {
+
             cards.forEach((card, i) => {
-                day_weather = weather.daily[i];
-                card.updateTempText(day_weather.temp);
+                let day_weather;
+                if (i===0) {
+                    day_weather = weather.current;
+                    card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
+                } else {
+                    day_weather = weather.daily[i];
+                    card.updateTempText(day_weather.temp);
+                }
                 card.updateDateText(new Date(day_weather.dt * 1000));
                 card.changeWeather({
                     "type": day_weather.ui_params.type,
