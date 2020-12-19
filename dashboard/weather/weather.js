@@ -43,7 +43,7 @@ $(function () {
         $.getJSON(weather_url).done(function (weather) {
             cards.forEach((card, i) => {
                 day_weather = weather.daily[i];
-                card.updateTempText(day_weather.temp, "°C");
+                card.updateTempText(day_weather.temp);
                 card.updateDateText(new Date(day_weather.dt * 1000));
                 card.changeWeather({
                     "type": day_weather.ui_params.type,
@@ -67,7 +67,7 @@ $(function () {
 
     function tick() {
         // iterate over all weather cards
-        cards.forEach(card => card.tick())
+        cards.forEach(card => card.tick());
         requestAnimationFrame(tick);
     }
 

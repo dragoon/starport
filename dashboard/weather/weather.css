@@ -99,11 +99,21 @@ html, body {
     line-height: 60px;
 }
 
-.card-container .card .details .temp .super {
+.card-container .card .details .temp .temp-degrees {
     font-size: 18px;
     line-height: 30px;
     vertical-align: top;
-    margin-left: 5px;
+}
+
+.card-container .card .details .temp .temperature-night {
+    font-size: 28px;
+    color: #777;
+}
+
+.card-container .card .details .temp .temperature-night + .temp-degrees {
+    color: #777;
+    line-height: 65px;
+    font-size: 14px;
 }
 
 .weather {

@@ -73,8 +73,8 @@ class WeatherCard {
         this.summary = $(`#${elem_id} .card .details #summary`);
         this.date = $(`#${elem_id} .card .details #date`);
         this.temp = $(`#${elem_id} .card .details #temperature`);
-        this.temp_min_max = $(`#${elem_id} .card .details-bottom .temp-min-max`);
-        this.tempFormat = $(`#${elem_id} .card #format`);
+        this.temp_min = $(`#${elem_id} .card .details .temp .temperature-night`);
+        this.tempFormat = $(`#${elem_id} .card .details .temp-degrees`);
         this.leaf = Snap.select(`#${elem_id} .card #leaf`);
         this.sun = Snap.select(`#${elem_id} .card #sun`);
     }
@@ -689,10 +689,10 @@ class WeatherCard {
         TweenMax.fromTo(this.summary, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
-    updateTempText(newTemp, newFormat) {
+    updateTempText(newTemp) {
         this.temp.html(Math.round(newTemp.day));
-        this.temp_min_max.html(Math.round(newTemp.min) + " ... " + Math.round(newTemp.max));
-        this.tempFormat.html(newFormat);
+        this.temp_min.html(Math.round(newTemp.min));
+        this.tempFormat.html("°");
         TweenMax.fromTo(this.temp, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
         TweenMax.fromTo(this.tempFormat, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
     }
