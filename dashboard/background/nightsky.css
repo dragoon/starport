@@ -17,13 +17,9 @@ body {
 }
 .canvas .foreground {
   position: absolute;
-  top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  color: white;
-  text-align: center;
-  padding-top: 20px;
 }
 .canvas .sky {
   height: 300%;
@@ -32,7 +28,6 @@ body {
   top: -100%;
   left: -100%;
   margin-top: 50%;
-  background-color: darkblue;
   background: -webkit-radial-gradient(center, #000046 0%, #000 60%);
   -webkit-animation: rotate 250s infinite linear;
   -webkit-backface-visibility: hidden;

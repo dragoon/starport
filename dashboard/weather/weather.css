@@ -1,199 +1,191 @@
 @import "https://fonts.googleapis.com/css?family=Lato:300";
 
 html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: 'Lato', sans-serif;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
 }
 
 .foreground {
-  flex-direction: row;
-  display: flex;
+    flex-direction: row;
+    display: flex;
 }
 
 .container {
-  display: flex;
-  -webkit-box-direction: normal;
-  margin: 0;
-  padding: 0;
-}
-.container #sunburst {
-  opacity: 0;
-}
-.container.night #sunburst {
-  opacity: 0 !important;
+    display: flex;
+    -webkit-box-direction: normal;
+    margin: 0;
+    padding: 0;
 }
 
 .card-container {
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  flex-direction: row;
-  padding: 0;
-  margin: 20px 40px;
-}
-
-nav {
-  height: 400px;
-  min-height: 300px;
-  max-height: 100%;
-  margin-right: 20px;
-}
-nav ul {
-  list-style-type: none;
-  padding: 0;
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-          flex-direction: column;
-}
-nav li a {
-  display: block;
-  width: 50px;
-  text-align: center;
-  color: #aaa;
-  cursor: pointer;
-}
-nav li a:hover {
-  color: #444;
-}
-nav li a.active {
-  color: #4444ff;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+    padding: 0;
+    margin: 0 40px;
 }
 
 .card-container .card {
-  box-shadow: 9px 7px 40px -6px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-  width: 300px;
-  padding: 0;
-  height: 400px;
-  min-height: 300px;
-  max-height: 100%;
-  border-radius: 5px;
-  position: relative;
+    overflow: hidden;
+    width: 300px;
+    padding: 0;
+    height: 400px;
+    min-height: 300px;
+    max-height: 100%;
+    border-radius: 5px;
+    position: relative;
 }
+
 .card-container .card .details {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 16px 20px;
-  color: #888;
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-          flex-direction: row;
-  -webkit-box-pack: justify;
-          justify-content: space-between;
-  -webkit-transition: color 2s ease;
-  transition: color 2s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 20px;
+    color: #888;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-transition: color 2s ease;
+    transition: color 2s ease;
 }
+
 .night .card .details, .smoke .card .details, .hail .card .details, .severe .card .details, .thunder .card .details {
-  color: #ddd;
+    color: #ddd;
 }
+
 .card-container .card .details .right {
-  text-align: right;
+    text-align: right;
 }
+
 .card .details #date {
-  margin: 4px 0;
+    margin: 4px 0;
 }
+
 .card-container .card .details #summary {
-  font-weight: 600;
-  font-size: 22px;
+    font-weight: 600;
+    font-size: 22px;
 }
+
 .card-container .card .details .temp {
-  font-size: 60px;
-  line-height: 60px;
+    font-size: 60px;
+    line-height: 60px;
 }
+
 .card-container .card .details .temp .super {
-  font-size: 18px;
-  line-height: 30px;
-  vertical-align: top;
-  margin-left: 5px;
+    font-size: 18px;
+    line-height: 30px;
+    vertical-align: top;
+    margin-left: 5px;
 }
 
 .weather {
-  background-color: #DAE3FD;
-  -webkit-transition: background-color 2s ease;
-  transition: background-color 2s ease;
+    background-color: #DAE3FD;
+    -webkit-transition: background-color 2s ease;
+    transition: background-color 2s ease;
 }
+
 .hail .weather, .severe .weather, .thunder .weather {
-  background-color: #9FA4AD;
+    background-color: #9FA4AD;
 }
+
 .rain .weather {
-  background-color: #D8D8D8;
+    background-color: #D8D8D8;
 }
+
 .haze .weather {
-  background-color: #efefef;
+    background-color: #efefef;
 }
+
 .sun .weather {
-  background-color: #ccccff;
+    background-color: #ccccff;
 }
+
 .hot .weather, .smoke .weather {
-  background-color: rgba(230, 179, 179, 0.8);
+    background-color: rgba(230, 179, 179, 0.8);
 }
-.weather .inner {
-  background-color: white;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
-}
+
+/*.weather .inner {*/
+/*    background-color: white;*/
+/*    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));*/
+/*    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);*/
+/*}*/
+
 .weather .cloud {
-  -webkit-transition: fill 2s ease;
-  transition: fill 2s ease;
+    -webkit-transition: fill 2s ease;
+    transition: fill 2s ease;
 }
+
 .weather .fog {
-  opacity: 0;
-  -webkit-transition: opacity 2s ease, fill 2s ease;
-  transition: opacity 2s ease, fill 2s ease;
+    opacity: 0;
+    -webkit-transition: opacity 2s ease, fill 2s ease;
+    transition: opacity 2s ease, fill 2s ease;
 }
+
 .smoke .weather .fog, .haze .weather .fog {
-  opacity: 1;
+    opacity: 1;
 }
+
 .weather #sun {
-  fill: #F7ED47;
+    fill: #F7ED47;
 }
+
 .cold .weather {
-  background-color: #ccdffb;
+    background-color: #ccdffb;
 }
+
 .night .weather {
-  background-color: #060638;
+    background-color: #06063800;
 }
+
 .night .weather #sun {
-  fill: #ccdbef;
+    fill: #ccdbef;
 }
+
 .weather #fog1 {
-  fill: #f5f5f5;
+    fill: #f5f5f5;
 }
+
 .night .weather #fog1, .smoke .weather #fog1, .hail .weather #fog1, .severe .weather #fog1, .thunder .weather #fog1 {
-  fill: #aFb4bD;
+    fill: #91969f;
 }
+
 .weather #fog2, .weather #cloud1 {
-  fill: #efefef;
+    fill: #efefef;
 }
+
 .night .weather #fog2, .smoke .weather #fog2, .hail .weather #fog2, .severe .weather #fog2, .thunder .weather #fog2,
 .night .weather #cloud1, .smoke .weather #cloud1, .hail .weather #cloud1, .severe .weather #cloud1, .thunder .weather #cloud1 {
-  fill: #9FA4AD;
+    fill: #00002e;
 }
+
 .weather #fog3, .weather #cloud2 {
-  fill: #E6E6E6;
+    fill: #E6E6E6;
 }
+
 .night .weather #fog3, .smoke .weather #fog3, .hail .weather #fog3, .severe .weather #fog3, .thunder .weather #fog3,
 .night .weather #cloud2, .smoke .weather #cloud2, .hail .weather #cloud2, .severe .weather #cloud2, .thunder .weather #cloud2 {
-  fill: #8B8E98;
+    fill: #4f525c99;
 }
+
 .weather #cloud3 {
-  fill: #D5D5D5;
+    fill: #D5D5D5;
 }
+
 .night .weather #cloud3, .smoke .weather #cloud3, .hail .weather #cloud3, .severe .weather #cloud3, .thunder .weather #cloud3 {
-  fill: #7B7988;
+    fill: #3f3d4c99;
 }
 
 .container .outer, .container .back {
-  position: fixed;
-  pointer-events: none;
+    position: fixed;
+    pointer-events: none;
 }
