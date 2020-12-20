@@ -1,7 +1,7 @@
 class WeatherCard {
     constructor(container) {
 
-        // in an object so the values can be animated in tweenmax
+        // in an object so the values can be animated in gsap
         this.settings = {
             windSpeed: 2,
             rainCount: 0,
@@ -125,7 +125,7 @@ class WeatherCard {
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         //this.date.html(days[d.getDay()] + " " + d.getDate() + " " + months[d.getMonth()]);
         this.date.html(days[d.getDay()]);
-        TweenMax.fromTo(this.date, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
+        gsap.fromTo(this.date, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
     drawCloud(cloud, i) {
@@ -234,12 +234,13 @@ class WeatherCard {
         // Start the falling animation, calls onRainEnd when the
         // animation finishes.
         var windOffset = this.settings.windSpeed * 10;
-        TweenMax.fromTo(line.node, 1,
+        gsap.fromTo(line.node,
             {
                 x: x - windOffset,
                 y: 0 - lineLength
             },
             {
+                duration: 1,
                 delay: Math.random(),
                 y: this.sizes.card.height,
                 x: x,
@@ -323,7 +324,7 @@ class WeatherCard {
         splash.node.style.strokeDasharray = splashLength + ' ' + pathLength;
 
         // Start the splash animation, calling onSplashComplete when finished
-        TweenMax.fromTo(splash.node, speed,
+        gsap.fromTo(splash.node,
             {
                 strokeWidth: 2,
                 y: yOffset,
@@ -332,6 +333,7 @@ class WeatherCard {
                 strokeDashoffset: splashLength
             },
             {
+                duration: speed,
                 strokeWidth: 0,
                 strokeDashoffset: -pathLength,
                 opacity: 1,
@@ -384,15 +386,16 @@ class WeatherCard {
         this.leafs.push(newLeaf);
 
         var bezier = [{x: x, y: y}, {x: xBezier, y: Math.random() * endY + endY / 3}, {x: endX, y: endY}];
-        TweenMax.fromTo(newLeaf.node, 2,
+        gsap.fromTo(newLeaf.node,
             {
                 rotation: Math.random() * 180,
                 x: x, y: y,
                 scale: scale
             },
             {
+                duration: 2,
                 rotation: Math.random() * 360,
-                bezier: bezier,
+                motionPath: bezier,
                 onComplete: this.onLeafEnd.bind(this),
                 onCompleteParams: [newLeaf],
                 ease: Power0.easeIn
@@ -451,9 +454,10 @@ class WeatherCard {
 
         // Start the falling animation, calls onHailEnd when the
         // animation finishes.
-        TweenMax.fromTo(newHail.node, 1,
+        gsap.fromTo(newHail.node,
             {x: x - windOffset, y: y},
             {
+                duration: 1,
                 delay: Math.random(),
                 y: endY, x: x,
                 ease: Power2.easeIn,
@@ -461,7 +465,7 @@ class WeatherCard {
                 onCompleteParams: [newHail, size, x, this.currentWeather.type]
             }
         );
-        //TweenMax.fromTo(newHail.node, 3 + (Math.random() * 5), {x: x, y: y}, {y: endY, onComplete: onHailEnd, onCompleteParams: [newHail, size, x, currentWeather.type], ease: Power2.easeIn})
+        //gsap.fromTo(newHail.node, 3 + (Math.random() * 5), {x: x, y: y}, {y: endY, onComplete: onHailEnd, onCompleteParams: [newHail, size, x, currentWeather.type], ease: Power2.easeIn})
     }
 
     onHailEnd(stone, size, x, type) {
@@ -518,14 +522,15 @@ class WeatherCard {
 
         snow.push(newSnow);
 
-        TweenMax.fromTo(newSnow.node, 3 + Math.random() * 5, {x: x, y: y}, {
+        gsap.fromTo(newSnow.node, {x: x, y: y}, {
+            duration: 3 + Math.random() * 5,
             y: endY,
             onComplete: this.onSnowEnd,
             onCompleteParams: [newSnow],
             ease: Power0.easeIn
         });
-        TweenMax.fromTo(newSnow.node, 1, {scale: 0}, {scale: scale, ease: Power1.easeInOut});
-        TweenMax.to(newSnow.node, 3, {x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
+        gsap.fromTo(newSnow.node, {scale: 0}, {duration: 1, scale: scale, ease: Power1.easeInOut});
+        gsap.to(newSnow.node, {duration:3, x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
     }
 
     onSnowEnd(flake) {
@@ -546,8 +551,8 @@ class WeatherCard {
         this.reset();
 
         this.currentWeather = weather;
-        TweenMax.killTweensOf(this.summary);
-        TweenMax.to(this.summary, 1, {opacity: 0, x: -30, onComplete: this.updateSummaryText.bind(this), ease: Power4.easeIn});
+        gsap.killTweensOf(this.summary);
+        gsap.to(this.summary, {duration: 1, opacity: 0, x: -30, onComplete: this.updateSummaryText.bind(this), ease: Power4.easeIn});
 
         this.container.addClass(weather.type);
         weather.classes.forEach(c => this.container.addClass(c));
@@ -559,17 +564,17 @@ class WeatherCard {
             case 'severe':
             case 'wind':
             case 'smoke':
-                TweenMax.to(this.settings, 3, {windSpeed: 3 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, windSpeed: 3 * weather.intensity, ease: Power2.easeInOut});
                 break;
             case 'sun':
-                TweenMax.to(this.settings, 3, {windSpeed: 20, ease: Power2.easeInOut});
+                gsap.to(this.settings,{duration: 3, windSpeed: 20, ease: Power2.easeInOut});
                 break;
             case 'haze':
             case 'cloud':
-                TweenMax.to(this.settings, 3, {windSpeed: 1, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, windSpeed: 1, ease: Power2.easeInOut});
                 break;
             default:
-                TweenMax.to(this.settings, 3, {windSpeed: 0.5, ease: Power2.easeOut});
+                gsap.to(this.settings, {duration: 3, windSpeed: 0.5, ease: Power2.easeOut});
                 break;
         }
 
@@ -582,17 +587,17 @@ class WeatherCard {
             case 'mix-rain-snow':
             case 'mix-rain-sleet':
             case 'rain':
-                TweenMax.to(this.settings, 3, {rainCount: 20 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, rainCount: 20 * weather.intensity, ease: Power2.easeInOut});
                 break;
             case 'hail':
-                TweenMax.to(this.settings, 3, {rainCount: 5 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, rainCount: 5 * weather.intensity, ease: Power2.easeInOut});
                 break;
             case 'severe':
             case 'thunder':
-                TweenMax.to(this.settings, 3, {rainCount: 30 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, rainCount: 30 * weather.intensity, ease: Power2.easeInOut});
                 break;
             default:
-                TweenMax.to(this.settings, 1, {rainCount: 0, ease: Power2.easeOut});
+                gsap.to(this.settings, {duration: 1, rainCount: 0, ease: Power2.easeOut});
                 break;
         }
 
@@ -602,23 +607,23 @@ class WeatherCard {
         switch (weather.type) {
 
             case 'mix':
-                TweenMax.to(this.settings, 3, {hailCount: 3 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 3 * weather.intensity, ease: Power2.easeInOut});
                 break;
             case 'mix-snow-sleet':
             case 'mix-rain-sleet':
-                TweenMax.to(this.settings, 3, {hailCount: 10 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 10 * weather.intensity, ease: Power2.easeInOut});
                 break;
             case 'sleet':
-                TweenMax.to(this.settings, 3, {hailCount: 20 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 20 * weather.intensity, ease: Power2.easeInOut});
                 break;
             case 'severe':
-                TweenMax.to(this.settings, 3, {hailCount: 3 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 3 * weather.intensity, ease: Power2.easeInOut});
                 break;
             case 'hail':
-                TweenMax.to(this.settings, 3, {hailCount: 20 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 20 * weather.intensity, ease: Power2.easeInOut});
                 break;
             default:
-                TweenMax.to(this.settings, 1, {hailCount: 0, ease: Power2.easeOut});
+                gsap.to(this.settings, {duration: 1, hailCount: 0, ease: Power2.easeOut});
                 break;
         }
 
@@ -629,10 +634,10 @@ class WeatherCard {
 
             case 'severe':
             case 'wind':
-                TweenMax.to(this.settings, 3, {leafCount: 5 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, leafCount: 5 * weather.intensity, ease: Power2.easeInOut});
                 break;
             default:
-                TweenMax.to(this.settings, 1, {leafCount: 0, ease: Power2.easeOut});
+                gsap.to(this.settings, {duration: 1, leafCount: 0, ease: Power2.easeOut});
                 break;
         }
 
@@ -645,10 +650,10 @@ class WeatherCard {
             case 'mix-rain-snow':
             case 'mix-snow-sleet':
             case 'snow':
-                TweenMax.to(this.settings, 3, {snowCount: 40 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, snowCount: 40 * weather.intensity, ease: Power2.easeInOut});
                 break;
             default:
-                TweenMax.to(this.settings, 1, {snowCount: 0, ease: Power2.easeOut});
+                gsap.to(this.settings, {duration: 1, snowCount: 0, ease: Power2.easeOut});
                 break;
         }
 
@@ -658,7 +663,8 @@ class WeatherCard {
         switch (weather.type) {
 
             case 'sun':
-                TweenMax.to(this.sun.node, 4, {
+                gsap.to(this.sun.node, {
+                    duration: 4,
                     x: this.sizes.card.width / 2,
                     y: this.sizes.card.height / 2,
                     ease: Power2.easeInOut
@@ -666,13 +672,15 @@ class WeatherCard {
                 break;
             case 'cloud':
                 var ypos = this.sizes.card.height / 2 - this.sizes.card.height / 2 * weather.intensity;
-                TweenMax.to(this.sun.node, 4, {
+                gsap.to(this.sun.node, {
+                    duration: 4,
                     x: this.sizes.card.width / 2,
                     y: ypos, ease: Power2.easeInOut
                 });
                 break;
             default:
-                TweenMax.to(this.sun.node, 2, {
+                gsap.to(this.sun.node, {
+                    duration: 2,
                     x: this.sizes.card.width / 2,
                     y: -100, leafCount: 0,
                     ease: Power2.easeInOut
@@ -687,15 +695,15 @@ class WeatherCard {
 
     updateSummaryText() {
         this.summary.html(this.currentWeather.name);
-        TweenMax.fromTo(this.summary, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
+        gsap.fromTo(this.summary, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
     updateTempText(newTemp) {
         this.temp.html(Math.round(newTemp.day));
         this.temp_min.html(Math.round(newTemp.min));
         this.tempFormat.html("°");
-        TweenMax.fromTo(this.temp, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
-        TweenMax.fromTo(this.tempFormat, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
+        gsap.fromTo(this.temp, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
+        gsap.fromTo(this.tempFormat, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
     startLightningTimer() {
@@ -707,7 +715,7 @@ class WeatherCard {
 
     lightning() {
         this.startLightningTimer();
-        TweenMax.fromTo(this.card, 0.75, {y: -30}, {y: 0, ease: Elastic.easeOut});
+        gsap.fromTo(this.card, {y: -30}, {duration: 0.75, y: 0, ease: Elastic.easeOut});
 
         var pathX = 30 + Math.random() * (this.sizes.card.width - 60);
         var yOffset = 20;
@@ -726,7 +734,8 @@ class WeatherCard {
         });
 
 
-        TweenMax.to(strike.node, 1, {
+        gsap.to(strike.node, {
+            duration: 1,
             opacity: 0, ease: Power4.easeOut, onComplete: function () {
                 strike.remove();
                 strike = null;
@@ -746,7 +755,7 @@ class WeatherCard {
         }
 
         // ☀️ set initial sun attr
-        TweenMax.set(this.sun.node, {x: this.sizes.card.width / 2, y: -100});
+        gsap.set(this.sun.node, {x: this.sizes.card.width / 2, y: -100});
     }
 
     reset() {

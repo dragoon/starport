@@ -25,7 +25,7 @@ var weatherMap = {
 // 📝 Fetch all DOM nodes in jQuery and Snap SVG
 $(function () {
 
-    var cards = $('.container').toArray().map(c => new WeatherCard(c));
+    const cards = $('.container').toArray().map(c => new WeatherCard(c));
 
     function getLocation() {
         if (navigator.geolocation) {
