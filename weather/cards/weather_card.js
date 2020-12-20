@@ -316,7 +316,7 @@ class WeatherCard {
         // We animate the dasharray to have the line travel along the path
 
         var pathLength = Snap.path.getTotalLength(splash);
-        var yOffset = this.sizes.card.offset.top + this.sizes.card.height;
+        var yOffset = this.sizes.card.height;
         splash.node.style.strokeDasharray = splashLength + ' ' + pathLength;
 
         // Start the splash animation, calling onSplashComplete when finished
