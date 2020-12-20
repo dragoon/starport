@@ -520,12 +520,12 @@ class WeatherCard {
 
         }
 
-        snow.push(newSnow);
+        this.snow.push(newSnow);
 
         gsap.fromTo(newSnow.node, {x: x, y: y}, {
             duration: 3 + Math.random() * 5,
             y: endY,
-            onComplete: this.onSnowEnd,
+            onComplete:this.onSnowEnd.bind(this),
             onCompleteParams: [newSnow],
             ease: Power0.easeIn
         });

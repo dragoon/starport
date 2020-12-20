@@ -514,11 +514,11 @@ class WeatherCard {
 
         }
 
-        snow.push(newSnow);
+        this.snow.push(newSnow);
 
         TweenMax.fromTo(newSnow.node, 3 + Math.random() * 5, {x: x, y: y}, {
             y: endY,
-            onComplete: this.onSnowEnd,
+            onComplete: this.onSnowEnd.bind(this),
             onCompleteParams: [newSnow],
             ease: Power0.easeIn
         });
