@@ -8,7 +8,7 @@ function currentTime() {
   sec = updateTime(sec);
   $(".datetime-container .time").text(hour + ":" + min);
   $(".datetime-container .date").text(date.toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric' }));
-  setTimeout(function(){ currentTime() }, 1000); /* setting timer */
+  setTimeout(function(){ currentTime() }, 60000); /* setting timer */
 }
 
 function updateTime(k) {
