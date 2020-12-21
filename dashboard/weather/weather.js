@@ -81,5 +81,6 @@ $(function () {
     init();
     $(window).resize(onResize);
     requestAnimationFrame(tick);
+    setTimeout(getLocation, 60*60*1000); // 1 hour
 
 });
