@@ -1,4 +1,4 @@
-const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-snow-sleet", "sleet", "wind", "rain", "hail", "thunder", "severe", "cloud", "sun", "haze", "smoke"]
+const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-snow-sleet", "sleet", "wind", "rain", "hail", "thunder", "severe", "cloud", "sun", "haze", "smoke"];
 const classes = ['night', 'day', 'hot', 'cold'];
 
 var weatherMap = {
@@ -27,38 +27,57 @@ $(function () {
 
     var cards = $('.container').toArray().map(c => new WeatherCard(c));
 
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(onGetLocation, function error(message) {
-                console.log(message);
-                onGetLocation({"coords": {"latitude": 47.3386721, "longitude": 8.5198395}})
+    function onGetLocation() {
+        cards.forEach((card, i) => {
+                card.updateTempText(0, "°C");
+                card.updateDateText(new Date());
+                var ui_params;
+                if (i===0) {
+                    ui_params = {
+                    "type": "snow",
+                    "intensity": 1,
+                    "name": "Snow",
+                    "classes": []
+                    }
+                } else if (i===1) {
+                    ui_params = {
+                    "type": "severe",
+                    "intensity": 2,
+                    "name": "T Storms",
+                    "classes": []
+                    }
+                } else if (i===2) {
+                    ui_params = {
+                    "type": "wind",
+                    "intensity": 2,
+                    "name": "Wind",
+                    "classes": []
+                    }
+                }
+                else if (i===3) {
+                    ui_params = {
+                    "type": "fog",
+                    "intensity": 1,
+                    "name": "Fog",
+                    "classes": []
+                    }
+                }
+                else {
+                    ui_params = {
+                    "type": "sun",
+                    "intensity": 1,
+                    "name": "Sun",
+                    "classes": []
+                    }
+                }
+                card.changeWeather(ui_params);
             });
-        } else {
-            console.log("Geolocation is not supported by this browser.");
-        }
-    }
-
-    function onGetLocation(position) {
-        var weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
-        $.getJSON(weather_url).done(function (weather) {
-            cards.forEach((card, i) => {
-                day_weather = weather.daily[i];
-                card.updateTempText(Math.round(day_weather.temp.day), "°C");
-                card.updateDateText(new Date(day_weather.dt * 1000));
-                card.changeWeather({
-                    "type": day_weather.ui_params.type,
-                    "intensity": day_weather.ui_params.intensity,
-                    "name": day_weather.ui_params.name,
-                    "classes": day_weather.ui_params.classes
-                });
-            });
-        });
     }
 
     function init() {
         onResize();
         cards.forEach(card => card.init());
-        getLocation();
+        onGetLocation();
     }
 
     function onResize() {
@@ -67,7 +86,7 @@ $(function () {
 
     function tick() {
         // iterate over all weather cards
-        cards.forEach(card => card.tick())
+        cards.forEach(card => card.tick());
         requestAnimationFrame(tick);
     }
 
