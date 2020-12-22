@@ -56,9 +56,9 @@ $(function () {
                 }
                 else if (i===3) {
                     ui_params = {
-                    "type": "fog",
+                    "type": "cloud",
                     "intensity": 1,
-                    "name": "Fog",
+                    "name": "Scattered Clouds",
                     "classes": []
                     }
                 }

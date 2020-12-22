@@ -76,7 +76,7 @@ class WeatherCard {
         this.temp_min = $(`#${elem_id} .card .details .temp .temperature-night`);
         this.tempFormat = $(`#${elem_id} .card .details .temp-degrees`);
         this.leaf = Snap.select(`#${elem_id} .card #leaf`);
-        this.sun = Snap.select(`#${elem_id} .card #sun`);
+        this.sun = $(`#${elem_id} .card #sun`);
     }
 
     resize() {
@@ -662,25 +662,25 @@ class WeatherCard {
         switch (weather.type) {
 
             case 'sun':
-                gsap.to(this.sun.node, {
+                gsap.to(this.sun, {
                     duration: 4,
-                    x: this.sizes.card.width / 2,
-                    y: this.sizes.card.height / 2,
+                    x: 0,
+                    y: this.sizes.card.height / 2 + 100,
                     ease: Power2.easeInOut
                 });
                 break;
             case 'cloud':
-                var ypos = this.sizes.card.height / 2 - this.sizes.card.height / 2 * weather.intensity;
-                gsap.to(this.sun.node, {
+                var ypos =  100 + this.sizes.card.height / 2 - this.sizes.card.height * (weather.intensity - 1) / 2;
+                gsap.to(this.sun, {
                     duration: 4,
-                    x: this.sizes.card.width / 2,
+                    x: 0,
                     y: ypos, ease: Power2.easeInOut
                 });
                 break;
             default:
-                gsap.to(this.sun.node, {
+                gsap.to(this.sun, {
                     duration: 2,
-                    x: this.sizes.card.width / 2,
+                    x: 0,
                     y: -100, leafCount: 0,
                     ease: Power2.easeInOut
                 });
@@ -752,9 +752,7 @@ class WeatherCard {
             this.fog[i].offset = Math.random() * this.sizes.card.width;
             this.drawFog(this.fog[i], i);
         }
-
-        // ☀️ set initial sun attr
-        gsap.set(this.sun.node, {x: this.sizes.card.width / 2, y: -100});
+        
     }
 
     reset() {

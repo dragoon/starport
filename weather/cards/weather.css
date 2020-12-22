@@ -1,5 +1,11 @@
 @import "https://fonts.googleapis.com/css?family=Lato:300";
 
+@keyframes pulse {
+  0% { box-shadow:0 0 16px #F7ED47, inset 0 0 16px #F7ED47; }
+  50% { box-shadow:0 0 32px #F7ED47, inset 0 0 28px #F7ED47; }
+  100% { box-shadow:0 0 16px #F7ED47, inset 0 0 16px #F7ED47; }
+}
+
 html, body {
   width: 100%;
   height: 100%;
@@ -90,8 +96,8 @@ nav li a.active {
           flex-direction: row;
   -webkit-box-pack: justify;
           justify-content: space-between;
-  -webkit-transition: color 2s ease;
   transition: color 2s ease;
+  z-index: 1;
 }
 .night .card .details, .smoke .card .details, .hail .card .details, .severe .card .details, .thunder .card .details {
   color: #ddd;
@@ -118,9 +124,8 @@ nav li a.active {
 }
 
 .weather {
-  background-color: #DAE3FD;
-  -webkit-transition: background-color 2s ease;
   transition: background-color 2s ease;
+  background: #DAE3FD linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
 }
 .hail .weather, .severe .weather, .thunder .weather {
   background-color: #9FA4AD;
@@ -138,10 +143,11 @@ nav li a.active {
   background-color: rgba(230, 179, 179, 0.8);
 }
 .weather .inner {
-  background-color: white;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
+  background-color: transparent;
+  position: absolute;
+  z-index: 1;
 }
+
 .weather .cloud {
   -webkit-transition: fill 2s ease;
   transition: fill 2s ease;
@@ -155,8 +161,21 @@ nav li a.active {
   opacity: 1;
 }
 .weather #sun {
-  fill: #F7ED47;
+    background-color: #F7ED47;
+    box-shadow: 0 0 8px #F7ED47, inset 0 0 8px #F7ED47;
+  animation: pulse 2s linear 1s infinite;
+  border-radius:50px;
+  height: 100px;
+  width: 100px;
+  position: absolute;
+  top: -150px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 0;
 }
+
 .cold .weather {
   background-color: #ccdffb;
 }
@@ -174,6 +193,7 @@ nav li a.active {
 }
 .weather #fog2, .weather #cloud1 {
   fill: #efefef;
+  z-index: 1;
 }
 .night .weather #fog2, .smoke .weather #fog2, .hail .weather #fog2, .severe .weather #fog2, .thunder .weather #fog2,
 .night .weather #cloud1, .smoke .weather #cloud1, .hail .weather #cloud1, .severe .weather #cloud1, .thunder .weather #cloud1 {

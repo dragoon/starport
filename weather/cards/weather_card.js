@@ -75,7 +75,7 @@ class WeatherCard {
         this.temp = $(`#${elem_id} .card #temperature`);
         this.tempFormat = $(`#${elem_id} .card #format`);
         this.leaf = Snap.select(`#${elem_id} .card #leaf`);
-        this.sun = Snap.select(`#${elem_id} .card #sun`);
+        this.sun = $(`#${elem_id} .card #sun`);
     }
 
     resize() {
@@ -655,22 +655,23 @@ class WeatherCard {
         switch (weather.type) {
 
             case 'sun':
-                TweenMax.to(this.sun.node, 4, {
-                    x: this.sizes.card.width / 2,
-                    y: this.sizes.card.height / 2,
+                TweenMax.to(this.sun, 4, {
+                    x: 0,
+                    y: this.sizes.card.height / 2 + 100,
                     ease: Power2.easeInOut
                 });
                 break;
             case 'cloud':
-                var ypos = this.sizes.card.height / 2 - this.sizes.card.height / 2 * weather.intensity;
-                TweenMax.to(this.sun.node, 4, {
-                    x: this.sizes.card.width / 2,
-                    y: ypos, ease: Power2.easeInOut
+                var ypos =  100 + this.sizes.card.height / 2 - this.sizes.card.height * (weather.intensity - 1) / 2;
+                TweenMax.to(this.sun, 4, {
+                    x: 0,
+                    y: ypos,
+                    ease: Power2.easeInOut
                 });
                 break;
             default:
-                TweenMax.to(this.sun.node, 2, {
-                    x: this.sizes.card.width / 2,
+                TweenMax.to(this.sun, 2, {
+                    x: 0,
                     y: -100, leafCount: 0,
                     ease: Power2.easeInOut
                 });
@@ -740,9 +741,6 @@ class WeatherCard {
             this.fog[i].offset = Math.random() * this.sizes.card.width;
             this.drawFog(this.fog[i], i);
         }
-
-        // ☀️ set initial sun attr
-        TweenMax.set(this.sun.node, {x: this.sizes.card.width / 2, y: -100});
     }
 
     reset() {
@@ -762,7 +760,7 @@ class WeatherCard {
 
         if (this.currentWeather != undefined) {
             for (var i = 0; i < this.clouds.length; i++) {
-                if (this.currentWeather.type == 'sun') {
+                if (this.currentWeather.type === 'sun') {
                     if (this.clouds[i].offset > -(this.sizes.card.width * 1.5)) this.clouds[i].offset += this.settings.windSpeed / (i + 1);
                     if (this.clouds[i].offset > this.sizes.card.width * 2.5) this.clouds[i].offset = -(this.sizes.card.width * 1.5);
                     this.clouds[i].group.transform('t' + this.clouds[i].offset + ',' + 0);
@@ -775,13 +773,19 @@ class WeatherCard {
 
 
             for (var i = 0; i < this.fog.length; i++) {
-                if (this.currentWeather.type == 'haze' || this.currentWeather.type == 'smoke') {
+                if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
                     this.fog[i].offset += this.settings.windSpeed / (i + 1);
-                    if (this.fog[i].offset > this.sizes.card.width) this.fog[i].offset = 0 + (this.fog[i].offset - this.sizes.card.width);
+                    if (this.fog[i].offset > this.sizes.card.width) {
+                        this.fog[i].offset = this.fog[i].offset - this.sizes.card.width;
+                    }
                     this.fog[i].group.transform('t' + this.fog[i].offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
                 } else {
-                    if (this.fog[i].offset > -(this.sizes.card.width * 1.5)) this.fog[i].offset += this.settings.windSpeed / (i + 1);
-                    if (this.fog[i].offset > this.sizes.card.width * 2.5) this.fog[i].offset = -(this.sizes.card.width * 1.5);
+                    if (this.fog[i].offset > -(this.sizes.card.width * 1.5)) {
+                        this.fog[i].offset += this.settings.windSpeed / (i + 1);
+                    }
+                    if (this.fog[i].offset > this.sizes.card.width * 2.5){
+                        this.fog[i].offset = -(this.sizes.card.width * 1.5);
+                    }
                     this.fog[i].group.transform('t' + this.fog[i].offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
                 }
             }

@@ -1,5 +1,18 @@
 @import "https://fonts.googleapis.com/css?family=Lato:300";
 
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 16px var(--pulse-color), inset 0 0 16px var(--pulse-color);
+    }
+    50% {
+        box-shadow: 0 0 32px var(--pulse-color), inset 0 0 28px var(--pulse-color);
+    }
+    100% {
+        box-shadow: 0 0 16px var(--pulse-color), inset 0 0 16px var(--pulse-color);
+    }
+}
+
+
 html, body {
     width: 100%;
     height: 100%;
@@ -59,8 +72,8 @@ html, body {
     flex-direction: row;
     -webkit-box-pack: justify;
     justify-content: space-between;
-    -webkit-transition: color 2s ease;
     transition: color 2s ease;
+    z-index: 1;
 }
 
 .card-container .card .details-bottom {
@@ -121,9 +134,8 @@ html, body {
 }
 
 .weather {
-    background-color: #DAE3FD;
-    -webkit-transition: background-color 2s ease;
-    transition: background-color 2s ease;
+    /*transition: background-color 2s ease;*/
+    /*background: #DAE3FD linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);*/
 }
 
 .hail .weather, .severe .weather, .thunder .weather {
@@ -146,11 +158,11 @@ html, body {
     background-color: rgba(230, 179, 179, 0.8);
 }
 
-/*.weather .inner {*/
-/*    background-color: white;*/
-/*    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));*/
-/*    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);*/
-/*}*/
+.weather .inner {
+    background-color: transparent;
+    position: absolute;
+    z-index: 1;
+}
 
 .weather .cloud {
     -webkit-transition: fill 2s ease;
@@ -168,7 +180,20 @@ html, body {
 }
 
 .weather #sun {
-    fill: #F7ED47;
+    --pulse-color: #F7ED47;
+    background-color: var(--pulse-color);
+    box-shadow: 0 0 8px var(--pulse-color), inset 0 0 8px var(--pulse-color);
+    animation: pulse 2s linear 1s infinite;
+    border-radius: 50px;
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    top: -150px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 0;
 }
 
 .cold .weather {
@@ -180,7 +205,8 @@ html, body {
 }
 
 .night .weather #sun {
-    fill: #ccdbef;
+    background-color: #ccdbef;
+    --pulse-color: #ccdbef;
 }
 
 .weather #fog1 {
@@ -189,48 +215,59 @@ html, body {
 
 .smoke .weather #fog1, .hail .weather #fog1, .severe .weather #fog1, .thunder .weather #fog1 {
     fill: #91969f;
+    z-index: 1;
 }
 
 .night .weather #cloud1 {
     fill: #00002e;
+    z-index: 1;
 }
 
 .night .weather #fog1 {
     fill: #00002e99;
+    z-index: 1;
 }
 
 .night .weather #fog2, .night .weather #cloud2 {
     fill: #4f525c99;
+    z-index: 1;
 }
 
 .night .weather #fog3, .night .weather #cloud3 {
     fill: #3f3d4c99;
+    z-index: 1;
 }
 
 .weather #fog2, .weather #cloud1 {
     fill: #efefef;
+    z-index: 1;
 }
 
 .smoke .weather #fog2, .hail .weather #fog2, .severe .weather #fog2, .thunder .weather #fog2,
 .smoke .weather #cloud1, .hail .weather #cloud1, .severe .weather #cloud1, .thunder .weather #cloud1 {
     fill: #9FA4AD;
+    z-index: 1;
 }
 
 .weather #fog3, .weather #cloud2 {
     fill: #E6E6E6;
+    z-index: 1;
 }
 
 .smoke .weather #fog3, .hail .weather #fog3, .severe .weather #fog3, .thunder .weather #fog3,
 .smoke .weather #cloud2, .hail .weather #cloud2, .severe .weather #cloud2, .thunder .weather #cloud2 {
     fill: #8B8E98;
+    z-index: 1;
 }
 
 .weather #cloud3 {
     fill: #D5D5D5;
+    z-index: 1;
 }
 
 .smoke .weather #cloud3, .hail .weather #cloud3, .severe .weather #cloud3, .thunder .weather #cloud3 {
     fill: #7B7988;
+    z-index: 1;
 }
 
 .container .outer, .container .back {
