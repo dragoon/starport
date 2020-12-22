@@ -771,42 +771,41 @@ class WeatherCard {
         }
 
         if (this.currentWeather != undefined) {
-            for (var i = 0; i < this.clouds.length; i++) {
+            this.clouds.forEach((cloud, i) => {
                 if (this.currentWeather.type === 'sun') {
-                    if (this.clouds[i].offset > -(this.sizes.card.width * 1.5)){
-                        this.clouds[i].offset += this.settings.windSpeed / (i + 1);
+                    if (cloud.offset > -(this.sizes.card.width * 1.5)){
+                        cloud.offset += this.settings.windSpeed / (i + 1);
                     }
-                    if (this.clouds[i].offset > this.sizes.card.width * 2.5){
-                        this.clouds[i].offset = -(this.sizes.card.width * 1.5);
+                    if (cloud.offset > this.sizes.card.width * 2.5){
+                        cloud.offset = -(this.sizes.card.width * 1.5);
                     }
-                    this.clouds[i].group.transform('t' + this.clouds[i].offset + ',' + 0);
+                    cloud.group.transform('t' + cloud.offset + ',' + 0);
                 } else {
-                    this.clouds[i].offset += this.settings.windSpeed / (i + 1);
-                    if (this.clouds[i].offset > this.sizes.card.width){
-                        this.clouds[i].offset = this.clouds[i].offset - this.sizes.card.width;
+                    cloud.offset += this.settings.windSpeed / (i + 1);
+                    if (cloud.offset > this.sizes.card.width){
+                        cloud.offset = cloud.offset - this.sizes.card.width;
                     }
-                    this.clouds[i].group.transform('t' + this.clouds[i].offset + ',' + 0);
+                    cloud.group.transform('t' + cloud.offset + ',' + 0);
                 }
-            }
+            });
 
-
-            for (var i = 0; i < this.fog.length; i++) {
+            this.fog.forEach((fog, i) => {
                 if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
-                    this.fog[i].offset += this.settings.windSpeed / (i + 1);
-                    if (this.fog[i].offset > this.sizes.card.width) {
-                        this.fog[i].offset = this.fog[i].offset - this.sizes.card.width;
+                    fog.offset += this.settings.windSpeed / (i + 1);
+                    if (fog.offset > this.sizes.card.width) {
+                        fog.offset = fog.offset - this.sizes.card.width;
                     }
-                    this.fog[i].group.transform('t' + this.fog[i].offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
+                    fog.group.transform('t' + fog.offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
                 } else {
-                    if (this.fog[i].offset > -(this.sizes.card.width * 1.5)) {
-                        this.fog[i].offset += this.settings.windSpeed / (i + 1);
+                    if (fog.offset > -(this.sizes.card.width * 1.5)) {
+                        fog.offset += this.settings.windSpeed / (i + 1);
                     }
-                    if (this.fog[i].offset > this.sizes.card.width * 2.5){
-                        this.fog[i].offset = -(this.sizes.card.width * 1.5);
+                    if (fog.offset > this.sizes.card.width * 2.5){
+                        fog.offset = -(this.sizes.card.width * 1.5);
                     }
-                    this.fog[i].group.transform('t' + this.fog[i].offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
+                    fog.group.transform('t' + fog.offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
                 }
-            }
+            });
         }
     }
 
