@@ -671,7 +671,7 @@ class WeatherCard {
                 });
                 break;
             case 'cloud':
-                var ypos =  100 + this.sizes.card.height / 2 - this.sizes.card.height * (weather.intensity - 1) / 2;
+                var ypos =  100 + this.sizes.card.height / 2 - this.sizes.card.height * Math.max(0, weather.intensity - 1) / 2;
                 gsap.to(this.sun, {
                     duration: 4,
                     x: 0,
@@ -697,6 +697,9 @@ class WeatherCard {
             case 'sun':
                 this.clouds.forEach((cloud, i) => {
                     // animate clouds with gsap
+                    if (cloud.offset > this.sizes.card.width * 2.5){
+                        cloud.offset = -(this.sizes.card.width * 1.5);
+                    }
                     gsap.to(cloud.group.node, {
                         duration: this.settings.windSpeed * (i+1),
                         ease: "none",
