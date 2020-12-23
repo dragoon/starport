@@ -161,6 +161,7 @@ class WeatherCard {
                 d: path
             },
             0);
+        cloud.group.transform('t' + cloud.offset + ',' + 0)
     }
 
     drawFog(cloud, i) {
@@ -694,15 +695,12 @@ class WeatherCard {
         switch (weather.type) {
 
             case 'sun':
-                this.clouds.forEach(cloud => {
+                this.clouds.forEach((cloud, i) => {
                     // animate clouds with gsap
                     gsap.to(cloud.group.node, {
-                        duration: 5, // depend on weather
+                        duration: this.settings.windSpeed * (i+1),
                         ease: "none",
-                        x: "+=500",
-                        modifiers: {
-                            x: gsap.utils.unitize(x => parseFloat(x) % 500) //force x value to be between 0 and 300 using modulus
-                        },
+                        x: "+=800",
                         repeat: 0
                     });
                 });
@@ -762,14 +760,15 @@ class WeatherCard {
 
     init() {
         // ☁️ draw clouds
-        for (var i = 0; i < this.clouds.length; i++) {
-            this.clouds[i].offset = Math.random() * this.sizes.card.width;
-            this.drawCloud(this.clouds[i], i);
-        }
-        for (var i = 0; i < this.fog.length; i++) {
-            this.fog[i].offset = Math.random() * this.sizes.card.width;
-            this.drawFog(this.fog[i], i);
-        }
+        this.clouds.forEach((cloud, i) => {
+            cloud.offset = Math.random() * this.sizes.card.width;
+            this.drawCloud(cloud, i);
+        });
+        // draw fog
+        this.fog.forEach((fog, i) => {
+            fog.offset = Math.random() * this.sizes.card.width;
+            this.drawCloud(fog, i);
+        });
 
     }
 
@@ -788,17 +787,9 @@ class WeatherCard {
             if (this.hail.length < this.settings.hailCount) this.makeHail();
         }
 
-        if (this.currentWeather != undefined) {
+        if (this.currentWeather !== undefined) {
             this.clouds.forEach((cloud, i) => {
-                if (this.currentWeather.type === 'sun') {
-                    if (cloud.offset > -(this.sizes.card.width * 1.5)){
-                        cloud.offset += this.settings.windSpeed / (i + 1);
-                    }
-                    if (cloud.offset > this.sizes.card.width * 2.5){
-                        cloud.offset = -(this.sizes.card.width * 1.5);
-                    }
-                    cloud.group.transform('t' + cloud.offset + ',' + 0);
-                } else {
+                if (this.currentWeather.type !== 'sun') {
                     cloud.offset += this.settings.windSpeed / (i + 1);
                     if (cloud.offset > this.sizes.card.width){
                         cloud.offset = cloud.offset - this.sizes.card.width;
