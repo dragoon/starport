@@ -56,9 +56,9 @@ $(function () {
                 }
                 else if (i===3) {
                     ui_params = {
-                    "type": "cloud",
+                    "type": "haze",
                     "intensity": 1,
-                    "name": "Scattered Clouds",
+                    "name": "Fog",
                     "classes": []
                     }
                 }
@@ -84,9 +84,9 @@ $(function () {
         cards.forEach(card => card.resize());
     }
 
-    function tick() {
+    function tick(timestamp) {
         // iterate over all weather cards
-        cards.forEach(card => card.tick());
+        cards.forEach(card => card.tick(timestamp));
         requestAnimationFrame(tick);
     }
 
