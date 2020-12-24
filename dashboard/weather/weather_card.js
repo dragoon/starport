@@ -13,7 +13,8 @@ class WeatherCard {
             cloudSpace: 30,
             cloudArch: 50,
             renewCheck: 10,
-            splashBounce: 80
+            splashBounce: 80,
+            makeSplash: false
         };
 
         let elem_id = container.id;
@@ -271,7 +272,7 @@ class WeatherCard {
             // splash. This way it looks like the closer (bigger)
             // drops hit the the edge of the card
 
-            if (width > 2) this.makeSplash(x, type);
+            if (width > 2 && this.settings.makeSplash) this.makeSplash(x, type);
         }
     }
 
