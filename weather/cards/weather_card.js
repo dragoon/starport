@@ -177,9 +177,6 @@ class WeatherCard {
         let height = space + this.settings.cloudHeight;
         let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
         let width = this.sizes.card.width;
-        let bottom = this.sizes.card.height;
-        let top = this.sizes.card.height - height;
-        let half = this.sizes.card.height - height / 2;
         let points = [];
         points.push('M' + [-width, height].join(','));
         points.push([width, height].join(','));
@@ -198,6 +195,7 @@ class WeatherCard {
                 d: path
             },
             0);
+        cloud.group.transform('t' + cloud.offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
     }
 
     makeRain() {
@@ -806,14 +804,6 @@ class WeatherCard {
                     fog.offset += this.settings.windSpeed / (i + 1);
                     if (fog.offset > this.sizes.card.width) {
                         fog.offset = fog.offset - this.sizes.card.width;
-                    }
-                    fog.group.transform('t' + fog.offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
-                } else {
-                    if (fog.offset > -(this.sizes.card.width * 1.5)) {
-                        fog.offset += this.settings.windSpeed / (i + 1);
-                    }
-                    if (fog.offset > this.sizes.card.width * 2.5){
-                        fog.offset = -(this.sizes.card.width * 1.5);
                     }
                     fog.group.transform('t' + fog.offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
                 }
