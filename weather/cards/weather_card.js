@@ -770,7 +770,7 @@ class WeatherCard {
         // draw fog
         this.fog.forEach((fog, i) => {
             fog.offset = Math.random() * this.sizes.card.width;
-            this.drawCloud(fog, i);
+            this.drawFog(fog, i);
         });
 
     }
