@@ -12,7 +12,6 @@ class WeatherCard {
             cloudHeight: 100,
             cloudSpace: 30,
             cloudArch: 50,
-            renewCheck: 10,
             splashBounce: 80,
             makeSplash: false
         };
@@ -43,9 +42,8 @@ class WeatherCard {
         this.outerLeafHolder.attr({'clip-path': this.leafMask});
 
         // technical
-        this.cloudsChanged = false;
         this.lightningTimeout = 0;
-        this.tickCount = 0;
+        this.start = undefined;
         this.rain = [];
         this.leafs = [];
         this.snow = [];
@@ -779,13 +777,14 @@ class WeatherCard {
         classes.forEach(t => this.container.removeClass(t));
     }
 
-    tick() {
-        this.tickCount++;
-        var check = this.tickCount % this.settings.renewCheck;
-        if (check) {
-            if (this.rain.length < this.settings.rainCount) this.makeRain();
-            if (this.snow.length < this.settings.snowCount) this.makeSnow();
-            if (this.hail.length < this.settings.hailCount) this.makeHail();
+    tick(timestamp) {
+        if (this.start === undefined)
+            this.start = timestamp;
+        const elapsed = timestamp - this.start;
+        if (elapsed > 1000) {
+            if (this.rain.length < this.settings.rainCount) this.makeRain(timestamp);
+            if (this.snow.length < this.settings.snowCount) this.makeSnow(timestamp);
+            if (this.hail.length < this.settings.hailCount) this.makeHail(timestamp);
         }
     }
 

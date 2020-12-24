@@ -72,9 +72,9 @@ $(function () {
         cards.forEach(card => card.resize());
     }
 
-    function tick() {
+    function tick(timestamp) {
         // iterate over all weather cards
-        cards.forEach(card => card.tick());
+        cards.forEach(card => card.tick(timestamp));
         requestAnimationFrame(tick);
     }
 
