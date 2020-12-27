@@ -270,7 +270,8 @@ html, body {
     z-index: 1;
 }
 
-.container .outer, .container .back {
+
+.container .outer, #canvas {
     position: fixed;
     pointer-events: none;
 }

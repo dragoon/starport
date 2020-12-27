@@ -7,6 +7,8 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/EasePack.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/PixiPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.0.2/pixi.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.js"></script>
     <script type="text/javascript" src="weather/weather.js"></script>
@@ -23,12 +25,6 @@
     </div>
     <div class="weather-cards">
         <div class="container" id="card-weather-1">
-            <svg class="back">
-                <radialGradient id="SVGID_1_" cx="0" cy="0" r="320.8304" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" style="stop-color:#FFDE17;stop-opacity:0.7"/>
-                    <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
-                </radialGradient>
-            </svg>
             <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
@@ -46,6 +42,7 @@
                         <g id="cloud1" class="cloud"></g>
                         <g id="fog1" class="fog"></g>
                     </svg>
+                    <canvas id="canvas"></canvas>
                     <div class="details">
                         <div class="temp">
                             <span id="temperature"></span><span class="temp-degrees"></span>
@@ -64,12 +61,6 @@
             <svg class="outer"></svg>
         </div>
         <div class="container" id="card-weather-2">
-            <svg class="back">
-                <radialGradient id="SVGID_1_" cx="0" cy="0" r="320.8304" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" style="stop-color:#FFDE17;stop-opacity:0.7"/>
-                    <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
-                </radialGradient>
-            </svg>
             <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
@@ -87,6 +78,7 @@
                         <g id="cloud1" class="cloud"></g>
                         <g id="fog1" class="fog"></g>
                     </svg>
+                    <canvas id="canvas"></canvas>
                     <div class="details">
                         <div class="temp">
                             <span id="temperature"></span><span class="temp-degrees"></span>
@@ -106,12 +98,6 @@
             <svg class="outer"></svg>
         </div>
         <div class="container" id="card-weather-3">
-            <svg class="back">
-                <radialGradient id="SVGID_1_" cx="0" cy="0" r="320.8304" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" style="stop-color:#FFDE17;stop-opacity:0.7"/>
-                    <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
-                </radialGradient>
-            </svg>
             <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
@@ -129,6 +115,7 @@
                         <g id="cloud1" class="cloud"></g>
                         <g id="fog1" class="fog"></g>
                     </svg>
+                    <canvas id="canvas"></canvas>
                     <div class="details">
                         <div class="temp">
                             <span id="temperature"></span><span class="temp-degrees"></span>
@@ -148,12 +135,6 @@
             <svg class="outer"></svg>
         </div>
         <div class="container" id="card-weather-4">
-            <svg class="back">
-                <radialGradient id="SVGID_1_" cx="0" cy="0" r="320.8304" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" style="stop-color:#FFDE17;stop-opacity:0.7"/>
-                    <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
-                </radialGradient>
-            </svg>
             <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
@@ -171,6 +152,7 @@
                         <g id="cloud1" class="cloud"></g>
                         <g id="fog1" class="fog"></g>
                     </svg>
+                    <canvas id="canvas"></canvas>
                     <div class="details">
                         <div class="temp">
                             <span id="temperature"></span><span class="temp-degrees"></span>
@@ -190,12 +172,6 @@
             <svg class="outer"></svg>
         </div>
         <div class="container" id="card-weather-5">
-            <svg class="back">
-                <radialGradient id="SVGID_1_" cx="0" cy="0" r="320.8304" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" style="stop-color:#FFDE17;stop-opacity:0.7"/>
-                    <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
-                </radialGradient>
-            </svg>
             <div class="card-container">
                 <div class="card weather">
                     <svg class="inner">
@@ -213,6 +189,7 @@
                         <g id="cloud1" class="cloud"></g>
                         <g id="fog1" class="fog"></g>
                     </svg>
+                    <canvas id="canvas"></canvas>
                     <div class="details">
                         <div class="temp">
                             <span id="temperature"></span><span class="temp-degrees"></span>

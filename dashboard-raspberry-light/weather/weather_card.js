@@ -21,21 +21,16 @@ class WeatherCard {
         this.card = $(`#${elem_id} .card`);
         this.outerSVG = Snap(`#${elem_id} .outer`);
         this.innerSVG = Snap(`#${elem_id} .card .inner`);
-        this.backSVG = Snap(`#${elem_id} .back`);
         this.weatherContainer1 = Snap.select(`#${elem_id} .card #layer1`);
         this.weatherContainer2 = Snap.select(`#${elem_id} .card #layer2`);
         this.weatherContainer3 = Snap.select(`#${elem_id} .card #layer3`);
+        this.canvas = $(`#${elem_id} #canvas`);
+        this.scene = new PIXI.Container();
 
-        this.innerRainHolder1 = this.weatherContainer1.group();
-        this.innerRainHolder2 = this.weatherContainer2.group();
-        this.innerRainHolder3 = this.weatherContainer3.group();
         this.innerLeafHolder = this.weatherContainer1.group();
-        this.innerSnowHolder = this.weatherContainer1.group();
         this.innerHailHolder = this.weatherContainer2.group();
         this.innerLightningHolder = this.weatherContainer1.group();
-        this.outerSplashHolder = this.outerSVG.group();
         this.outerLeafHolder = this.outerSVG.group();
-        this.outerSnowHolder = this.outerSVG.group();
         this.outerHailHolder = this.weatherContainer3.group();
         // Set mask for leaf holder
         this.leafMask = this.outerSVG.rect();
@@ -44,9 +39,9 @@ class WeatherCard {
         // technical
         this.lightningTimeout = 0;
         this.start = undefined;
-        this.rain = [];
+        this.rain_count = 0;
         this.leafs = [];
-        this.snow = [];
+        this.flake_count = 0;
         this.hail = [];
 
         // create sizes object, we update this later
@@ -99,12 +94,6 @@ class WeatherCard {
             height: this.sizes.container.height
         });
 
-
-        this.backSVG.attr({
-            width: this.sizes.card.width + 80,
-            height: this.sizes.card.height + 40
-        });
-
         // 🍃 The leaf mask is for the leafs that float out of the
         // container, it is full window height and starts on the left
         // inline with the card
@@ -116,6 +105,10 @@ class WeatherCard {
             }
         );
 
+        this.renderer = PIXI.autoDetectRenderer(
+            this.sizes.card.width + 80, // add 80 px margin for snow outside the card
+            this.sizes.card.height + 40,
+            {"view": this.canvas.get(0), "transparent": true, antialias: true});
     }
 
     updateDateText(d) {
@@ -204,39 +197,48 @@ class WeatherCard {
         // to dictate which svg group it'll be added to and
         // whether it'll generate a splash
 
-        var lineWidth = Math.random() * 3;
+        let lineWidth = Math.random() * 2;
+        let windOffset = this.settings.windSpeed * 10;
 
         // ⛈ line length is made longer for stormy weather
 
-        var lineLength = this.currentWeather.type == 'thunder' || this.currentWeather.type == 'severe' || this.currentWeather.type == 'hail' ? 35 : 14;
+        const severe = new Set(["thunder", "severe", "hail"]);
+
+        let lineLength = severe.has(this.currentWeather.type) ? 35 : 14;
+        let strokeColor = severe.has(this.currentWeather.type) ? 0x777777 : 0x86a3f9;
 
         // Start the drop at a random point at the top but leaving
         // a 20px margin
 
-        var x = Math.random() * (this.sizes.card.width - 40) + 20;
+        let x = Math.random() * (this.sizes.card.width - 40) + 20;
+        // TODO: large lines were in different layers/holders
 
         // Draw the line
+        let line = new PIXI.Graphics();
 
-        var line = this['innerRainHolder' + (3 - Math.floor(lineWidth))].path('M0,0 0,' + lineLength).attr({
-            fill: 'none',
-            stroke: this.currentWeather.type == 'thunder' || this.currentWeather.type == 'severe' || this.currentWeather.type == 'hail' ? '#777' : '#86a3f9',
-            strokeWidth: lineWidth
-        });
+        // Define line style (think stroke)
+        // width, color, alpha
+        line.lineStyle(lineWidth, strokeColor, 1);
 
+        // Define line position - this aligns the top left corner of our canvas
+        line.position.x = x - windOffset;
+        line.position.y = 0 - lineLength;
 
-        // add the line to an array to we can keep track of how
-        // many there are.
+        // Define pivot to the center of the element (think transformOrigin)
+        line.pivot.set(0, lineLength/2);
+        //line.rotation = 0.785398; // in radiants, TODO: depend on wind
 
-        this.rain.push(line);
+        // Draw line
+        line.moveTo(0,0);
+        line.lineTo(0, lineLength);
+
+        // add line to the scene for rendering
+        this.scene.addChild(line);
+        this.rain_count += 1;
 
         // Start the falling animation, calls onRainEnd when the
         // animation finishes.
-        var windOffset = this.settings.windSpeed * 10;
-        gsap.fromTo(line.node,
-            {
-                x: x - windOffset,
-                y: 0 - lineLength
-            },
+        gsap.to(line,
             {
                 duration: 1,
                 delay: Math.random(),
@@ -251,100 +253,15 @@ class WeatherCard {
     onRainEnd(line, width, x, type) {
         // first lets get rid of the drop of rain 💧
 
-        line.remove();
-        line = null;
-
-        // We also remove it from the array
-
-        for (var i in this.rain) {
-            if (!this.rain[i].paper) this.rain.splice(i, 1);
-        }
-
+        this.scene.removeChild(line);
+        this.rain_count -= 1;
+        
         // If there is less rain than the rainCount we should
         // make more.
 
-        if (this.rain.length < this.settings.rainCount) {
+        if (this.rain_count < this.settings.rainCount) {
             this.makeRain();
-
-            // 💦 If the line width was more than 2 we also create a
-            // splash. This way it looks like the closer (bigger)
-            // drops hit the the edge of the card
-
-            if (width > 2 && this.settings.makeSplash) this.makeSplash(x, type);
         }
-    }
-
-    makeSplash(x, type) {
-        // 💦 The splash is a single line added to the outer svg.
-
-        // The splashLength is how long the animated line will be
-        var splashLength = type == 'thunder' || type == 'severe' || type == 'hail' ? 30 : 20;
-
-        // splashBounce is the max height the line will curve up
-        // before falling
-        var splashBounce = type == 'thunder' || type == 'severe' || type == 'hail' ? 120 : 100;
-
-        // this sets how far down the line can fall
-        var splashDistance = 80;
-
-        // because the storm rain is longer we want the animation
-        // to last slighly longer so the overall speed is roughly
-        // the same for both
-        var speed = type == 'thunder' || type == 'severe' || type == 'hail' ? 0.7 : 0.5;
-
-        // Set a random splash up amount based on the max splash bounce
-        var splashUp = 0 - Math.random() * splashBounce;
-
-        // Sets the end x position, and in turn defines the splash direction
-        var randomX = Math.random() * splashDistance - splashDistance / 2;
-
-        // Now we put the 3 line coordinates into an array.
-
-        var points = [];
-        points.push('M' + 0 + ',' + 0);
-        points.push('Q' + randomX + ',' + splashUp);
-        points.push(randomX * 2 + ',' + splashDistance);
-
-        // Draw the line with Snap SVG
-
-        var splash = this.outerSplashHolder.path(points.join(' ')).attr({
-            fill: "none",
-            stroke: type == 'thunder' || type == 'severe' || type == 'hail' ? '#777' : '#86a3f9',
-            strokeWidth: 1
-        });
-
-
-        // We animate the dasharray to have the line travel along the path
-
-        var pathLength = Snap.path.getTotalLength(splash);
-        var yOffset = this.sizes.card.height;
-        splash.node.style.strokeDasharray = splashLength + ' ' + pathLength;
-
-        // Start the splash animation, calling onSplashComplete when finished
-        gsap.fromTo(splash.node,
-            {
-                strokeWidth: 2,
-                y: yOffset,
-                x:  20 + x,
-                opacity: 1,
-                strokeDashoffset: splashLength
-            },
-            {
-                duration: speed,
-                strokeWidth: 0,
-                strokeDashoffset: -pathLength,
-                opacity: 1,
-                onComplete: this.onSplashComplete.bind(this),
-                onCompleteParams: [splash],
-                ease: SlowMo.ease.config(0.4, 0.1, false)
-            });
-    }
-
-    onSplashComplete(splash) {
-        // 💦 The splash has finished animating, we need to get rid of it
-
-        splash.remove();
-        splash = null;
     }
 
     makeLeaf() {
@@ -486,59 +403,45 @@ class WeatherCard {
     }
 
     makeSnow() {
-        var offset = 0.5 * this.currentWeather.intensity;
-        var scale = offset + Math.random() * offset;
-        var newSnow;
+        let offset = 0.5 * this.currentWeather.intensity;
+        let scale = offset + Math.random() * offset;
 
-        var x = 20 + Math.random() * (this.sizes.card.width - 40);
-        var endX; // = x - ((Math.random() * (areaX * 2)) - areaX)
-        var y = -10;
-        var endY;
+        let x = 20 + Math.random() * (this.sizes.card.width - 40);
+        let y = -10;
+        let r = 5 * (offset + Math.random() * offset);
+        let endY;
 
+        // TODO: big snow was in a different cloud holder
         if (scale > 0.8) {
-            newSnow = this.outerSnowHolder.circle(0, 0, 5).attr({
-                fill: 'white'
-            });
-
             endY = this.sizes.container.height + 10;
             y = this.sizes.card.offset.top + this.settings.cloudHeight;
             x = x + this.sizes.card.offset.left;
-            //xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
-            //endX = sizes.container.width + 50;
         } else {
-            newSnow = this.innerSnowHolder.circle(0, 0, 5).attr({
-                fill: 'white'
-            });
-
             endY = this.sizes.card.height + 10;
-            //x = -100;
-            //xBezier = sizes.card.width / 2;
-            //endX = sizes.card.width + 50;
-
         }
 
-        this.snow.push(newSnow);
+        let circle = new PIXI.Graphics();
+        circle.beginFill(0xffffff, 1);
+        circle.drawCircle(x, y, r);
+        this.scene.addChild(circle);
+        this.flake_count += 1;
 
-        gsap.fromTo(newSnow.node, {x: x, y: y}, {
+        gsap.fromTo(circle, {x: x, y: y}, {
             duration: 3 + Math.random() * 5,
             y: endY,
-            onComplete:this.onSnowEnd.bind(this),
-            onCompleteParams: [newSnow],
+            onComplete: this.onSnowEnd.bind(this),
+            onCompleteParams: [circle],
             ease: Power0.easeIn
         });
-        gsap.fromTo(newSnow.node, {scale: 0}, {duration: 1, scale: scale, ease: Power1.easeInOut});
-        gsap.to(newSnow.node, {duration:3, x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
+        //gsap.fromTo(circle, {scale: 0}, {duration: 1, scale: scale, ease: Power1.easeInOut});
+        gsap.to(circle, {duration: 3, x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
     }
 
     onSnowEnd(flake) {
-        flake.remove();
-        flake = null;
+        this.scene.removeChild(flake);
+        this.flake_count -= 1;
 
-        for (var i in this.snow) {
-            if (!this.snow[i].paper) this.snow.splice(i, 1);
-        }
-
-        if (this.snow.length < this.settings.snowCount) {
+        if (this.flake_count < this.settings.snowCount) {
             this.makeSnow();
         }
     }
@@ -549,7 +452,13 @@ class WeatherCard {
 
         this.currentWeather = weather;
         gsap.killTweensOf(this.summary);
-        gsap.to(this.summary, {duration: 1, opacity: 0, x: -30, onComplete: this.updateSummaryText.bind(this), ease: Power4.easeIn});
+        gsap.to(this.summary, {
+            duration: 1,
+            opacity: 0,
+            x: -30,
+            onComplete: this.updateSummaryText.bind(this),
+            ease: Power4.easeIn
+        });
 
         this.container.addClass(weather.type);
         weather.classes.forEach(c => this.container.addClass(c));
@@ -689,6 +598,7 @@ class WeatherCard {
 
         this.startLightningTimer();
 
+        // remove clouds if sunny
         switch (weather.type) {
 
             case 'sun':
@@ -781,11 +691,14 @@ class WeatherCard {
         if (this.start === undefined)
             this.start = timestamp;
         const elapsed = timestamp - this.start;
+
         if (elapsed > 1000) {
-            if (this.rain.length < this.settings.rainCount) this.makeRain(timestamp);
-            if (this.snow.length < this.settings.snowCount) this.makeSnow(timestamp);
+            if (this.rain_count < this.settings.rainCount) this.makeRain(timestamp);
+            if (this.flake_count < this.settings.snowCount) this.makeSnow(timestamp);
             if (this.hail.length < this.settings.hailCount) this.makeHail(timestamp);
         }
+
+        this.renderer.render(this.scene);
     }
 
 }

@@ -1,0 +1,52 @@
+@import 'https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css';
+
+body {
+    background-color: #eee;
+}
+
+nav {
+    height: 400px;
+    min-height: 300px;
+    max-height: 100%;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+nav li a {
+    display: block;
+    width: 50px;
+    text-align: center;
+    color: #aaa;
+    cursor: pointer;
+}
+
+nav li a:hover {
+    color: #444;
+}
+
+nav li a.active {
+    color: #4444ff;
+}
+
+.test-nav ul {
+    flex-wrap: wrap-reverse;
+    width: auto;
+    height: 100%;
+    margin: 0;
+}
+
+.test-nav ul li a {
+    width: 25px;
+    height: 25px;
+}
+
+.weather-cards {
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
