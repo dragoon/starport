@@ -217,10 +217,8 @@ class WeatherCard {
 
         // Draw the line
         let line = new PIXI.Graphics();
-
-        // Define line style (think stroke)
-        // width, color, alpha
-        line.lineStyle(lineWidth, strokeColor, 1);
+        
+        line.lineStyle({width: lineWidth, color: strokeColor, alpha: 1, cap: "round"});
 
         // Define line position - this aligns the top left corner of our canvas
         line.position.x = x - windOffset;
