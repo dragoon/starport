@@ -275,3 +275,8 @@ html, body {
     position: fixed;
     pointer-events: none;
 }
+
+.canvas-outer {
+    z-index: 0;
+    position: fixed;
+}

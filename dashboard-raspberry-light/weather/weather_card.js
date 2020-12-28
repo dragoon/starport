@@ -106,8 +106,8 @@ class WeatherCard {
         );
 
         this.renderer = PIXI.autoDetectRenderer(
-            this.sizes.card.width + 80, // add 80 px margin for snow outside the card
-            this.sizes.card.height + 40,
+            this.sizes.card.width,
+            this.sizes.card.height,
             {"view": this.canvas.get(0), "transparent": true, antialias: true});
     }
 
@@ -412,6 +412,7 @@ class WeatherCard {
         let endY;
 
         // TODO: big snow was in a different cloud holder
+        // TODO: outer snow was flowing outside with outer holder
         if (scale > 0.8) {
             endY = this.sizes.container.height + 10;
             y = this.sizes.card.offset.top + this.settings.cloudHeight;
