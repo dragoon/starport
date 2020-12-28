@@ -106,9 +106,11 @@ class WeatherCard {
         );
 
         this.renderer = PIXI.autoDetectRenderer(
-            this.sizes.card.width,
-            this.sizes.card.height,
-            {"view": this.canvas.get(0), "transparent": true, antialias: true});
+            {
+                "width": this.sizes.card.width,
+                "height": this.sizes.card.height,
+                "view": this.canvas.get(0), transparent: true, antialias: true
+            });
     }
 
     updateDateText(d) {
