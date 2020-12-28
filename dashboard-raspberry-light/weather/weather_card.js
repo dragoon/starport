@@ -309,7 +309,7 @@ class WeatherCard {
             {
                 duration: 2,
                 rotation: Math.random() * 360,
-                motionPath: bezier,
+                motionPath: {"path": bezier, "type": "cubic"},
                 onComplete: this.onLeafEnd.bind(this),
                 onCompleteParams: [newLeaf],
                 ease: Power0.easeIn
@@ -589,7 +589,7 @@ class WeatherCard {
                 gsap.to(this.sun, {
                     duration: 2,
                     x: 0,
-                    y: -100, leafCount: 0,
+                    y: -100,
                     ease: Power2.easeInOut
                 });
                 break;
@@ -696,7 +696,30 @@ class WeatherCard {
         if (elapsed > 1000) {
             if (this.rain_count < this.settings.rainCount) this.makeRain(timestamp);
             if (this.flake_count < this.settings.snowCount) this.makeSnow(timestamp);
+            //if (this.leafs.length < this.settings.leafCount) this.makeLeaf(timestamp);
             if (this.hail.length < this.settings.hailCount) this.makeHail(timestamp);
+        }
+
+        if (this.currentWeather !== undefined) {
+            this.clouds.forEach((cloud, i) => {
+                if (this.currentWeather.type !== 'sun') {
+                    cloud.offset += this.settings.windSpeed / (i + 1);
+                    if (cloud.offset > this.sizes.card.width){
+                        cloud.offset = cloud.offset - this.sizes.card.width;
+                    }
+                    cloud.group.transform('t' + cloud.offset + ',' + 0);
+                }
+            });
+
+            this.fog.forEach((fog, i) => {
+                if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
+                    fog.offset += this.settings.windSpeed / (i + 1);
+                    if (fog.offset > this.sizes.card.width) {
+                        fog.offset = fog.offset - this.sizes.card.width;
+                    }
+                    fog.group.transform('t' + fog.offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
+                }
+            });
         }
 
         this.renderer.render(this.scene);
