@@ -444,7 +444,6 @@ class WeatherCard {
         });
 
         this.container.addClass(weather.type);
-        weather.classes.forEach(c => this.container.addClass(c));
 
         // windSpeed
 
@@ -667,7 +666,6 @@ class WeatherCard {
 
     reset() {
         weather_types.forEach(t => this.container.removeClass(t));
-        classes.forEach(t => this.container.removeClass(t));
     }
 
     tick(timestamp) {

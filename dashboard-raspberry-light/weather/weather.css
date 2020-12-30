@@ -134,6 +134,7 @@ html, body {
 }
 
 .weather {
+    background-color: rgba(0, 0, 0, 0);
     /*transition: background-color 2s ease;*/
     /*background: #DAE3FD linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);*/
 }
@@ -148,14 +149,6 @@ html, body {
 
 .haze .weather {
     background-color: #efefef;
-}
-
-.sun .weather {
-    background-color: #ccccff;
-}
-
-.hot .weather, .smoke .weather {
-    background-color: rgba(230, 179, 179, 0.8);
 }
 
 .weather .inner {
@@ -194,14 +187,6 @@ html, body {
     margin-left: auto;
     margin-right: auto;
     z-index: 0;
-}
-
-.cold .weather {
-    background-color: #ccdffb;
-}
-
-.night .weather {
-    background-color: #06063800;
 }
 
 .night .weather #sun {

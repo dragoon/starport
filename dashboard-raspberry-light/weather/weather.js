@@ -1,7 +1,24 @@
-const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-snow-sleet", "sleet", "wind", "rain", "hail", "thunder", "severe", "cloud", "sun", "haze", "smoke"]
-const classes = ['night', 'day', 'hot', 'cold'];
+const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-snow-sleet", "sleet", "wind", "rain", "hail", "thunder", "severe", "cloud", "sun", "haze", "smoke"];
 
-var weatherMap = {
+const hot_color = 0xe6b3b3;
+const cold_color = 0xccdffb;
+
+/**
+ *
+ * @param currentTemperature in Celsius
+ */
+function getTemperatureColor(currentTemperature) {
+   if (currentTemperature >= 30) {
+       return hot_color;
+   } else if (currentTemperature <= 0) {
+       return cold_color;
+   }
+
+   return interpolateColor(cold_color, hot_color, currentTemperature/30 );
+}
+
+
+const weatherMap = {
     0: {type: 'severe', class: '', intensity: 5, icon: 'wi-tornado', name: 'Tornado'},
     1: {type: 'severe', class: '', intensity: 2.5, icon: 'wi-thunderstorm', name: 'Tropical Storm'}, //tropical storm
     2: {type: 'severe', class: '', intensity: 5, icon: 'wi-hurricane', name: 'Hurricane'}, //hurricane
@@ -92,6 +109,8 @@ $(function () {
                 if (i === 0) {
                     day_weather = weather.current;
                     card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
+                    // set current background color temperature
+                    $(".sky").css("background", "#" + getTemperatureColor(day_weather.temp).toString(16));
                 } else {
                     day_weather = weather.daily[i];
                     card.updateTempText(day_weather.temp);
