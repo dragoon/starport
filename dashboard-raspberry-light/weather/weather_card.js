@@ -42,7 +42,7 @@ class WeatherCard {
         this.rain_count = 0;
         this.leafs = [];
         this.flake_count = 0;
-        this.hail = [];
+        this.hail_count = 0;
 
         // create sizes object, we update this later
 
@@ -330,45 +330,38 @@ class WeatherCard {
     }
 
     makeHail() {
-        var windOffset = this.settings.windSpeed * 10;
-        var offset = 0.25 * this.currentWeather.intensity;
-        var scale = offset + Math.random() * offset;
-        var newHail;
+        const windOffset = this.settings.windSpeed * 10;
+        const offset = 0.25 * this.currentWeather.intensity;
+        const scale = offset + Math.random() * offset;
+        let newHail;
 
-        var x;
-        var endX; // = x - ((Math.random() * (areaX * 2)) - areaX)
-        var y = -10;
-        var endY;
-        var size = 5 * scale;
+        let x;
+        let y = -10;
+        let endY;
+        const size = 5 * scale;
+        const fillColor = this.currentWeather.type === 'sleet' || this.currentWeather.type.indexOf('mix') > -1 ? 0x86a3f9 : 0xffffff;
+        newHail = new PIXI.Graphics()
+            .beginFill(fillColor, 1)
+            .drawCircle(0, 0, size);
+
         if (size > 4) {
             x = 20 + Math.random() * (this.sizes.card.width - 40) + windOffset;
-            newHail = this.outerHailHolder.circle(0, 0, size).attr({
-                fill: this.currentWeather.type == 'sleet' || this.currentWeather.type.indexOf('mix') > -1 ? '#86a3f9' : '#FFF'
-            });
-
             endY = this.sizes.container.height + 10;
-            //y = sizes.card.offset.top + this.settings.cloudHeight;
             x = x + this.sizes.card.offset.left;
-            //xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
-            //endX = sizes.container.width + 50;
+            // TODO: should be outer canvas for bigger stones
+            this.scene.addChild(newHail);
+
         } else {
             x = 20 + Math.random() * (this.sizes.card.width + windOffset - 20);
-            newHail = this.innerHailHolder.circle(0, 0, size).attr({
-                fill: this.currentWeather.type == 'sleet' || this.currentWeather.type.indexOf('mix') > -1 ? '#86a3f9' : '#FFF'
-            });
-
             endY = this.sizes.card.height + 10;
-            //x = -100;
-            //xBezier = sizes.card.width / 2;
-            //endX = sizes.card.width + 50;
+            this.scene.addChild(newHail);
 
         }
-
-        this.hail.push(newHail);
+        this.hail_count += 1;
 
         // Start the falling animation, calls onHailEnd when the
         // animation finishes.
-        gsap.fromTo(newHail.node,
+        gsap.fromTo(newHail,
             {x: x - windOffset, y: y},
             {
                 duration: 1,
@@ -376,28 +369,16 @@ class WeatherCard {
                 y: endY, x: x,
                 ease: Power2.easeIn,
                 onComplete: this.onHailEnd.bind(this),
-                onCompleteParams: [newHail, size, x, this.currentWeather.type]
+                onCompleteParams: [newHail]
             }
         );
-        //gsap.fromTo(newHail.node, 3 + (Math.random() * 5), {x: x, y: y}, {y: endY, onComplete: onHailEnd, onCompleteParams: [newHail, size, x, currentWeather.type], ease: Power2.easeIn})
     }
 
-    onHailEnd(stone, size, x, type) {
-        // first lets get rid of the hail stone 🌩️
-
-        stone.remove();
-        stone = null;
-
-        // We also remove it from the array
-
-        for (var i in this.hail) {
-            if (!this.hail[i].paper) this.hail.splice(i, 1);
-        }
-
-        // If there is less rain than the rainCount we should
-        // make more.
-
-        if (this.hail.length < this.settings.hailCount) {
+    onHailEnd(stone) {
+        this.scene.removeChild(stone);
+        this.hail_count -= 1;
+        
+        if (this.hail_count < this.settings.hailCount) {
             this.makeHail();
         }
     }
@@ -410,32 +391,33 @@ class WeatherCard {
         let y = -10;
         let r = 5 * (offset + Math.random() * offset);
         let endY;
+        let flake = new PIXI.Graphics()
+            .beginFill(0xffffff, 1)
+            .drawCircle(x, y, r);
 
         // TODO: big snow was in a different cloud holder
-        // TODO: outer snow was flowing outside with outer holder
         if (scale > 0.8) {
             endY = this.sizes.container.height + 10;
             y = this.sizes.card.offset.top + this.settings.cloudHeight;
             x = x + this.sizes.card.offset.left;
+            // TODO: bigger snow should be outside with outer holder
+            this.scene.addChild(flake);
         } else {
             endY = this.sizes.card.height + 10;
+            this.scene.addChild(flake);
         }
 
-        let circle = new PIXI.Graphics();
-        circle.beginFill(0xffffff, 1);
-        circle.drawCircle(x, y, r);
-        this.scene.addChild(circle);
         this.flake_count += 1;
 
-        gsap.fromTo(circle, {x: x, y: y}, {
+        gsap.fromTo(flake, {x: x, y: y}, {
             duration: 3 + Math.random() * 5,
             y: endY,
             onComplete: this.onSnowEnd.bind(this),
-            onCompleteParams: [circle],
+            onCompleteParams: [flake],
             ease: Power0.easeIn
         });
         //gsap.fromTo(circle, {scale: 0}, {duration: 1, scale: scale, ease: Power1.easeInOut});
-        gsap.to(circle, {duration: 3, x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
+        gsap.to(flake, {duration: 3, x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
     }
 
     onSnowEnd(flake) {
@@ -697,7 +679,7 @@ class WeatherCard {
             if (this.rain_count < this.settings.rainCount) this.makeRain(timestamp);
             if (this.flake_count < this.settings.snowCount) this.makeSnow(timestamp);
             if (this.leafs.length < this.settings.leafCount) this.makeLeaf(timestamp);
-            if (this.hail.length < this.settings.hailCount) this.makeHail(timestamp);
+            if (this.hail_count < this.settings.hailCount) this.makeHail(timestamp);
         }
 
         if (this.currentWeather !== undefined) {
