@@ -299,7 +299,7 @@ class WeatherCard {
 
         this.leafs.push(newLeaf);
 
-        var bezier = [{x: x, y: y}, {x: xBezier, y: Math.random() * endY + endY / 3}, {x: endX, y: endY}];
+        var bezier = [{x: xBezier, y: Math.random() * endY + endY / 3}, {x: endX, y: endY}];
         gsap.fromTo(newLeaf.node,
             {
                 rotation: Math.random() * 180,
@@ -309,7 +309,7 @@ class WeatherCard {
             {
                 duration: 2,
                 rotation: Math.random() * 360,
-                motionPath: {"path": bezier, "type": "cubic"},
+                motionPath: {"path": bezier},
                 onComplete: this.onLeafEnd.bind(this),
                 onCompleteParams: [newLeaf],
                 ease: Power0.easeIn
@@ -696,7 +696,7 @@ class WeatherCard {
         if (elapsed > 1000) {
             if (this.rain_count < this.settings.rainCount) this.makeRain(timestamp);
             if (this.flake_count < this.settings.snowCount) this.makeSnow(timestamp);
-            //if (this.leafs.length < this.settings.leafCount) this.makeLeaf(timestamp);
+            if (this.leafs.length < this.settings.leafCount) this.makeLeaf(timestamp);
             if (this.hail.length < this.settings.hailCount) this.makeHail(timestamp);
         }
 
