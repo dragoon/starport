@@ -19,6 +19,7 @@ $(function () {
         fps = times.length;
         if (elapsed > 1000) {
             $('#fps-monitor').text(fps + " FPS");
+            start = timestamp;
         }
         requestAnimationFrame(tick);
     }

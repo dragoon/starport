@@ -680,6 +680,7 @@ class WeatherCard {
             if (this.flake_count < this.settings.snowCount) this.makeSnow(timestamp);
             if (this.leafs.length < this.settings.leafCount) this.makeLeaf(timestamp);
             if (this.hail_count < this.settings.hailCount) this.makeHail(timestamp);
+            this.start = timestamp;
         }
 
         if (this.currentWeather !== undefined) {
