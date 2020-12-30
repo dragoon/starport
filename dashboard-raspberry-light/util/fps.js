@@ -8,7 +8,7 @@ $(function () {
     function tick(timestamp) {
         if (start === undefined)
             start = timestamp;
-        const elapsed = timestamp - this.start;
+        const elapsed = timestamp - start;
 
         // check fps rate
         const now = performance.now();
