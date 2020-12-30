@@ -382,7 +382,7 @@ class WeatherCard {
 
         this.leafs.push(newLeaf);
 
-        var bezier = [{x: x, y: y}, {x: xBezier, y: Math.random() * endY + endY / 3}, {x: endX, y: endY}];
+        var bezier = [{x: xBezier, y: Math.random() * endY + endY / 3}, {x: endX, y: endY}];
         gsap.fromTo(newLeaf.node,
             {
                 rotation: Math.random() * 180,
