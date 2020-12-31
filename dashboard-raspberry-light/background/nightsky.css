@@ -30,6 +30,7 @@
   width: 100%;
   background: #eee;
   background: linear-gradient(0deg, rgba(0, 0, 200, 0.2), rgba(0, 0, 200, 0));
+  transition: background-color 3s ease;
 }
 
 .star-blink {
