@@ -424,6 +424,8 @@ class WeatherCard {
 
     onSnowEnd(flake) {
         this.scene.removeChild(flake);
+        gsap.killTweensOf(flake);
+        flake.destroy();
         flake = null;
         this.flake_count -= 1;
 
