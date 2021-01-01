@@ -254,6 +254,7 @@ class WeatherCard {
         // first lets get rid of the drop of rain 💧
 
         this.scene.removeChild(line);
+        line = null;
         this.rain_count -= 1;
         
         // If there is less rain than the rainCount we should
@@ -376,6 +377,7 @@ class WeatherCard {
 
     onHailEnd(stone) {
         this.scene.removeChild(stone);
+        stone = null;
         this.hail_count -= 1;
         
         if (this.hail_count < this.settings.hailCount) {
@@ -422,6 +424,7 @@ class WeatherCard {
 
     onSnowEnd(flake) {
         this.scene.removeChild(flake);
+        flake = null;
         this.flake_count -= 1;
 
         if (this.flake_count < this.settings.snowCount) {
