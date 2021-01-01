@@ -19,6 +19,7 @@
   left: -100%;
   margin-top: 50%;
   background: -webkit-radial-gradient(center, #000046 0%, #000 60%);
+  /*background: #DAE3FD linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);*/
   /*-webkit-animation: rotate 250s infinite linear;*/
   -webkit-backface-visibility: hidden;
   -webkit-transform-style: preserve-3d;

@@ -6,6 +6,7 @@ const cold_color = 0xccdffb;
 /**
  *
  * @param currentTemperature in Celsius
+ * @return Number: color as int
  */
 function getTemperatureColor(currentTemperature) {
    if (currentTemperature >= 30) {
@@ -15,6 +16,55 @@ function getTemperatureColor(currentTemperature) {
    }
 
    return interpolateColor(cold_color, hot_color, currentTemperature/30 );
+}
+
+
+/**
+ * Makes color darker according to the time between sunset and sunrise.
+ *    _____
+ *   /     \
+ * _/       \____
+ * @param colorInt color to adapt as integer
+ * @param sunriseTimestamp timestamp (seconds since epoch) of sunrise
+ * @param sunsetTimestamp timestamp (seconds since epoch) of sunset
+ * @param now current time (seconds since epoch)
+ * @return {Number|number}
+ */
+function adaptColorToDaytime(colorInt, sunriseTimestamp, sunsetTimestamp, now) {
+    const hourSeconds = 60 * 60;
+    if (now < sunriseTimestamp - hourSeconds || now > sunsetTimestamp + hourSeconds) {
+        // night
+        return 0;
+    } else if (now > sunriseTimestamp + hourSeconds || now < sunsetTimestamp - hourSeconds) {
+        // day
+        return colorInt;
+    } else {
+        const r = colorInt >> 16,
+            g = colorInt >> 8 & 0xff,
+            b = colorInt & 0xff;
+        const hslColor = RGBToHSL(r, g, b);
+        // compute percentage to make darker
+        const darknessLevel = Math.min(
+            Math.abs(sunsetTimestamp - now),
+            Math.abs(sunriseTimestamp - now)) / hourSeconds;
+
+        hslColor.l = hslColor.l * darknessLevel;
+
+        return colorInt;
+    }
+}
+
+function adaptColorToWeather(tempColor) {
+    return tempColor;
+    // TODO: rain or clouds -- more grey color #d8d8d8
+}
+
+function computeBackgroundColor(weatherObj) {
+    const tempColor = getTemperatureColor(weatherObj.temp);
+    const weatherColor = adaptColorToWeather(tempColor);
+    const timeColor = adaptColorToDaytime(weatherColor, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
+    return "#" + timeColor.toString(16).padStart(6, '0');
+
 }
 
 
@@ -110,7 +160,7 @@ $(function () {
                     day_weather = weather.current;
                     card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
                     // set current background color temperature
-                    $(".sky").css("background", "#" + getTemperatureColor(day_weather.temp).toString(16));
+                    $(".sky").css("background", computeBackgroundColor(day_weather));
                 } else {
                     day_weather = weather.daily[i];
                     card.updateTempText(day_weather.temp);
