@@ -254,6 +254,7 @@ class WeatherCard {
         // first lets get rid of the drop of rain 💧
 
         this.scene.removeChild(line);
+        line.destroy();
         line = null;
         this.rain_count -= 1;
         
@@ -377,6 +378,7 @@ class WeatherCard {
 
     onHailEnd(stone) {
         this.scene.removeChild(stone);
+        stone.destroy();
         stone = null;
         this.hail_count -= 1;
         
@@ -424,6 +426,8 @@ class WeatherCard {
 
     onSnowEnd(flake) {
         this.scene.removeChild(flake);
+        gsap.killTweensOf(flake);
+        flake.destroy();
         flake = null;
         this.flake_count -= 1;
 
