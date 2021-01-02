@@ -199,7 +199,7 @@ class WeatherCard {
         // to dictate which svg group it'll be added to and
         // whether it'll generate a splash
 
-        let lineWidth = Math.random() * 2;
+        let lineWidth = Math.random() * 3;
         let windOffset = this.settings.windSpeed * 10;
 
         // ⛈ line length is made longer for stormy weather
@@ -240,17 +240,17 @@ class WeatherCard {
         // animation finishes.
         gsap.to(line,
             {
-                duration: 1,
+                duration: 1.5,
                 delay: Math.random(),
                 y: this.sizes.card.height,
                 x: x,
                 ease: Power2.easeIn,
                 onComplete: this.onRainEnd.bind(this),
-                onCompleteParams: [line, lineWidth, x, this.currentWeather.type]
+                onCompleteParams: [line]
             });
     }
 
-    onRainEnd(line, width, x, type) {
+    onRainEnd(line) {
         // first lets get rid of the drop of rain 💧
 
         this.scene.removeChild(line);
@@ -483,14 +483,14 @@ class WeatherCard {
             case 'mix-rain-snow':
             case 'mix-rain-sleet':
             case 'rain':
-                gsap.to(this.settings, {duration: 3, rainCount: 20 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, rainCount: 40 * weather.intensity, ease: Power2.easeInOut});
                 break;
             case 'hail':
-                gsap.to(this.settings, {duration: 3, rainCount: 5 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, rainCount: 10 * weather.intensity, ease: Power2.easeInOut});
                 break;
             case 'severe':
             case 'thunder':
-                gsap.to(this.settings, {duration: 3, rainCount: 30 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, rainCount: 60 * weather.intensity, ease: Power2.easeInOut});
                 break;
             default:
                 gsap.to(this.settings, {duration: 1, rainCount: 0, ease: Power2.easeOut});
@@ -682,7 +682,7 @@ class WeatherCard {
             this.start = timestamp;
         const elapsed = timestamp - this.start;
 
-        if (elapsed > 1000) {
+        if (elapsed > 100) {
             if (this.rain_count < this.settings.rainCount) this.makeRain(timestamp);
             if (this.flake_count < this.settings.snowCount) this.makeSnow(timestamp);
             if (this.leafs.length < this.settings.leafCount) this.makeLeaf(timestamp);
