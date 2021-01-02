@@ -31,56 +31,85 @@ const interpolateColor = function (a, b, amount) {
 };
 
 /**
+ * Converts an RGB color value to HSL. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * Assumes r, g, and b are contained in the set [0, 255] and
+ * returns h, s, and l in the set [0, 1].
  *
- * @param r {Number}
- * @param g {Number}
- * @param b {Number}
- * @return {{s: number, h: number, l: number}}
- * @constructor
+ * @param colorInt  Number   Hex value of a color, 0xffffff
+ * @return {{s: number, h: number, l: number}} The HSL representation
  */
-const RGBToHSL = function(r, g, b) {
-    // Make r, g, and b fractions of 1
-    r /= 255;
-    g /= 255;
-    b /= 255;
+function hexToHsl(colorInt) {
+    let r = colorInt >> 16,
+        g = colorInt >> 8 & 0xff,
+        b = colorInt & 0xff;
 
-    // Find greatest and smallest channel values
-    let cmin = Math.min(r, g, b),
-        cmax = Math.max(r, g, b),
-        delta = cmax - cmin,
-        h = 0,
-        s = 0,
-        l = 0;
+    r /= 255, g /= 255, b /= 255;
 
-    // Calculate hue
-    // No difference
-    if (delta === 0)
-        h = 0;
-    // Red is max
-    else if (cmax === r)
-        h = ((g - b) / delta) % 6;
-    // Green is max
-    else if (cmax === g)
-        h = (b - r) / delta + 2;
-    // Blue is max
-    else
-        h = (r - g) / delta + 4;
+    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
 
-    h = Math.round(h * 60);
+    if (max === min) {
+        h = s = 0; // achromatic
+    } else {
+        let d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
-    // Make negative hues positive behind 360°
-    if (h < 0)
-        h += 360;
+        switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
+        }
 
-    // Calculate lightness
-    l = (cmax + cmin) / 2;
+        h /= 6;
+    }
 
-    // Calculate saturation
-    s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    return {h: h, s: s, l: l};
+}
 
-    // Multiply l and s by 100
-    s = +(s * 100).toFixed(1);
-    l = +(l * 100).toFixed(1);
 
-    return {h: h, s: s, l: l}
-};
+/**
+ * Converts an HSL color value to RGB. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * Assumes h, s, and l are contained in the set [0, 1] and
+ * returns r, g, and b in the set [0, 255].
+ *
+ * @param h  Number     hue
+ * @param s  Number     saturation
+ * @param l  Number     lightness
+ * @return   Number     Hex representation
+ */
+function hslToHex(h, s, l) {
+    let r, g, b;
+
+    if (s === 0) {
+        r = g = b = l; // achromatic
+    } else {
+        function hue2rgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+        }
+
+        let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        let p = 2 * l - q;
+
+        r = hue2rgb(p, q, h + 1 / 3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1 / 3);
+    }
+    r *=255;
+    g *=255;
+    b *=255;
+
+    return (r << 16) + (g << 8) + (b | 0);
+}

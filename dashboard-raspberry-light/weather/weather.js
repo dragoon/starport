@@ -28,29 +28,29 @@ function getTemperatureColor(currentTemperature) {
  * @param sunriseTimestamp timestamp (seconds since epoch) of sunrise
  * @param sunsetTimestamp timestamp (seconds since epoch) of sunset
  * @param now current time (seconds since epoch)
- * @return {Number|number}
+ * @return {{top: number, bottom: number}}
  */
 function adaptColorToDaytime(colorInt, sunriseTimestamp, sunsetTimestamp, now) {
     const hourSeconds = 60 * 60;
     if (now < sunriseTimestamp - hourSeconds || now > sunsetTimestamp + hourSeconds) {
         // night
-        return 0;
-    } else if (now > sunriseTimestamp + hourSeconds || now < sunsetTimestamp - hourSeconds) {
+        return {"top": 0x000000, "bottom": 0x000046};
+    } else if (now > sunriseTimestamp + hourSeconds && now < sunsetTimestamp - hourSeconds) {
         // day
-        return colorInt;
+        // TODO: make top a bit lighter/darker?
+        return {"top": colorInt, "bottom": colorInt};
     } else {
-        const r = colorInt >> 16,
-            g = colorInt >> 8 & 0xff,
-            b = colorInt & 0xff;
-        const hslColor = RGBToHSL(r, g, b);
+        const hslColor = hexToHsl(colorInt);
         // compute percentage to make darker
         const darknessLevel = Math.min(
-            Math.abs(sunsetTimestamp - now),
-            Math.abs(sunriseTimestamp - now)) / hourSeconds;
+            Math.abs( now + hourSeconds - sunriseTimestamp),
+            Math.abs(now - hourSeconds - sunsetTimestamp)) / (2*hourSeconds);
 
-        hslColor.l = hslColor.l * darknessLevel;
-
-        return colorInt;
+        // first color bottom gradient
+        const color1 = hslToHex(hslColor.h, hslColor.s, hslColor.l * darknessLevel);
+        // top gradient -- darker
+        const color2 = hslToHex(hslColor.h, hslColor.s, hslColor.l * (darknessLevel - darknessLevel/2));
+        return {"top": color2, "bottom": color1};
     }
 }
 
@@ -63,7 +63,10 @@ function computeBackgroundColor(weatherObj) {
     const tempColor = getTemperatureColor(weatherObj.temp);
     const weatherColor = adaptColorToWeather(tempColor);
     const timeColor = adaptColorToDaytime(weatherColor, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
-    return "#" + timeColor.toString(16).padStart(6, '0');
+    return Object.fromEntries(
+        Object.entries(timeColor)
+            .map(([key, val]) => [key, "#" + val.toString(16).padStart(6, '0')])
+    );
 
 }
 
@@ -133,6 +136,34 @@ function changeWeather(data) {
     }
 
 
+function onGetLocation(position) {
+    const weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
+    $.getJSON(weather_url).done(function (weather) {
+
+        cards.forEach((card, i) => {
+            let day_weather;
+            if (i === 0) {
+                day_weather = weather.current;
+                card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
+                // set current background color temperature
+                const colorMap = computeBackgroundColor(day_weather);
+                $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 50%)`);
+            } else {
+                day_weather = weather.daily[i];
+                card.updateTempText(day_weather.temp);
+            }
+            card.updateDateText(new Date(day_weather.dt * 1000));
+            card.changeWeather({
+                "type": day_weather.ui_params.type,
+                "intensity": day_weather.ui_params.intensity,
+                "name": day_weather.ui_params.name,
+                "classes": day_weather.ui_params.classes
+            });
+        });
+    });
+}
+
+
 // 📝 Fetch all DOM nodes in jQuery and Snap SVG
 $(function () {
     gsap.registerPlugin(PixiPlugin);
@@ -148,32 +179,6 @@ $(function () {
         } else {
             console.log("Geolocation is not supported by this browser.");
         }
-    }
-
-    function onGetLocation(position) {
-        var weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
-        $.getJSON(weather_url).done(function (weather) {
-
-            cards.forEach((card, i) => {
-                let day_weather;
-                if (i === 0) {
-                    day_weather = weather.current;
-                    card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
-                    // set current background color temperature
-                    $(".sky").css("background", computeBackgroundColor(day_weather));
-                } else {
-                    day_weather = weather.daily[i];
-                    card.updateTempText(day_weather.temp);
-                }
-                card.updateDateText(new Date(day_weather.dt * 1000));
-                card.changeWeather({
-                    "type": day_weather.ui_params.type,
-                    "intensity": day_weather.ui_params.intensity,
-                    "name": day_weather.ui_params.name,
-                    "classes": day_weather.ui_params.classes
-                });
-            });
-        });
     }
 
     function init() {
