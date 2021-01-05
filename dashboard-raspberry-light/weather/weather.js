@@ -3,6 +3,13 @@ const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-sn
 const hot_color = 0xe6b3b3;
 const cold_color = 0xccdffb;
 
+const nightColorConfig = {
+    "top": 0x000000, "bottom": 0x000046,
+    "cloud1": 0x00002e, "cloud1Opacity": 1,
+    "cloud2": 0x4f525c, "cloud2Opacity": 0.6,
+    "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6
+};
+
 /**
  *
  * @param currentTemperature in Celsius
@@ -24,47 +31,57 @@ function getTemperatureColor(currentTemperature) {
  *    _____
  *   /     \
  * _/       \____
- * @param colorInt color to adapt as integer
+ * @param colorConfig {{}}
  * @param sunriseTimestamp timestamp (seconds since epoch) of sunrise
  * @param sunsetTimestamp timestamp (seconds since epoch) of sunset
  * @param now current time (seconds since epoch)
  * @return {{top: number, bottom: number}}
  */
-function adaptColorToDaytime(colorInt, sunriseTimestamp, sunsetTimestamp, now) {
+function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now) {
     const hourSeconds = 60 * 60;
     if (now < sunriseTimestamp - hourSeconds || now > sunsetTimestamp + hourSeconds) {
         // night
-        return {"top": 0x000000, "bottom": 0x000046};
+        return nightColorConfig;
     } else if (now > sunriseTimestamp + hourSeconds && now < sunsetTimestamp - hourSeconds) {
         // day
         // TODO: make top a bit lighter/darker?
-        return {"top": colorInt, "bottom": colorInt};
+        return colorConfig;
     } else {
-        const hslColor = hexToHsl(colorInt);
+        // TWILIGHT!
+        const hslColor = hexToHsl(colorConfig.top);
         // compute percentage to make darker
         const darknessLevel = Math.min(
             Math.abs( now + hourSeconds - sunriseTimestamp),
             Math.abs(now - hourSeconds - sunsetTimestamp)) / (2*hourSeconds);
 
         // first color bottom gradient
-        const color1 = hslToHex(hslColor.h, hslColor.s, hslColor.l * darknessLevel);
+        colorConfig.bottom = hslToHex(hslColor.h, hslColor.s, hslColor.l * darknessLevel);
         // top gradient -- darker
-        const color2 = hslToHex(hslColor.h, hslColor.s, hslColor.l * (darknessLevel - darknessLevel/2));
-        return {"top": color2, "bottom": color1};
+        colorConfig.top = hslToHex(hslColor.h, hslColor.s, hslColor.l * (darknessLevel - darknessLevel/2));
+        colorConfig.cloud1 = interpolateColor(colorConfig.cloud1, nightColorConfig.cloud1, 1-darknessLevel);
+        colorConfig.cloud2 = interpolateColor(colorConfig.cloud2, nightColorConfig.cloud2, 1-darknessLevel);
+        colorConfig.cloud3 = interpolateColor(colorConfig.cloud3, nightColorConfig.cloud3, 1-darknessLevel);
+        return colorConfig;
     }
 }
 
 function adaptColorToWeather(tempColor) {
-    return tempColor;
+    // day config
+    return {
+        "top": tempColor, "bottom": tempColor,
+        "cloud1": 0xefefef, "cloud1Opacity": 1,
+        "cloud2": 0xE6E6E6, "cloud2Opacity": 1,
+        "cloud3": 0xD5D5D5, "cloud3Opacity": 1
+    }
     // TODO: rain or clouds -- more grey color #d8d8d8
 }
 
 function computeBackgroundColor(weatherObj) {
     const tempColor = getTemperatureColor(weatherObj.temp);
-    const weatherColor = adaptColorToWeather(tempColor);
-    const timeColor = adaptColorToDaytime(weatherColor, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
+    const weatherColors = adaptColorToWeather(tempColor);
+    const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
     return Object.fromEntries(
-        Object.entries(timeColor)
+        Object.entries(timeColors)
             .map(([key, val]) => [key, "#" + val.toString(16).padStart(6, '0')])
     );
 
@@ -147,7 +164,10 @@ function onGetLocation(position) {
                 card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
                 // set current background color temperature
                 const colorMap = computeBackgroundColor(day_weather);
-                $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 50%)`);
+                $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
+                $(".weather #cloud1").css("fill", `${colorMap.cloud1}`);
+                $(".weather #cloud2").css("fill", `${colorMap.cloud2}`);
+                $(".weather #cloud3").css("fill", `${colorMap.cloud3}`);
             } else {
                 day_weather = weather.daily[i];
                 card.updateTempText(day_weather.temp);
