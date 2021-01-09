@@ -583,6 +583,21 @@ class WeatherCard {
                 break;
         }
 
+        // animate fog
+        if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
+            this.fog.forEach((fog, i) => {
+                gsap.to(fog.group.node, {
+                    duration: 10 * (i + 1) / this.settings.windSpeed,
+                    ease: "none",
+                    x: `+=${this.sizes.card.width}`,
+                    modifiers: {
+                        x: gsap.utils.unitize(x => parseFloat(x) % this.sizes.card.width)
+                    },
+                    repeat: -1
+                });
+            })
+        }
+
         // lightning
 
         this.startLightningTimer();
@@ -604,6 +619,19 @@ class WeatherCard {
                     });
                 });
                 break;
+            default:
+                // animate clouds
+                this.clouds.forEach((cloud, i) => {
+                    gsap.to(cloud.group.node, {
+                        duration: 10 * (i + 1) / this.settings.windSpeed,
+                        ease: "none",
+                        x: `+=${this.sizes.card.width}`,
+                        modifiers: {
+                            x: gsap.utils.unitize(x => parseFloat(x) % this.sizes.card.width)
+                        },
+                        repeat: -1
+                    });
+                });
         }
     }
 
@@ -686,28 +714,6 @@ class WeatherCard {
             if (this.leafs.length < this.settings.leafCount) this.makeLeaf(timestamp);
             if (this.hail_count < this.settings.hailCount) this.makeHail(timestamp);
             this.start = timestamp;
-        }
-
-        if (this.currentWeather !== undefined) {
-            this.clouds.forEach((cloud, i) => {
-                if (this.currentWeather.type !== 'sun') {
-                    cloud.offset += this.settings.windSpeed / (i + 1);
-                    if (cloud.offset > this.sizes.card.width){
-                        cloud.offset = cloud.offset - this.sizes.card.width;
-                    }
-                    cloud.group.transform('t' + cloud.offset + ',' + 0);
-                }
-            });
-
-            this.fog.forEach((fog, i) => {
-                if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
-                    fog.offset += this.settings.windSpeed / (i + 1);
-                    if (fog.offset > this.sizes.card.width) {
-                        fog.offset = fog.offset - this.sizes.card.width;
-                    }
-                    fog.group.transform('t' + fog.offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
-                }
-            });
         }
 
         this.renderer.render(this.scene);
