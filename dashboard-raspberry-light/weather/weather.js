@@ -2,6 +2,7 @@ const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-sn
 
 const hot_color = 0xe6b3b3;
 const cold_color = 0xccdffb;
+const normal_color = 0xccccff;
 
 const nightColorConfig = {
     "top": 0x000000, "bottom": 0x000046,
@@ -16,13 +17,17 @@ const nightColorConfig = {
  * @return Number: color as int
  */
 function getTemperatureColor(currentTemperature) {
-   if (currentTemperature >= 30) {
-       return hot_color;
-   } else if (currentTemperature <= 0) {
-       return cold_color;
-   }
+    if (currentTemperature >= 30) {
+        return hot_color;
+    } else if (currentTemperature >= 15) { // 15 - 30
+        return interpolateColor(normal_color, hot_color, (currentTemperature - 15) / 15);
+    } else if (currentTemperature <= 0) {
+        return cold_color;
+    } else if (currentTemperature < 15) {  // 0 - 15
+        return interpolateColor(cold_color, normal_color, (currentTemperature) / 15);
+    }
 
-   return interpolateColor(cold_color, hot_color, currentTemperature/30 );
+    return normal_color;
 }
 
 
@@ -67,8 +72,10 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now
 
 function adaptColorToWeather(tempColor) {
     // day config
+    const hslColor = hexToHsl(tempColor);
+
     return {
-        "top": tempColor, "bottom": tempColor,
+        "top": hslToHex(hslColor.h, hslColor.s, Math.min(1, hslColor.l * 2)), "bottom": tempColor,
         "cloud1": 0xefefef, "cloud1Opacity": 1,
         "cloud2": 0xE6E6E6, "cloud2Opacity": 1,
         "cloud3": 0xD5D5D5, "cloud3Opacity": 1
