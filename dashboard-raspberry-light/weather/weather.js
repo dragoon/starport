@@ -8,7 +8,8 @@ const nightColorConfig = {
     "top": 0x000000, "bottom": 0x000046,
     "cloud1": 0x00002e, "cloud1Opacity": 1,
     "cloud2": 0x4f525c, "cloud2Opacity": 0.6,
-    "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6
+    "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6,
+    "night": true
 };
 
 /**
@@ -49,7 +50,6 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now
         return nightColorConfig;
     } else if (now > sunriseTimestamp + hourSeconds && now < sunsetTimestamp - hourSeconds) {
         // day
-        // TODO: make top a bit lighter/darker?
         return colorConfig;
     } else {
         // TWILIGHT!
@@ -87,10 +87,12 @@ function computeBackgroundColor(weatherObj) {
     const tempColor = getTemperatureColor(weatherObj.temp);
     const weatherColors = adaptColorToWeather(tempColor);
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
-    return Object.fromEntries(
-        Object.entries(timeColors)
-            .map(([key, val]) => [key, "#" + val.toString(16).padStart(6, '0')])
-    );
+    timeColors.top = "#" + timeColors.top.toString(16).padStart(6, '0');
+    timeColors.bottom = "#" + timeColors.bottom.toString(16).padStart(6, '0');
+    timeColors.cloud1 = "#" + timeColors.cloud1.toString(16).padStart(6, '0');
+    timeColors.cloud2 = "#" + timeColors.cloud2.toString(16).padStart(6, '0');
+    timeColors.cloud3 = "#" + timeColors.cloud3.toString(16).padStart(6, '0');
+    return timeColors;
 
 }
 
@@ -175,6 +177,9 @@ function onGetLocation(position) {
                 $(".weather #cloud1").css("fill", `${colorMap.cloud1}`);
                 $(".weather #cloud2").css("fill", `${colorMap.cloud2}`);
                 $(".weather #cloud3").css("fill", `${colorMap.cloud3}`);
+                if (colorMap["night"] === true) {
+                    $(".canvas").addClass("night");
+                }
             } else {
                 day_weather = weather.daily[i];
                 card.updateTempText(day_weather.temp);
