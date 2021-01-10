@@ -120,7 +120,7 @@ function adaptColorToWeather(tempColor, weatherType) {
     }
 }
 
-function computeBackgroundColor(weatherObj) {
+function computeColorConfig(weatherObj) {
     const tempColor = getTemperatureColor(weatherObj.temp);
     const weatherColors = adaptColorToWeather(tempColor, weatherObj["ui_params"]["type"]);
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
@@ -210,8 +210,8 @@ function onGetLocation(position) {
             if (i === 0) {
                 day_weather = weather.current;
                 card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
-                // set current background color temperature
-                const colorMap = computeBackgroundColor(day_weather);
+                const colorMap = computeColorConfig(day_weather);
+                // TODO: update every minute
                 $(".canvas").css("color", `${colorMap.textColor}`);
                 $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
                 $(".weather #cloud1").css("fill", `${colorMap.cloud1}`);
