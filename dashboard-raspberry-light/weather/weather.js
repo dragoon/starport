@@ -9,7 +9,7 @@ const nightColorConfig = {
     "cloud1": 0x00002e, "cloud1Opacity": 1,
     "cloud2": 0x4f525c, "cloud2Opacity": 0.6,
     "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6,
-    "textColor": 0xffffff,
+    "textColor": 0xdddddd,
     "night": true
 };
 
@@ -68,6 +68,10 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now
         colorConfig.cloud2 = interpolateColor(colorConfig.cloud2, nightColorConfig.cloud2, 1-darknessLevel);
         colorConfig.cloud3 = interpolateColor(colorConfig.cloud3, nightColorConfig.cloud3, 1-darknessLevel);
         colorConfig.textColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-darknessLevel);
+        if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
+            colorConfig.night = true;
+        }
+
         return colorConfig;
     }
 }
