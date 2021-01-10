@@ -67,6 +67,7 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now
         colorConfig.cloud1 = interpolateColor(colorConfig.cloud1, nightColorConfig.cloud1, 1-darknessLevel);
         colorConfig.cloud2 = interpolateColor(colorConfig.cloud2, nightColorConfig.cloud2, 1-darknessLevel);
         colorConfig.cloud3 = interpolateColor(colorConfig.cloud3, nightColorConfig.cloud3, 1-darknessLevel);
+        // TODO: intepolate opacity
         colorConfig.textColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-darknessLevel);
         if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
             colorConfig.night = true;
@@ -126,10 +127,9 @@ function computeColorConfig(weatherObj) {
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
     timeColors.top = "#" + timeColors.top.toString(16).padStart(6, '0');
     timeColors.bottom = "#" + timeColors.bottom.toString(16).padStart(6, '0');
-    // TODO add opacity
-    timeColors.cloud1 = "#" + timeColors.cloud1.toString(16).padStart(6, '0');
-    timeColors.cloud2 = "#" + timeColors.cloud2.toString(16).padStart(6, '0');
-    timeColors.cloud3 = "#" + timeColors.cloud3.toString(16).padStart(6, '0');
+    timeColors.cloud1 = "#" + timeColors.cloud1.toString(16).padStart(6, '0') + Number(255*timeColors.cloud1Opacity).toString(16).padStart(2, '0');
+    timeColors.cloud2 = "#" + timeColors.cloud2.toString(16).padStart(6, '0') + Number(255*timeColors.cloud2Opacity).toString(16).padStart(2, '0');
+    timeColors.cloud3 = "#" + timeColors.cloud3.toString(16).padStart(6, '0') + Number(255*timeColors.cloud3Opacity).toString(16).padStart(2, '0');
     timeColors.textColor = "#" + timeColors.textColor.toString(16).padStart(6, '0');
     return timeColors;
 
