@@ -586,6 +586,7 @@ class WeatherCard {
         // animate fog
         if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
             this.fog.forEach((fog, i) => {
+                gsap.killTweensOf(fog.group.node);
                 gsap.to(fog.group.node, {
                     duration: 10 * (i + 1) / this.settings.windSpeed,
                     ease: "none",
@@ -607,6 +608,7 @@ class WeatherCard {
 
             case 'sun':
                 this.clouds.forEach((cloud, i) => {
+                    gsap.killTweensOf(cloud.group.node);
                     // animate clouds with gsap
                     if (cloud.offset > this.sizes.card.width * 2.5){
                         cloud.offset = -(this.sizes.card.width * 1.5);
@@ -622,6 +624,7 @@ class WeatherCard {
             default:
                 // animate clouds
                 this.clouds.forEach((cloud, i) => {
+                    gsap.killTweensOf(cloud.group.node);
                     gsap.to(cloud.group.node, {
                         duration: 10 * (i + 1) / this.settings.windSpeed,
                         ease: "none",
