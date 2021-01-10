@@ -53,7 +53,7 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now
         return colorConfig;
     } else {
         // TWILIGHT!
-        const hslColor = hexToHsl(colorConfig.top);
+        const hslColor = hexToHsl(colorConfig.bottom);
         // compute percentage to make darker
         const darknessLevel = Math.min(
             Math.abs( now + hourSeconds - sunriseTimestamp),
