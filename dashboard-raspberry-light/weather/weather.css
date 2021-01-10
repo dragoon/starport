@@ -64,7 +64,6 @@ html, body {
     left: 0;
     right: 0;
     padding: 16px 20px;
-    color: #888;
     display: -webkit-box;
     display: flex;
     -webkit-box-orient: horizontal;

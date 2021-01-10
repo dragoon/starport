@@ -4,7 +4,6 @@
     margin-top: 5%;
     margin-left: 40px;
     position: fixed;
-    color: #888;
 }
 
 .datetime-container .time {
@@ -18,8 +17,4 @@
     line-height: 40px;
     font-weight: 600;
     margin-top: 20px;
-}
-
-.night .datetime-container {
-    color: white;
 }

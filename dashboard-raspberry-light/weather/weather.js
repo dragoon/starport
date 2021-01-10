@@ -9,6 +9,7 @@ const nightColorConfig = {
     "cloud1": 0x00002e, "cloud1Opacity": 1,
     "cloud2": 0x4f525c, "cloud2Opacity": 0.6,
     "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6,
+    "textColor": 0xffffff,
     "night": true
 };
 
@@ -66,6 +67,7 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now
         colorConfig.cloud1 = interpolateColor(colorConfig.cloud1, nightColorConfig.cloud1, 1-darknessLevel);
         colorConfig.cloud2 = interpolateColor(colorConfig.cloud2, nightColorConfig.cloud2, 1-darknessLevel);
         colorConfig.cloud3 = interpolateColor(colorConfig.cloud3, nightColorConfig.cloud3, 1-darknessLevel);
+        colorConfig.textColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-darknessLevel);
         return colorConfig;
     }
 }
@@ -109,7 +111,8 @@ function adaptColorToWeather(tempColor, weatherType) {
         "top": hslToHex(hslColor.h, hslColor.s, Math.min(1, hslColor.l * 2)), "bottom": tempColor,
         "cloud1": 0xefefef, "cloud1Opacity": 1,
         "cloud2": 0xE6E6E6, "cloud2Opacity": 1,
-        "cloud3": 0xD5D5D5, "cloud3Opacity": 1
+        "cloud3": 0xD5D5D5, "cloud3Opacity": 1,
+        "textColor": 0x888888
     }
 }
 
@@ -123,6 +126,7 @@ function computeBackgroundColor(weatherObj) {
     timeColors.cloud1 = "#" + timeColors.cloud1.toString(16).padStart(6, '0');
     timeColors.cloud2 = "#" + timeColors.cloud2.toString(16).padStart(6, '0');
     timeColors.cloud3 = "#" + timeColors.cloud3.toString(16).padStart(6, '0');
+    timeColors.textColor = "#" + timeColors.textColor.toString(16).padStart(6, '0');
     return timeColors;
 
 }
@@ -204,6 +208,7 @@ function onGetLocation(position) {
                 card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
                 // set current background color temperature
                 const colorMap = computeBackgroundColor(day_weather);
+                $(".canvas").css("color", `${colorMap.textColor}`);
                 $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
                 $(".weather #cloud1").css("fill", `${colorMap.cloud1}`);
                 $(".weather #cloud2").css("fill", `${colorMap.cloud2}`);
