@@ -46,8 +46,8 @@ function getTemperatureColor(currentTemperature) {
 function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now) {
     const hourSeconds = 60 * 60;
     if (now < sunriseTimestamp - hourSeconds || now > sunsetTimestamp + hourSeconds) {
-        // night
-        return nightColorConfig;
+        // copy of night
+        return {...nightColorConfig};
     } else if (now > sunriseTimestamp + hourSeconds && now < sunsetTimestamp - hourSeconds) {
         // day
         return colorConfig;
