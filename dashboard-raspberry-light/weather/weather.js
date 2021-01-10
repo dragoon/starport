@@ -125,12 +125,12 @@ function computeColorConfig(weatherObj) {
     const tempColor = getTemperatureColor(weatherObj.temp);
     const weatherColors = adaptColorToWeather(tempColor, weatherObj["ui_params"]["type"]);
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
-    timeColors.top = "#" + timeColors.top.toString(16).padStart(6, '0');
-    timeColors.bottom = "#" + timeColors.bottom.toString(16).padStart(6, '0');
-    timeColors.cloud1 = "#" + timeColors.cloud1.toString(16).padStart(6, '0') + Number(255*timeColors.cloud1Opacity).toString(16).padStart(2, '0');
-    timeColors.cloud2 = "#" + timeColors.cloud2.toString(16).padStart(6, '0') + Number(255*timeColors.cloud2Opacity).toString(16).padStart(2, '0');
-    timeColors.cloud3 = "#" + timeColors.cloud3.toString(16).padStart(6, '0') + Number(255*timeColors.cloud3Opacity).toString(16).padStart(2, '0');
-    timeColors.textColor = "#" + timeColors.textColor.toString(16).padStart(6, '0');
+    timeColors.top = numberToHexString(timeColors.top);
+    timeColors.bottom = numberToHexString(timeColors.bottom);
+    timeColors.cloud1 = numberToHexString(timeColors.cloud1, timeColors.cloud1Opacity);
+    timeColors.cloud2 = numberToHexString(timeColors.cloud2, timeColors.cloud2Opacity);
+    timeColors.cloud3 = numberToHexString(timeColors.cloud3, timeColors.cloud3Opacity);
+    timeColors.textColor = numberToHexString(timeColors.textColor);
     return timeColors;
 
 }

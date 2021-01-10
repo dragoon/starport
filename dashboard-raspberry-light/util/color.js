@@ -36,7 +36,7 @@ const interpolateColor = function (a, b, amount) {
  * Assumes r, g, and b are contained in the set [0, 255] and
  * returns h, s, and l in the set [0, 1].
  *
- * @param colorInt  Number   Hex value of a color, 0xffffff
+ * @param {Number} colorInt  Hex value of a color, 0xffffff
  * @return {{s: number, h: number, l: number}} The HSL representation
  */
 function hexToHsl(colorInt) {
@@ -80,10 +80,10 @@ function hexToHsl(colorInt) {
  * Assumes h, s, and l are contained in the set [0, 1] and
  * returns r, g, and b in the set [0, 255].
  *
- * @param h  Number     hue
- * @param s  Number     saturation
- * @param l  Number     lightness
- * @return   Number     Hex representation
+ * @param h  {Number}     hue
+ * @param s  {Number}     saturation
+ * @param l  {Number}     lightness
+ * @return   {Number}     Hex representation
  */
 function hslToHex(h, s, l) {
     let r, g, b;
@@ -112,4 +112,17 @@ function hslToHex(h, s, l) {
     b *=255;
 
     return (r << 16) + (g << 8) + (b | 0);
+}
+
+/**
+ *
+ * @param {Number} color
+ * @param {Number} opacity
+ * @return {string}
+ */
+function numberToHexString(color, opacity=1) {
+    if (opacity === 1) {
+        return "#" + color.toString(16).padStart(6, '0');
+    }
+    return "#" + color.toString(16).padStart(6, '0') + Number(255*opacity).toString(16).padStart(2, '0');
 }
