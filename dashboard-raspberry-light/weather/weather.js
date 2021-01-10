@@ -111,7 +111,6 @@ function adaptColorToWeather(tempColor, weatherType) {
         "cloud2": 0xE6E6E6, "cloud2Opacity": 1,
         "cloud3": 0xD5D5D5, "cloud3Opacity": 1
     }
-    // TODO: rain or clouds -- more grey color #d8d8d8
 }
 
 function computeBackgroundColor(weatherObj) {
@@ -120,6 +119,7 @@ function computeBackgroundColor(weatherObj) {
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
     timeColors.top = "#" + timeColors.top.toString(16).padStart(6, '0');
     timeColors.bottom = "#" + timeColors.bottom.toString(16).padStart(6, '0');
+    // TODO add opacity
     timeColors.cloud1 = "#" + timeColors.cloud1.toString(16).padStart(6, '0');
     timeColors.cloud2 = "#" + timeColors.cloud2.toString(16).padStart(6, '0');
     timeColors.cloud3 = "#" + timeColors.cloud3.toString(16).padStart(6, '0');
