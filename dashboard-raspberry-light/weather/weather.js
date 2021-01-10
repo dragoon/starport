@@ -70,7 +70,38 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now
     }
 }
 
-function adaptColorToWeather(tempColor) {
+/**
+ *
+ * @param tempColor: number
+ * @param weatherType: string
+ * @return {{cloud2Opacity: number,
+ * cloud3Opacity: number,
+ * cloud1Opacity: number,
+ * top: Number, bottom: Number,
+ * cloud2: number,
+ * cloud1: number,
+ * cloud3: number}}
+ */
+function adaptColorToWeather(tempColor, weatherType) {
+
+    switch (weatherType) {
+        case "rain":
+            tempColor = 0xD8D8D8;
+            break;
+        case "haze":
+            tempColor = 0xefefef;
+            break;
+        case "hail":
+            tempColor = 0x9FA4AD;
+            break;
+        case "severe":
+            tempColor = 0x9FA4AD;
+            break;
+        case "thunder":
+            tempColor = 0x9FA4AD;
+            break;
+    }
+
     // day config
     const hslColor = hexToHsl(tempColor);
 
@@ -85,7 +116,7 @@ function adaptColorToWeather(tempColor) {
 
 function computeBackgroundColor(weatherObj) {
     const tempColor = getTemperatureColor(weatherObj.temp);
-    const weatherColors = adaptColorToWeather(tempColor);
+    const weatherColors = adaptColorToWeather(tempColor, weatherObj["ui_params"]["type"]);
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
     timeColors.top = "#" + timeColors.top.toString(16).padStart(6, '0');
     timeColors.bottom = "#" + timeColors.bottom.toString(16).padStart(6, '0');

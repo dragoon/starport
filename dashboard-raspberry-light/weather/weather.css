@@ -137,18 +137,6 @@ html, body {
     background-color: rgba(0, 0, 0, 0);
 }
 
-.hail .weather, .severe .weather, .thunder .weather {
-    background-color: #9FA4AD;
-}
-
-.rain .weather {
-    background-color: #D8D8D8;
-}
-
-.haze .weather {
-    background-color: #efefef;
-}
-
 .weather .inner {
     background-color: transparent;
     position: absolute;
@@ -201,22 +189,17 @@ html, body {
     z-index: 1;
 }
 
-.night .weather #cloud1 {
-    fill: #00002e;
-    z-index: 1;
-}
-
 .night .weather #fog1 {
     fill: #00002e99;
     z-index: 1;
 }
 
-.night .weather #fog2, .night .weather #cloud2 {
+.night .weather #fog2 {
     fill: #4f525c99;
     z-index: 1;
 }
 
-.night .weather #fog3, .night .weather #cloud3 {
+.night .weather #fog3 {
     fill: #3f3d4c99;
     z-index: 1;
 }
