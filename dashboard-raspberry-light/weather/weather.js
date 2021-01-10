@@ -235,23 +235,23 @@ function onGetLocation(position) {
     });
 }
 
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(onGetLocation, function error(message) {
+            console.log(message);
+            onGetLocation({"coords": {"latitude": 47.3386721, "longitude": 8.5198395}})
+        });
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
+}
+
 
 // 📝 Fetch all DOM nodes in jQuery and Snap SVG
 $(function () {
     gsap.registerPlugin(PixiPlugin);
 
     cards = $('.container').toArray().map(c => new WeatherCard(c));
-
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(onGetLocation, function error(message) {
-                console.log(message);
-                onGetLocation({"coords": {"latitude": 47.3386721, "longitude": 8.5198395}})
-            });
-        } else {
-            console.log("Geolocation is not supported by this browser.");
-        }
-    }
 
     function init() {
         onResize();
