@@ -41,7 +41,6 @@ function getTemperatureColor(currentTemperature) {
  * @param colorConfig {{}}
  * @param sunriseTimestamp timestamp (seconds since epoch) of sunrise
  * @param sunsetTimestamp timestamp (seconds since epoch) of sunset
- * @param now current time (seconds since epoch)
  * @return {{top: number, bottom: number}}
  */
 function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
