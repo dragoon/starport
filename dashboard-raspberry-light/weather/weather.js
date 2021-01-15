@@ -213,6 +213,8 @@ function adaptToDaytime(day_weather) {
     $(".weather #cloud3").css("fill", `${colorMap.cloud3}`);
     if (colorMap["night"] === true) {
         $(".canvas").addClass("night");
+    } else {
+        $(".canvas").removeClass("night");
     }
 }
 
