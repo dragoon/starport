@@ -75,7 +75,7 @@ function hexToHsl(colorInt) {
 
 
 /**
- * Converts an HSL color value to RGB. Conversion formula
+ * Converts an HSL color value to Hex. Conversion formula
  * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
  * Assumes h, s, and l are contained in the set [0, 1] and
  * returns r, g, and b in the set [0, 255].
@@ -124,5 +124,25 @@ function numberToHexString(color, opacity=1) {
     if (opacity === 1) {
         return "#" + color.toString(16).padStart(6, '0');
     }
-    return "#" + color.toString(16).padStart(6, '0') + Number(255*opacity).toString(16).padStart(2, '0');
+    return "#" + color.toString(16).padStart(6, '0') + Math.round(Number(255*opacity)).toString(16).padStart(2, '0');
+}
+
+/**
+ *
+ * @param {Number} colorInt
+ * @return {number}
+ */
+function relativeLuminance(colorInt) {
+    let r = colorInt >> 16,
+        g = colorInt >> 8 & 0xff,
+        b = colorInt & 0xff;
+
+    r /= 255, g /= 255, b /= 255;
+
+    let R = (r <= 0.03928) ? r/12.92 : Math.pow((r+0.055)/1.055, 2.4);
+    let G = (g <= 0.03928) ? g/12.92 : Math.pow((g+0.055)/1.055, 2.4);
+    let B = (b <= 0.03928) ? b/12.92 : Math.pow((b+0.055)/1.055, 2.4);
+
+    // For the sRGB colorspace, the relative luminance of a color is defined as:
+    return 0.2126 * R + 0.7152 * G + 0.0722 * B;
 }

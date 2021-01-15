@@ -44,7 +44,9 @@ function getTemperatureColor(currentTemperature) {
  * @param now current time (seconds since epoch)
  * @return {{top: number, bottom: number}}
  */
-function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now) {
+function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
+    // get now in seconds
+    let now = (new Date()).getTime()/1000;
     const hourSeconds = 60 * 60;
     if (now < sunriseTimestamp - hourSeconds || now > sunsetTimestamp + hourSeconds) {
         // copy of night
@@ -54,6 +56,7 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now
         return colorConfig;
     } else {
         // TWILIGHT!
+        console.log("TWILIGHT");
         const hslColor = hexToHsl(colorConfig.bottom);
         // compute percentage to make darker
         const darknessLevel = Math.min(
@@ -125,7 +128,7 @@ function adaptColorToWeather(tempColor, weatherType) {
 function computeColorConfig(weatherObj) {
     const tempColor = getTemperatureColor(weatherObj.temp);
     const weatherColors = adaptColorToWeather(tempColor, weatherObj["ui_params"]["type"]);
-    const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset, weatherObj.dt);
+    const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset);
     timeColors.top = numberToHexString(timeColors.top);
     timeColors.bottom = numberToHexString(timeColors.bottom);
     timeColors.cloud1 = numberToHexString(timeColors.cloud1, timeColors.cloud1Opacity);
@@ -204,7 +207,6 @@ function changeWeather(data) {
 
 
 function adaptToDaytime(day_weather) {
-    console.log("adapting to daytime");
     const colorMap = computeColorConfig(day_weather);
     $(".canvas").css("color", `${colorMap.textColor}`);
     $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
