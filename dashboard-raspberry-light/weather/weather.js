@@ -67,7 +67,8 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp, now
         colorConfig.cloud1 = interpolateColor(colorConfig.cloud1, nightColorConfig.cloud1, 1-darknessLevel);
         colorConfig.cloud2 = interpolateColor(colorConfig.cloud2, nightColorConfig.cloud2, 1-darknessLevel);
         colorConfig.cloud3 = interpolateColor(colorConfig.cloud3, nightColorConfig.cloud3, 1-darknessLevel);
-        // TODO: intepolate opacity
+        colorConfig.cloud2Opacity = nightColorConfig.cloud2Opacity + (1-nightColorConfig.cloud2Opacity)*darknessLevel;
+        colorConfig.cloud3Opacity = nightColorConfig.cloud3Opacity + (1-nightColorConfig.cloud3Opacity)*darknessLevel;
         colorConfig.textColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-darknessLevel);
         if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
             colorConfig.night = true;
@@ -188,6 +189,7 @@ const weatherMap = {
 };
 
 let cards;
+let funcDayTimeUpdates;
 
 function changeWeather(data) {
         cards.forEach((card, i) => {
@@ -201,6 +203,20 @@ function changeWeather(data) {
     }
 
 
+function adaptToDaytime(day_weather) {
+    console.log("adapting to daytime");
+    const colorMap = computeColorConfig(day_weather);
+    $(".canvas").css("color", `${colorMap.textColor}`);
+    $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
+    $(".weather #cloud1").css("fill", `${colorMap.cloud1}`);
+    $(".weather #cloud2").css("fill", `${colorMap.cloud2}`);
+    $(".weather #cloud3").css("fill", `${colorMap.cloud3}`);
+    if (colorMap["night"] === true) {
+        $(".canvas").addClass("night");
+    }
+}
+
+
 function onGetLocation(position) {
     const weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
     $.getJSON(weather_url).done(function (weather) {
@@ -210,16 +226,9 @@ function onGetLocation(position) {
             if (i === 0) {
                 day_weather = weather.current;
                 card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
-                const colorMap = computeColorConfig(day_weather);
-                // TODO: update every minute
-                $(".canvas").css("color", `${colorMap.textColor}`);
-                $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
-                $(".weather #cloud1").css("fill", `${colorMap.cloud1}`);
-                $(".weather #cloud2").css("fill", `${colorMap.cloud2}`);
-                $(".weather #cloud3").css("fill", `${colorMap.cloud3}`);
-                if (colorMap["night"] === true) {
-                    $(".canvas").addClass("night");
-                }
+                adaptToDaytime(day_weather);
+                clearInterval(funcDayTimeUpdates);
+                funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, day_weather);
             } else {
                 day_weather = weather.daily[i];
                 card.updateTempText(day_weather.temp);
@@ -272,6 +281,6 @@ $(function () {
     init();
     $(window).resize(onResize);
     requestAnimationFrame(tick);
-    setTimeout(getLocation, 60 * 60 * 1000); // 1 hour
+    setInterval(getLocation, 60 * 60 * 1000); // 1 hour
 
 });
