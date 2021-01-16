@@ -10,6 +10,7 @@ const nightColorConfig = {
     "cloud2": 0x4f525c, "cloud2Opacity": 0.6,
     "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6,
     "textColor": 0xdddddd,
+    "supportPlateOpacity": 0,
     "night": true
 };
 
@@ -75,6 +76,11 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
         if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
             colorConfig.night = true;
         }
+        if (darknessLevel <= 0.5) {
+            colorConfig.supportPlateOpacity = 2*darknessLevel;
+        } else {
+            colorConfig.supportPlateOpacity = 2*(1 - darknessLevel);
+        }
 
         return colorConfig;
     }
@@ -120,7 +126,8 @@ function adaptColorToWeather(tempColor, weatherType) {
         "cloud1": 0xefefef, "cloud1Opacity": 1,
         "cloud2": 0xE6E6E6, "cloud2Opacity": 1,
         "cloud3": 0xD5D5D5, "cloud3Opacity": 1,
-        "textColor": 0x888888
+        "textColor": 0x888888,
+        "supportPlateOpacity": 0,
     }
 }
 
