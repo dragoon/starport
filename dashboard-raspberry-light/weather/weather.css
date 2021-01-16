@@ -60,11 +60,11 @@ html, body {
 
 .card-container .card .details {
     position: absolute;
+    border-radius: 8px;
     top: 0;
     left: 0;
     right: 0;
     padding: 16px 20px;
-    color: #888;
     display: -webkit-box;
     display: flex;
     -webkit-box-orient: horizontal;
@@ -134,28 +134,7 @@ html, body {
 }
 
 .weather {
-    /*transition: background-color 2s ease;*/
-    /*background: #DAE3FD linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);*/
-}
-
-.hail .weather, .severe .weather, .thunder .weather {
-    background-color: #9FA4AD;
-}
-
-.rain .weather {
-    background-color: #D8D8D8;
-}
-
-.haze .weather {
-    background-color: #efefef;
-}
-
-.sun .weather {
-    background-color: #ccccff;
-}
-
-.hot .weather, .smoke .weather {
-    background-color: rgba(230, 179, 179, 0.8);
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .weather .inner {
@@ -196,14 +175,6 @@ html, body {
     z-index: 0;
 }
 
-.cold .weather {
-    background-color: #ccdffb;
-}
-
-.night .weather {
-    background-color: #06063800;
-}
-
 .night .weather #sun {
     background-color: #ccdbef;
     --pulse-color: #ccdbef;
@@ -218,22 +189,17 @@ html, body {
     z-index: 1;
 }
 
-.night .weather #cloud1 {
-    fill: #00002e;
-    z-index: 1;
-}
-
 .night .weather #fog1 {
     fill: #00002e99;
     z-index: 1;
 }
 
-.night .weather #fog2, .night .weather #cloud2 {
+.night .weather #fog2 {
     fill: #4f525c99;
     z-index: 1;
 }
 
-.night .weather #fog3, .night .weather #cloud3 {
+.night .weather #fog3 {
     fill: #3f3d4c99;
     z-index: 1;
 }

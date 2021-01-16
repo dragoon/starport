@@ -2,8 +2,10 @@
     display: flex;
     flex-direction: column;
     margin-top: 5%;
-    margin-left: 40px;
+    margin-left: 25px;
     position: fixed;
+    padding: 15px;
+    border-radius: 8px;
 }
 
 .datetime-container .time {
@@ -17,8 +19,4 @@
     line-height: 40px;
     font-weight: 600;
     margin-top: 20px;
-}
-
-.night .datetime-container {
-    color: white;
 }

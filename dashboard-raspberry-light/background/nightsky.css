@@ -2,11 +2,6 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: #000;
-  margin: 0;
-}
-
 .canvas {
   overflow: hidden;
   position: absolute;
@@ -17,16 +12,12 @@ body {
 }
 
 .canvas .sky {
-  height: 300%;
-  width: 300%;
   position: absolute;
-  top: -100%;
-  left: -100%;
-  margin-top: 50%;
-  background: -webkit-radial-gradient(center, #000046 0%, #000 60%);
-  /*-webkit-animation: rotate 250s infinite linear;*/
-  -webkit-backface-visibility: hidden;
-  -webkit-transform-style: preserve-3d;
+  height: 100%;
+  width: 100%;
+  background: #eee;
+  background: linear-gradient(0deg, rgba(0, 0, 200, 0.2), rgba(0, 0, 200, 0));
+  transition: background-color 3s ease;
 }
 
 .star-blink {
