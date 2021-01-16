@@ -77,9 +77,9 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
             colorConfig.night = true;
         }
         if (darknessLevel <= 0.5) {
-            colorConfig.supportPlateOpacity = 2*darknessLevel;
+            colorConfig.supportPlateOpacity = darknessLevel;
         } else {
-            colorConfig.supportPlateOpacity = 2*(1 - darknessLevel);
+            colorConfig.supportPlateOpacity = (1 - darknessLevel);
         }
 
         return colorConfig;
@@ -141,6 +141,7 @@ function computeColorConfig(weatherObj) {
     timeColors.cloud2 = numberToHexString(timeColors.cloud2, timeColors.cloud2Opacity);
     timeColors.cloud3 = numberToHexString(timeColors.cloud3, timeColors.cloud3Opacity);
     timeColors.textColor = numberToHexString(timeColors.textColor);
+    timeColors.supportPlateColor = numberToHexString(0x000000, timeColors.supportPlateOpacity);
     return timeColors;
 
 }
@@ -219,6 +220,8 @@ function adaptToDaytime(day_weather) {
     $(".weather #cloud1").css("fill", `${colorMap.cloud1}`);
     $(".weather #cloud2").css("fill", `${colorMap.cloud2}`);
     $(".weather #cloud3").css("fill", `${colorMap.cloud3}`);
+    $(".card-container .card .details").css("background", `${colorMap.supportPlateColor}`);
+    $(".datetime-container").css("background", `${colorMap.supportPlateColor}`);
     if (colorMap["night"] === true) {
         $(".canvas").addClass("night");
     } else {

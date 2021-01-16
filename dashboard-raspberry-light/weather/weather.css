@@ -60,6 +60,7 @@ html, body {
 
 .card-container .card .details {
     position: absolute;
+    border-radius: 8px;
     top: 0;
     left: 0;
     right: 0;
