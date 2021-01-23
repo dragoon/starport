@@ -137,9 +137,6 @@ function computeColorConfig(weatherObj) {
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset);
     timeColors.top = numberToHexString(timeColors.top);
     timeColors.bottom = numberToHexString(timeColors.bottom);
-    timeColors.cloud1 = numberToHexString(timeColors.cloud1, timeColors.cloud1Opacity);
-    timeColors.cloud2 = numberToHexString(timeColors.cloud2, timeColors.cloud2Opacity);
-    timeColors.cloud3 = numberToHexString(timeColors.cloud3, timeColors.cloud3Opacity);
     timeColors.textColor = numberToHexString(timeColors.textColor);
     timeColors.supportPlateColor = numberToHexString(0x000000, timeColors.supportPlateOpacity);
     return timeColors;
@@ -213,13 +210,13 @@ function changeWeather(data) {
     }
 
 
-function adaptToDaytime(day_weather) {
+function adaptToDaytime(card, day_weather) {
     const colorMap = computeColorConfig(day_weather);
     $(".canvas").css("color", `${colorMap.textColor}`);
     $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
-    $(".weather #cloud1").css("fill", `${colorMap.cloud1}`);
-    $(".weather #cloud2").css("fill", `${colorMap.cloud2}`);
-    $(".weather #cloud3").css("fill", `${colorMap.cloud3}`);
+    card.clouds[0].tint = colorMap.cloud1;
+    card.clouds[1].tint = colorMap.cloud2;
+    card.clouds[2].tint = colorMap.cloud3;
     $(".card-container .card .details").css("background", `${colorMap.supportPlateColor}`);
     $(".datetime-container").css("background", `${colorMap.supportPlateColor}`);
     if (colorMap["night"] === true) {
@@ -239,7 +236,7 @@ function onGetLocation(position) {
             if (i === 0) {
                 day_weather = weather.current;
                 card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
-                adaptToDaytime(day_weather);
+                adaptToDaytime(card, day_weather);
                 clearInterval(funcDayTimeUpdates);
                 funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, day_weather);
             } else {

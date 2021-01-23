@@ -53,10 +53,7 @@ class WeatherCard {
 
         // grab cloud groups
 
-        this.clouds = [
-            {group: Snap.select(`#${elem_id} .card #cloud1`)},
-            {group: Snap.select(`#${elem_id} .card #cloud2`)},
-            {group: Snap.select(`#${elem_id} .card #cloud3`)}];
+        this.clouds = [];
 
 
         this.fog = [
@@ -122,7 +119,7 @@ class WeatherCard {
         gsap.fromTo(this.date, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
-    drawCloud(cloud, i) {
+    drawCloud(i) {
         /*
 
         ☁️ We want to create a shape thats loopable but that can also
@@ -132,30 +129,29 @@ class WeatherCard {
         card.
 
         */
-        let space = this.settings.cloudSpace * i;
+        let offset = Math.random() * this.sizes.card.width;
+        let space = this.settings.cloudSpace * (2-i);
         let height = space + this.settings.cloudHeight;
         let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
         let width = this.sizes.card.width;
 
-        let points = [];
-        points.push('M' + [-width, 0].join(','));
-        points.push([width, 0].join(','));
-        points.push('Q' + [width * 2, height / 2].join(','));
-        points.push([width, height].join(','));
-        points.push('Q' + [width * 0.5, arch].join(','));
-        points.push([0, height].join(','));
-        points.push('Q' + [width * -0.5, arch].join(','));
-        points.push([-width, height].join(','));
-        points.push('Q' + [-(width * 2), height / 2].join(','));
-        points.push([-width, 0].join(','));
+        let cloud = new PIXI.Graphics()
+            .moveTo(-width, 0)
+            .lineTo(width, 0)
+            .beginFill(0xffffff, 0)
+            .quadraticCurveTo(width * 2, height / 2, width, height)
+            .quadraticCurveTo(width * 0.5, arch, 0, height)
+            .quadraticCurveTo(width * -0.5, arch, -width, height)
+            .quadraticCurveTo(-(width * 2), height / 2, -width, 0);
 
-        var path = points.join(' ');
-        if (!cloud.path) cloud.path = cloud.group.path();
-        cloud.path.animate({
-                d: path
-            },
-            0);
-        cloud.group.transform('t' + cloud.offset + ',' + 0)
+        this.scene.addChild(cloud);
+        gsap.to(cloud, {
+            duration: 0,
+            ease: "none",
+            x: offset,
+        });
+
+        return cloud;
     }
 
     drawFog(cloud, i) {
@@ -608,12 +604,12 @@ class WeatherCard {
 
             case 'sun':
                 this.clouds.forEach((cloud, i) => {
-                    gsap.killTweensOf(cloud.group.node);
+                    gsap.killTweensOf(cloud);
                     // animate clouds with gsap
                     if (cloud.offset > this.sizes.card.width * 2.5){
                         cloud.offset = -(this.sizes.card.width * 1.5);
                     }
-                    gsap.to(cloud.group.node, {
+                    gsap.to(cloud, {
                         duration: this.settings.windSpeed * (i+1),
                         ease: "none",
                         x: "+=800",
@@ -624,8 +620,8 @@ class WeatherCard {
             default:
                 // animate clouds
                 this.clouds.forEach((cloud, i) => {
-                    gsap.killTweensOf(cloud.group.node);
-                    gsap.to(cloud.group.node, {
+                    gsap.killTweensOf(cloud);
+                    gsap.to(cloud, {
                         duration: 10 * (i + 1) / this.settings.windSpeed,
                         ease: "none",
                         x: `+=${this.sizes.card.width}`,
@@ -690,10 +686,7 @@ class WeatherCard {
 
     init() {
         // ☁️ draw clouds
-        this.clouds.forEach((cloud, i) => {
-            cloud.offset = Math.random() * this.sizes.card.width;
-            this.drawCloud(cloud, i);
-        });
+        this.clouds = [...Array(3).keys()].map(i => this.drawCloud(i));
         // draw fog
         this.fog.forEach((fog, i) => {
             fog.offset = Math.random() * this.sizes.card.width;
