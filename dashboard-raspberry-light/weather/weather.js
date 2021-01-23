@@ -1,3 +1,4 @@
+gsap.registerPlugin(PixiPlugin, MotionPathPlugin);
 const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-snow-sleet", "sleet", "wind", "rain", "hail", "thunder", "severe", "cloud", "sun", "haze", "smoke"];
 
 const hot_color = 0xe6b3b3;
