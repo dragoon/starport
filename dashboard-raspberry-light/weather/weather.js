@@ -122,7 +122,8 @@ function adaptColorToWeather(tempColor, weatherType) {
     const hslColor = hexToHsl(tempColor);
 
     return {
-        "top": hslToHex(hslColor.h, hslColor.s, Math.min(1, hslColor.l * 2)), "bottom": tempColor,
+        "top": hslToHex(hslColor.h, hslColor.s, Math.min(1, hslColor.l * 1.05)),
+        "bottom":  hslToHex(hslColor.h, hslColor.s, hslColor.l / 1.1),
         "cloud1": 0xefefef, "cloud1Opacity": 1,
         "cloud2": 0xE6E6E6, "cloud2Opacity": 1,
         "cloud3": 0xD5D5D5, "cloud3Opacity": 1,
