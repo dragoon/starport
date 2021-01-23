@@ -387,7 +387,7 @@ class WeatherCard {
         }
     }
 
-    makeSnow() {
+    makeSnow(flake = null) {
         let offset = 0.5 * this.currentWeather.intensity;
         let scale = offset + Math.random() * offset;
 
@@ -395,9 +395,15 @@ class WeatherCard {
         let y = -10;
         let r = 5 * (offset + Math.random() * offset);
         let endY;
-        let flake = new PIXI.Graphics()
-            .beginFill(0xffffff, 1)
-            .drawCircle(x, y, r);
+        if (flake == null) {
+            flake = new PIXI.Graphics()
+                .beginFill(0xffffff, 1)
+                .drawCircle(x, y, r);
+        } else {
+            flake.clear();
+            flake.beginFill(0xffffff, 1)
+                .drawCircle(x, y, r);
+        }
 
         // TODO: big snow was in a different cloud holder
         if (scale > 0.8) {
@@ -427,12 +433,13 @@ class WeatherCard {
     onSnowEnd(flake) {
         this.scene.removeChild(flake);
         gsap.killTweensOf(flake);
-        flake.destroy();
-        flake = null;
         this.flake_count -= 1;
 
         if (this.flake_count < this.settings.snowCount) {
-            this.makeSnow();
+            this.makeSnow(flake);
+        } else {
+            flake.destroy();
+            flake = null;
         }
     }
 
@@ -712,10 +719,10 @@ class WeatherCard {
         const elapsed = timestamp - this.start;
 
         if (elapsed > 100) {
-            if (this.rain_count < this.settings.rainCount) this.makeRain(timestamp);
-            if (this.flake_count < this.settings.snowCount) this.makeSnow(timestamp);
-            if (this.leafs.length < this.settings.leafCount) this.makeLeaf(timestamp);
-            if (this.hail_count < this.settings.hailCount) this.makeHail(timestamp);
+            if (this.rain_count < this.settings.rainCount) this.makeRain();
+            if (this.flake_count < this.settings.snowCount) this.makeSnow();
+            if (this.leafs.length < this.settings.leafCount) this.makeLeaf();
+            if (this.hail_count < this.settings.hailCount) this.makeHail();
             this.start = timestamp;
         }
 
