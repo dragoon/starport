@@ -173,7 +173,7 @@ function changeWeather(data) {
     }
 
 
-function adaptToDaytime(card, day_weather) {
+function adaptToDaytime(cards, day_weather) {
     const colorMap = computeColorConfig(day_weather);
     $(".canvas").css("color", `${colorMap.detailsTextColor}`);
     $(".datetime-container").css({
@@ -181,9 +181,11 @@ function adaptToDaytime(card, day_weather) {
         "background": `${colorMap.supportPlateColor}`
     });
     $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
-    card.clouds[0].tint = colorMap.cloud1;
-    card.clouds[1].tint = colorMap.cloud2;
-    card.clouds[2].tint = colorMap.cloud3;
+    cards.forEach(card => {
+        card.clouds[0].tint = colorMap.cloud1;
+        card.clouds[1].tint = colorMap.cloud2;
+        card.clouds[2].tint = colorMap.cloud3;
+    });
     if (colorMap["night"] === true) {
         $(".canvas").addClass("night");
     } else {
@@ -201,9 +203,9 @@ function onGetLocation(position) {
             if (i === 0) {
                 day_weather = weather.current;
                 card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
-                adaptToDaytime(card, day_weather);
+                adaptToDaytime(cards, day_weather);
                 clearInterval(funcDayTimeUpdates);
-                funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, day_weather);
+                funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, cards, day_weather);
             } else {
                 day_weather = weather.daily[i];
                 card.updateTempText(day_weather.temp);
