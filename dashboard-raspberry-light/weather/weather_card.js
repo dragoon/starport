@@ -665,7 +665,7 @@ class WeatherCard {
             points.push(x + ',' + y);
         }
 
-        var strike = this.weatherContainer1.path('M' + points.join(' ')).attr({
+        var strike = this.innerLeafHolder.path('M' + points.join(' ')).attr({
             fill: 'none',
             stroke: 'white',
             strokeWidth: 2 + Math.random()
