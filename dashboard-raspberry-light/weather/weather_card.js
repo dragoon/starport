@@ -21,17 +21,19 @@ class WeatherCard {
         this.card = $(`#${elem_id} .card`);
         this.outerSVG = Snap(`#${elem_id} .outer`);
         this.innerSVG = Snap(`#${elem_id} .card .inner`);
-        this.weatherContainer1 = Snap.select(`#${elem_id} .card #layer1`);
-        this.weatherContainer2 = Snap.select(`#${elem_id} .card #layer2`);
-        this.weatherContainer3 = Snap.select(`#${elem_id} .card #layer3`);
+
+        this.weatherContainers = [...Array(3).keys()].map(i => {
+            let c = new PIXI.Container();
+            c.zIndex = i;
+            return c;
+        });
         this.canvas = $(`#${elem_id} #canvas`);
         this.scene = new PIXI.Container();
+        this.scene.sortableChildren = true;
+        this.weatherContainers.forEach(wc => this.scene.addChild(wc));
 
-        this.innerLeafHolder = this.weatherContainer1.group();
-        this.innerHailHolder = this.weatherContainer2.group();
-        this.innerLightningHolder = this.weatherContainer1.group();
+        this.innerLeafHolder = Snap.select(`#${elem_id} .card #layer1`);
         this.outerLeafHolder = this.outerSVG.group();
-        this.outerHailHolder = this.weatherContainer3.group();
         // Set mask for leaf holder
         this.leafMask = this.outerSVG.rect();
         this.outerLeafHolder.attr({'clip-path': this.leafMask});
@@ -51,15 +53,9 @@ class WeatherCard {
             card: {width: 0, height: 0}
         };
 
-        // grab cloud groups
-
+        // cloud containers
         this.clouds = [];
-
-
-        this.fog = [
-            {group: Snap.select(`#${elem_id} .card #fog1`)},
-            {group: Snap.select(`#${elem_id} .card #fog2`)},
-            {group: Snap.select(`#${elem_id} .card #fog3`)}];
+        this.fog = [];
 
         this.summary = $(`#${elem_id} .card .details #summary`);
         this.date = $(`#${elem_id} .card .details #date`);
@@ -130,7 +126,7 @@ class WeatherCard {
 
         */
         let offset = Math.random() * this.sizes.card.width;
-        let space = this.settings.cloudSpace * (2-i);
+        let space = this.settings.cloudSpace * i;
         let height = space + this.settings.cloudHeight;
         let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
         let width = this.sizes.card.width;
@@ -138,13 +134,13 @@ class WeatherCard {
         let cloud = new PIXI.Graphics()
             .moveTo(-width, 0)
             .lineTo(width, 0)
-            .beginFill(0xffffff, 0)
+            .beginFill(0xffffff, 1)
             .quadraticCurveTo(width * 2, height / 2, width, height)
             .quadraticCurveTo(width * 0.5, arch, 0, height)
             .quadraticCurveTo(width * -0.5, arch, -width, height)
             .quadraticCurveTo(-(width * 2), height / 2, -width, 0);
 
-        this.scene.addChild(cloud);
+        this.weatherContainers[i].addChild(cloud);
         gsap.to(cloud, {
             duration: 0,
             ease: "none",
@@ -154,7 +150,7 @@ class WeatherCard {
         return cloud;
     }
 
-    drawFog(cloud, i) {
+    drawFog(i) {
         /*
             ☁️ We want to create a shape thats loopable but that can also
             be animated in and out. So we use Snap SVG to draw a shape
@@ -163,6 +159,7 @@ class WeatherCard {
             card.
 
             */
+        let offset = Math.random() * this.sizes.card.width;
         let space = this.settings.cloudSpace * i;
         let height = space + this.settings.cloudHeight;
         let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
@@ -180,12 +177,6 @@ class WeatherCard {
         points.push([-width, height].join(','));
 
         let path = points.join(' ');
-        if (!cloud.path) cloud.path = cloud.group.path();
-        cloud.path.animate({
-                d: path
-            },
-            0);
-        cloud.group.transform('t' + cloud.offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
     }
 
     makeRain() {
@@ -229,7 +220,7 @@ class WeatherCard {
         line.lineTo(0, lineLength);
 
         // add line to the scene for rendering
-        this.scene.addChild(line);
+        this.weatherContainers[0].addChild(line);
         this.rain_count += 1;
 
         // Start the falling animation, calls onRainEnd when the
@@ -346,13 +337,12 @@ class WeatherCard {
             x = 20 + Math.random() * (this.sizes.card.width - 40) + windOffset;
             endY = this.sizes.container.height + 10;
             x = x + this.sizes.card.offset.left;
-            // TODO: should be outer canvas for bigger stones
-            this.scene.addChild(newHail);
+            this.weatherContainers[2].addChild(newHail);
 
         } else {
             x = 20 + Math.random() * (this.sizes.card.width + windOffset - 20);
             endY = this.sizes.card.height + 10;
-            this.scene.addChild(newHail);
+            this.weatherContainers[0].addChild(newHail);
 
         }
         this.hail_count += 1;
@@ -406,11 +396,10 @@ class WeatherCard {
             endY = this.sizes.container.height + 10;
             y = this.sizes.card.offset.top + this.settings.cloudHeight;
             x = x + this.sizes.card.offset.left;
-            // TODO: bigger snow should be outside with outer holder
-            this.scene.addChild(flake);
+            this.weatherContainers[2].addChild(flake);
         } else {
             endY = this.sizes.card.height + 10;
-            this.scene.addChild(flake);
+            this.weatherContainers[0].addChild(flake);
         }
 
         this.flake_count += 1;
@@ -695,10 +684,7 @@ class WeatherCard {
         // ☁️ draw clouds
         this.clouds = [...Array(3).keys()].map(i => this.drawCloud(i));
         // draw fog
-        this.fog.forEach((fog, i) => {
-            fog.offset = Math.random() * this.sizes.card.width;
-            this.drawFog(fog, i);
-        });
+        this.fog = [...Array(3).keys()].map(i => this.drawFog(i));
 
     }
 
