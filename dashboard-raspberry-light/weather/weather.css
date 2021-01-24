@@ -186,63 +186,48 @@ html, body {
 
 .smoke .weather #fog1, .hail .weather #fog1, .severe .weather #fog1, .thunder .weather #fog1 {
     fill: #91969f;
-    z-index: 1;
 }
 
 .night .weather #fog1 {
     fill: #00002e99;
-    z-index: 1;
 }
 
 .night .weather #fog2 {
     fill: #4f525c99;
-    z-index: 1;
 }
 
 .night .weather #fog3 {
     fill: #3f3d4c99;
-    z-index: 1;
 }
 
 .weather #fog2, .weather #cloud1 {
     fill: #efefef;
-    z-index: 1;
 }
 
 .smoke .weather #fog2, .hail .weather #fog2, .severe .weather #fog2, .thunder .weather #fog2,
 .smoke .weather #cloud1, .hail .weather #cloud1, .severe .weather #cloud1, .thunder .weather #cloud1 {
     fill: #9FA4AD;
-    z-index: 1;
 }
 
 .weather #fog3, .weather #cloud2 {
     fill: #E6E6E6;
-    z-index: 1;
 }
 
 .smoke .weather #fog3, .hail .weather #fog3, .severe .weather #fog3, .thunder .weather #fog3,
 .smoke .weather #cloud2, .hail .weather #cloud2, .severe .weather #cloud2, .thunder .weather #cloud2 {
     fill: #8B8E98;
-    z-index: 1;
 }
 
 .weather #cloud3 {
     fill: #D5D5D5;
-    z-index: 1;
 }
 
 .smoke .weather #cloud3, .hail .weather #cloud3, .severe .weather #cloud3, .thunder .weather #cloud3 {
     fill: #7B7988;
-    z-index: 1;
 }
 
 
 .container .outer, #canvas {
     position: fixed;
     pointer-events: none;
-}
-
-.canvas-outer {
-    z-index: 0;
-    position: fixed;
 }
