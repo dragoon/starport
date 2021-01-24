@@ -24,7 +24,8 @@ class WeatherCard {
 
         this.weatherContainers = [...Array(3).keys()].map(i => {
             let c = new PIXI.Container();
-            c.zIndex = i;
+            // 0 is the closest cloud (-1 index), 2 is behind (-3)
+            c.zIndex = -i;
             return c;
         });
         this.canvas = $(`#${elem_id} #canvas`);
@@ -220,7 +221,7 @@ class WeatherCard {
         line.lineTo(0, lineLength);
 
         // add line to the scene for rendering
-        this.weatherContainers[0].addChild(line);
+        this.weatherContainers[2].addChild(line);
         this.rain_count += 1;
 
         // Start the falling animation, calls onRainEnd when the
@@ -337,12 +338,12 @@ class WeatherCard {
             x = 20 + Math.random() * (this.sizes.card.width - 40) + windOffset;
             endY = this.sizes.container.height + 10;
             x = x + this.sizes.card.offset.left;
-            this.weatherContainers[2].addChild(newHail);
+            this.weatherContainers[1].addChild(newHail);
 
         } else {
             x = 20 + Math.random() * (this.sizes.card.width + windOffset - 20);
             endY = this.sizes.card.height + 10;
-            this.weatherContainers[0].addChild(newHail);
+            this.weatherContainers[2].addChild(newHail);
 
         }
         this.hail_count += 1;
@@ -396,10 +397,10 @@ class WeatherCard {
             endY = this.sizes.container.height + 10;
             y = this.sizes.card.offset.top + this.settings.cloudHeight;
             x = x + this.sizes.card.offset.left;
-            this.weatherContainers[2].addChild(flake);
+            this.weatherContainers[1].addChild(flake);
         } else {
             endY = this.sizes.card.height + 10;
-            this.weatherContainers[0].addChild(flake);
+            this.weatherContainers[2].addChild(flake);
         }
 
         this.flake_count += 1;
