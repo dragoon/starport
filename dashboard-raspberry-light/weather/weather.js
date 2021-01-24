@@ -1,3 +1,4 @@
+gsap.registerPlugin(PixiPlugin, MotionPathPlugin);
 const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-snow-sleet", "sleet", "wind", "rain", "hail", "thunder", "severe", "cloud", "sun", "haze", "smoke"];
 
 const hot_color = 0xe6b3b3;
@@ -9,7 +10,8 @@ const nightColorConfig = {
     "cloud1": 0x00002e, "cloud1Opacity": 1,
     "cloud2": 0x4f525c, "cloud2Opacity": 0.6,
     "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6,
-    "textColor": 0xdddddd,
+    "detailsTextColor": 0xdddddd,
+    "dateTextColor": 0xdddddd,
     "supportPlateOpacity": 0,
     "night": true
 };
@@ -67,12 +69,22 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
         colorConfig.bottom = hslToHex(hslColor.h, hslColor.s, hslColor.l * darknessLevel);
         // top gradient -- darker
         colorConfig.top = hslToHex(hslColor.h, hslColor.s, hslColor.l * (darknessLevel - darknessLevel/2));
-        colorConfig.cloud1 = interpolateColor(colorConfig.cloud1, nightColorConfig.cloud1, 1-darknessLevel);
-        colorConfig.cloud2 = interpolateColor(colorConfig.cloud2, nightColorConfig.cloud2, 1-darknessLevel);
-        colorConfig.cloud3 = interpolateColor(colorConfig.cloud3, nightColorConfig.cloud3, 1-darknessLevel);
-        colorConfig.cloud2Opacity = nightColorConfig.cloud2Opacity + (1-nightColorConfig.cloud2Opacity)*darknessLevel;
-        colorConfig.cloud3Opacity = nightColorConfig.cloud3Opacity + (1-nightColorConfig.cloud3Opacity)*darknessLevel;
-        colorConfig.textColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-darknessLevel);
+
+        // if sunset -- set clouds to night colors
+        if (now > sunsetTimestamp - hourSeconds) {
+            colorConfig.cloud1 = nightColorConfig.cloud1;
+            colorConfig.cloud2 = nightColorConfig.cloud2;
+            colorConfig.cloud3 = nightColorConfig.cloud3;
+            colorConfig.cloud2Opacity = nightColorConfig.cloud2Opacity;
+            colorConfig.cloud3Opacity = nightColorConfig.cloud3Opacity;
+            colorConfig.detailsTextColor = nightColorConfig.detailsTextColor;
+        }
+        // if sunrise -- set to day colors
+        else {
+            colorConfig.cloud2Opacity = 1;
+            colorConfig.cloud3Opacity = 1;
+        }
+        colorConfig.dateTextColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-darknessLevel);
         if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
             colorConfig.night = true;
         }
@@ -102,7 +114,7 @@ function adaptColorToWeather(tempColor, weatherType) {
 
     switch (weatherType) {
         case "rain":
-            tempColor = 0xD8D8D8;
+            tempColor = 0xcdcdcd;
             break;
         case "haze":
             tempColor = 0xefefef;
@@ -122,11 +134,13 @@ function adaptColorToWeather(tempColor, weatherType) {
     const hslColor = hexToHsl(tempColor);
 
     return {
-        "top": hslToHex(hslColor.h, hslColor.s, Math.min(1, hslColor.l * 2)), "bottom": tempColor,
+        "top": hslToHex(hslColor.h, hslColor.s, Math.min(1, hslColor.l * 1.05)),
+        "bottom":  hslToHex(hslColor.h, hslColor.s, hslColor.l / 1.1),
         "cloud1": 0xefefef, "cloud1Opacity": 1,
         "cloud2": 0xE6E6E6, "cloud2Opacity": 1,
         "cloud3": 0xD5D5D5, "cloud3Opacity": 1,
-        "textColor": 0x888888,
+        "dateTextColor": 0x888888,
+        "detailsTextColor": 0x888888,
         "supportPlateOpacity": 0,
     }
 }
@@ -137,63 +151,12 @@ function computeColorConfig(weatherObj) {
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset);
     timeColors.top = numberToHexString(timeColors.top);
     timeColors.bottom = numberToHexString(timeColors.bottom);
-    timeColors.textColor = numberToHexString(timeColors.textColor);
+    timeColors.dateTextColor = numberToHexString(timeColors.dateTextColor);
+    timeColors.detailsTextColor = numberToHexString(timeColors.detailsTextColor);
     timeColors.supportPlateColor = numberToHexString(0x000000, timeColors.supportPlateOpacity);
     return timeColors;
 
 }
-
-
-const weatherMap = {
-    0: {type: 'severe', class: '', intensity: 5, icon: 'wi-tornado', name: 'Tornado'},
-    1: {type: 'severe', class: '', intensity: 2.5, icon: 'wi-thunderstorm', name: 'Tropical Storm'}, //tropical storm
-    2: {type: 'severe', class: '', intensity: 5, icon: 'wi-hurricane', name: 'Hurricane'}, //hurricane
-    3: {type: 'severe', class: '', intensity: 1.25, icon: 'wi-thunderstorm', name: 'Severe Thunderstorms'}, //severe thunderstorms
-    4: {type: 'thunder', class: '', intensity: 1, icon: 'wi-thunderstorm', name: 'Thunderstorms'}, //thunderstorms
-    5: {type: 'mix-rain-snow', class: 'cold', intensity: 1, icon: 'wi-rain-mix', name: 'Mixed Rain and Snow'}, //mixed rain and snow
-    6: {type: 'mix-rain-sleet', class: 'cold', intensity: 1, icon: 'wi-sleet', name: 'Mixed Rain and Sleet'}, //mixed rain and sleet
-    7: {type: 'mix-snow-sleet', class: 'cold', intensity: 1, icon: 'wi-sleet', name: 'Mixed Snow and Sleet'}, //mixed snow and sleet
-    8: {type: 'rain', class: 'cold', intensity: .5, icon: 'wi-rain-mix', name: 'Freezing Drizzle'}, //freezing drizzle
-    9: {type: 'rain', class: '', intensity: .5, icon: 'wi-sprinkle', name: 'Drizzle'}, //drizzle
-    10: {type: 'rain', class: 'cold', intensity: 1, icon: 'wi-rain-mix', name: 'Freezing Rain'}, //freezing rain
-    11: {type: 'rain', class: '', intensity: 1, icon: 'wi-rain', name: 'Showers'}, //showers
-    12: {type: 'rain', class: '', intensity: 1, icon: 'wi-rain', name: 'Showers'}, //showers
-    13: {type: 'snow', class: 'cold', intensity: .5, icon: 'wi-snow', name: 'Snow Flurries'}, //snow flurries
-    14: {type: 'snow', class: 'cold', intensity: .75, icon: 'wi-snow', name: 'Light Snow Showers'}, //light snow showers
-    15: {type: 'snow', class: 'cold', intensity: .5, icon: 'wi-snow', name: 'Blowing Snow'}, //blowing snow
-    16: {type: 'snow', class: 'cold', intensity: 1, icon: 'wi-snow', name: 'Snow'}, //snow
-    17: {type: 'hail', class: '', intensity: 1.5, icon: 'wi-hail', name: 'Hail'}, //hail
-    18: {type: 'sleet', class: 'cold', intensity: 1, icon: 'wi-sleet', name: 'Sleet'}, //sleet
-    19: {type: 'haze', class: 'hot', intensity: .5, icon: 'wi-sandstorm', name: 'Dust'}, //dust
-    20: {type: 'haze', class: '', intensity: .5, icon: 'wi-fog', name: 'Foggy'}, //foggy
-    21: {type: 'haze', class: '', intensity: .5, icon: 'wi-fog', name: 'Haze'}, //haze
-    22: {type: 'smoke', class: '', intensity: .5, icon: 'wi-smoke', name: 'Smokey'}, //smoky
-    23: {type: 'wind', class: '', intensity: 3, icon: 'wi-cloudy-gusts', name: 'Blustery'}, //blustery
-    24: {type: 'wind', class: '', intensity: 1, icon: 'wi-strong-wind', name: 'Windy'}, //windy
-    25: {type: 'sun', class: 'cold', intensity: 1, icon: 'wi-snowflake-cold', name: 'Cold'}, //cold
-    26: {type: 'cloud', class: '', intensity: 1, icon: 'wi-cloudy', name: 'Cloudy'}, //cloudy
-    27: {type: 'cloud', class: 'night', intensity: .3, icon: 'wi-night-cloudy', name: 'Mosty Cloudy'}, //mostly cloudy (night)
-    28: {type: 'cloud', class: '', intensity: .3, icon: 'wi-day-cloudy', name: 'Mosty Cloudy'}, //mostly cloudy (day)
-    29: {type: 'cloud', class: 'night', intensity: .1, icon: 'wi-night-cloudy', name: 'Partly Cloudy'}, //partly cloudy (night)
-    30: {type: 'cloud', class: '', intensity: .1, icon: 'wi-day-cloudy', name: 'Partly Cloudy'}, //partly cloudy (day)
-    31: {type: 'sun', class: 'night', intensity: 1, icon: 'wi-night-clear', name: 'Clear'}, //clear (night)
-    32: {type: 'sun', class: '', intensity: 1, icon: 'wi-day-sunny', name: 'Sunny'}, //sunny
-    33: {type: 'sun', class: 'night', intensity: 1, icon: 'wi-night-clear', name: 'Fair'}, //fair (night)
-    34: {type: 'sun', class: '', intensity: 1, icon: 'wi-day-sunny', name: 'Fair'}, //fair (day)
-    35: {type: 'hail', class: '', intensity: 1, icon: 'wi-hail', name: 'Mixed Rain and Hail'}, //mixed rain and hail
-    36: {type: 'sun', class: 'hot', intensity: 1, icon: 'wi-day-sunny', name: 'Hot'}, //hot
-    37: {type: 'thunder', class: '', intensity: .25, icon: 'wi-storm-showers', name: 'Isolated Thunderstorms'}, //isolated thunderstorms
-    38: {type: 'thunder', class: '', intensity: .5, icon: 'wi-storm-showers', name: 'Scattered Thunderstorms'}, //scattered thunderstorms
-    39: {type: 'thunder', class: '', intensity: .5, icon: 'wi-storm-showers', name: 'Scattered Thunderstorms'}, //scattered thunderstorms
-    40: {type: 'rain', class: '', intensity: .75, icon: 'wi-showers', name: 'Scattered Showers'}, //scattered showers
-    41: {type: 'snow', class: 'cold', intensity: 1.75, icon: 'wi-snow', name: 'Heavy Snow'}, //heavy snow
-    42: {type: 'snow', class: 'cold', intensity: .5, icon: 'wi-snow', name: 'Scattered Snow Showers'}, //scattered snow showers
-    43: {type: 'snow', class: 'cold', intensity: 1.75, icon: 'wi-snow', name: 'Heavy Snow'}, //heavy snow
-    44: {type: 'cloud', class: '', intensity: .1, icon: 'wi-day-cloudy', name: 'Partly Cloudy'}, //partly cloudy
-    45: {type: 'thunder', class: '', intensity: .5, icon: 'wi-storm-showers', name: 'Thundershowers'}, //thundershowers
-    46: {type: 'snow', class: 'cold', intensity: .75, icon: 'wi-snow', name: 'Snow Showers'}, //snow showers
-    47: {type: 'thunder', class: '', intensity: .25, icon: 'wi-storm-showers', name: 'Isolated Thunderstorms'} //isolated thundershowers
-};
 
 let cards;
 let funcDayTimeUpdates;
@@ -212,13 +175,15 @@ function changeWeather(data) {
 
 function adaptToDaytime(card, day_weather) {
     const colorMap = computeColorConfig(day_weather);
-    $(".canvas").css("color", `${colorMap.textColor}`);
+    $(".canvas").css("color", `${colorMap.detailsTextColor}`);
+    $(".datetime-container").css({
+        "color": `${colorMap.dateTextColor}`,
+        "background": `${colorMap.supportPlateColor}`
+    });
     $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
     card.clouds[0].tint = colorMap.cloud1;
     card.clouds[1].tint = colorMap.cloud2;
     card.clouds[2].tint = colorMap.cloud3;
-    $(".card-container .card .details").css("background", `${colorMap.supportPlateColor}`);
-    $(".datetime-container").css("background", `${colorMap.supportPlateColor}`);
     if (colorMap["night"] === true) {
         $(".canvas").addClass("night");
     } else {
