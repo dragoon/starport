@@ -19,6 +19,7 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Lato', sans-serif;
+    cursor: none;
 }
 
 .weather-cards {
@@ -230,4 +231,5 @@ html, body {
 .container .outer, #canvas {
     position: fixed;
     pointer-events: none;
+    z-index: 1;
 }
