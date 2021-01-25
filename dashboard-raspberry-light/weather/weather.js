@@ -112,6 +112,13 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
  */
 function adaptColorToWeather(tempColor, weatherType) {
 
+    let cloud1Color = 0xefefef;
+    let cloud2Color = 0xE6E6E6;
+    let cloud3Color = 0xD5D5D5;
+    let cloud1Opacity = 1;
+    let cloud2Opacity = 1;
+    let cloud3Opacity = 1;
+
     switch (weatherType) {
         case "rain":
             tempColor = 0xcdcdcd;
@@ -128,6 +135,13 @@ function adaptColorToWeather(tempColor, weatherType) {
         case "thunder":
             tempColor = 0x9FA4AD;
             break;
+        case "snow":
+            cloud1Color = 0xfcfcff;
+            cloud2Color = 0xfcfcff;
+            cloud3Color = 0xfcfcff;
+            cloud2Opacity = 0.5;
+            cloud3Opacity = 0.5;
+            break;
     }
 
     // day config
@@ -136,9 +150,9 @@ function adaptColorToWeather(tempColor, weatherType) {
     return {
         "top": hslToHex(hslColor.h, hslColor.s, Math.min(1, hslColor.l * 1.05)),
         "bottom":  hslToHex(hslColor.h, hslColor.s, hslColor.l / 1.1),
-        "cloud1": 0xefefef, "cloud1Opacity": 1,
-        "cloud2": 0xE6E6E6, "cloud2Opacity": 1,
-        "cloud3": 0xD5D5D5, "cloud3Opacity": 1,
+        "cloud1": cloud1Color, "cloud1Opacity": cloud1Opacity,
+        "cloud2": cloud2Color, "cloud2Opacity": cloud2Opacity,
+        "cloud3": cloud3Color, "cloud3Opacity": cloud3Opacity,
         "dateTextColor": 0x888888,
         "detailsTextColor": 0x888888,
         "supportPlateOpacity": 0,
