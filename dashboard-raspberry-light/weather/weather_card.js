@@ -140,6 +140,7 @@ class WeatherCard {
             .quadraticCurveTo(width * 0.5, arch, 0, height)
             .quadraticCurveTo(width * -0.5, arch, -width, height)
             .quadraticCurveTo(-(width * 2), height / 2, -width, 0);
+        cloud.alpha = 0.5;
 
         this.weatherContainers[i].addChild(cloud);
         gsap.to(cloud, {
