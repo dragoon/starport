@@ -166,19 +166,23 @@ class WeatherCard {
         let height = space + this.settings.cloudHeight;
         let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
         let width = this.sizes.card.width;
-        let points = [];
-        points.push('M' + [-width, height].join(','));
-        points.push([width, height].join(','));
-        points.push('Q' + [width * 2, height / 2].join(','));
-        points.push([width, 0].join(','));
-        points.push('Q' + [width * 0.5, -arch + height].join(','));
-        points.push([0, 0].join(','));
-        points.push('Q' + [width * -0.5, -arch + height].join(','));
-        points.push([-width, 0].join(','));
-        points.push('Q' + [-(width * 2), height / 2].join(','));
-        points.push([-width, height].join(','));
 
-        let path = points.join(' ');
+        let fog = new PIXI.Graphics()
+            .moveTo(-width, height)
+            .lineTo(width, height)
+            .beginFill(0xffffff, 1)
+            .quadraticCurveTo(width * 2, height / 2, width, 0)
+            .quadraticCurveTo(width * 0.5, -arch + height, 0, 0)
+            .quadraticCurveTo(width * -0.5, -arch + height, -width, 0)
+            .quadraticCurveTo(-(width * 2), height / 2, -width, height);
+        fog.alpha = 0.5;
+        this.weatherContainers[i].addChild(fog);
+        gsap.to(fog, {
+            duration: 0,
+            ease: "none",
+            x: offset,
+        });
+        return fog;
     }
 
     makeRain() {
