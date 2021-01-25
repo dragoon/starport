@@ -183,8 +183,11 @@ function adaptToDaytime(cards, day_weather) {
     $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
     cards.forEach(card => {
         card.clouds[0].tint = colorMap.cloud1;
+        card.clouds[0].alpha = colorMap.cloud1Opacity;
         card.clouds[1].tint = colorMap.cloud2;
+        card.clouds[1].alpha = colorMap.cloud2Opacity;
         card.clouds[2].tint = colorMap.cloud3;
+        card.clouds[2].alpha = colorMap.cloud3Opacity;
     });
     if (colorMap["night"] === true) {
         $(".canvas").addClass("night");
