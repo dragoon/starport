@@ -176,6 +176,7 @@ class WeatherCard {
             .quadraticCurveTo(width * -0.5, -arch + height, -width, 0)
             .quadraticCurveTo(-(width * 2), height / 2, -width, height);
         fog.alpha = 0.5;
+        fog.position.y = (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i);
         this.weatherContainers[i].addChild(fog);
         gsap.to(fog, {
             duration: 0,
