@@ -95,7 +95,7 @@ html, body {
 }
 
 
-.night .card .details, .smoke .card .details, .hail .card .details, .severe .card .details, .thunder .card .details {
+.smoke .card .details, .hail .card .details, .severe .card .details, .thunder .card .details {
     color: #ddd;
 }
 
