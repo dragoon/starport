@@ -21,17 +21,20 @@ class WeatherCard {
         this.card = $(`#${elem_id} .card`);
         this.outerSVG = Snap(`#${elem_id} .outer`);
         this.innerSVG = Snap(`#${elem_id} .card .inner`);
-        this.weatherContainer1 = Snap.select(`#${elem_id} .card #layer1`);
-        this.weatherContainer2 = Snap.select(`#${elem_id} .card #layer2`);
-        this.weatherContainer3 = Snap.select(`#${elem_id} .card #layer3`);
+
+        this.weatherContainers = [...Array(3).keys()].map(i => {
+            let c = new PIXI.Container();
+            // 0 is the closest cloud (-1 index), 2 is behind (-3)
+            c.zIndex = -i;
+            return c;
+        });
         this.canvas = $(`#${elem_id} #canvas`);
         this.scene = new PIXI.Container();
+        this.scene.sortableChildren = true;
+        this.weatherContainers.forEach(wc => this.scene.addChild(wc));
 
-        this.innerLeafHolder = this.weatherContainer1.group();
-        this.innerHailHolder = this.weatherContainer2.group();
-        this.innerLightningHolder = this.weatherContainer1.group();
+        this.innerLeafHolder = Snap.select(`#${elem_id} .card #layer1`);
         this.outerLeafHolder = this.outerSVG.group();
-        this.outerHailHolder = this.weatherContainer3.group();
         // Set mask for leaf holder
         this.leafMask = this.outerSVG.rect();
         this.outerLeafHolder.attr({'clip-path': this.leafMask});
@@ -51,18 +54,9 @@ class WeatherCard {
             card: {width: 0, height: 0}
         };
 
-        // grab cloud groups
-
-        this.clouds = [
-            {group: Snap.select(`#${elem_id} .card #cloud1`)},
-            {group: Snap.select(`#${elem_id} .card #cloud2`)},
-            {group: Snap.select(`#${elem_id} .card #cloud3`)}];
-
-
-        this.fog = [
-            {group: Snap.select(`#${elem_id} .card #fog1`)},
-            {group: Snap.select(`#${elem_id} .card #fog2`)},
-            {group: Snap.select(`#${elem_id} .card #fog3`)}];
+        // cloud containers
+        this.clouds = [];
+        this.fog = [];
 
         this.summary = $(`#${elem_id} .card .details #summary`);
         this.date = $(`#${elem_id} .card .details #date`);
@@ -122,7 +116,7 @@ class WeatherCard {
         gsap.fromTo(this.date, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
-    drawCloud(cloud, i) {
+    drawCloud(i) {
         /*
 
         ☁️ We want to create a shape thats loopable but that can also
@@ -132,33 +126,33 @@ class WeatherCard {
         card.
 
         */
+        let offset = Math.random() * this.sizes.card.width;
         let space = this.settings.cloudSpace * i;
         let height = space + this.settings.cloudHeight;
         let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
         let width = this.sizes.card.width;
 
-        let points = [];
-        points.push('M' + [-width, 0].join(','));
-        points.push([width, 0].join(','));
-        points.push('Q' + [width * 2, height / 2].join(','));
-        points.push([width, height].join(','));
-        points.push('Q' + [width * 0.5, arch].join(','));
-        points.push([0, height].join(','));
-        points.push('Q' + [width * -0.5, arch].join(','));
-        points.push([-width, height].join(','));
-        points.push('Q' + [-(width * 2), height / 2].join(','));
-        points.push([-width, 0].join(','));
+        let cloud = new PIXI.Graphics()
+            .moveTo(-width, 0)
+            .lineTo(width, 0)
+            .beginFill(0xffffff, 1)
+            .quadraticCurveTo(width * 2, height / 2, width, height)
+            .quadraticCurveTo(width * 0.5, arch, 0, height)
+            .quadraticCurveTo(width * -0.5, arch, -width, height)
+            .quadraticCurveTo(-(width * 2), height / 2, -width, 0);
+        cloud.alpha = 0.5;
 
-        var path = points.join(' ');
-        if (!cloud.path) cloud.path = cloud.group.path();
-        cloud.path.animate({
-                d: path
-            },
-            0);
-        cloud.group.transform('t' + cloud.offset + ',' + 0)
+        this.weatherContainers[i].addChild(cloud);
+        gsap.to(cloud, {
+            duration: 0,
+            ease: "none",
+            x: offset,
+        });
+
+        return cloud;
     }
 
-    drawFog(cloud, i) {
+    drawFog(i) {
         /*
             ☁️ We want to create a shape thats loopable but that can also
             be animated in and out. So we use Snap SVG to draw a shape
@@ -167,29 +161,29 @@ class WeatherCard {
             card.
 
             */
+        let offset = Math.random() * this.sizes.card.width;
         let space = this.settings.cloudSpace * i;
         let height = space + this.settings.cloudHeight;
         let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
         let width = this.sizes.card.width;
-        let points = [];
-        points.push('M' + [-width, height].join(','));
-        points.push([width, height].join(','));
-        points.push('Q' + [width * 2, height / 2].join(','));
-        points.push([width, 0].join(','));
-        points.push('Q' + [width * 0.5, -arch + height].join(','));
-        points.push([0, 0].join(','));
-        points.push('Q' + [width * -0.5, -arch + height].join(','));
-        points.push([-width, 0].join(','));
-        points.push('Q' + [-(width * 2), height / 2].join(','));
-        points.push([-width, height].join(','));
 
-        let path = points.join(' ');
-        if (!cloud.path) cloud.path = cloud.group.path();
-        cloud.path.animate({
-                d: path
-            },
-            0);
-        cloud.group.transform('t' + cloud.offset + ',' + (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i));
+        let fog = new PIXI.Graphics()
+            .moveTo(-width, height)
+            .lineTo(width, height)
+            .beginFill(0xffffff, 1)
+            .quadraticCurveTo(width * 2, height / 2, width, 0)
+            .quadraticCurveTo(width * 0.5, -arch + height, 0, 0)
+            .quadraticCurveTo(width * -0.5, -arch + height, -width, 0)
+            .quadraticCurveTo(-(width * 2), height / 2, -width, height);
+        fog.alpha = 0;
+        fog.position.y = (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i);
+        this.weatherContainers[i].addChild(fog);
+        gsap.to(fog, {
+            duration: 0,
+            ease: "none",
+            x: offset,
+        });
+        return fog;
     }
 
     makeRain() {
@@ -233,7 +227,7 @@ class WeatherCard {
         line.lineTo(0, lineLength);
 
         // add line to the scene for rendering
-        this.scene.addChild(line);
+        this.weatherContainers[2].addChild(line);
         this.rain_count += 1;
 
         // Start the falling animation, calls onRainEnd when the
@@ -350,13 +344,12 @@ class WeatherCard {
             x = 20 + Math.random() * (this.sizes.card.width - 40) + windOffset;
             endY = this.sizes.container.height + 10;
             x = x + this.sizes.card.offset.left;
-            // TODO: should be outer canvas for bigger stones
-            this.scene.addChild(newHail);
+            this.weatherContainers[1].addChild(newHail);
 
         } else {
             x = 20 + Math.random() * (this.sizes.card.width + windOffset - 20);
             endY = this.sizes.card.height + 10;
-            this.scene.addChild(newHail);
+            this.weatherContainers[2].addChild(newHail);
 
         }
         this.hail_count += 1;
@@ -410,11 +403,10 @@ class WeatherCard {
             endY = this.sizes.container.height + 10;
             y = this.sizes.card.offset.top + this.settings.cloudHeight;
             x = x + this.sizes.card.offset.left;
-            // TODO: bigger snow should be outside with outer holder
-            this.scene.addChild(flake);
+            this.weatherContainers[1].addChild(flake);
         } else {
             endY = this.sizes.card.height + 10;
-            this.scene.addChild(flake);
+            this.weatherContainers[2].addChild(flake);
         }
 
         this.flake_count += 1;
@@ -615,12 +607,12 @@ class WeatherCard {
 
             case 'sun':
                 this.clouds.forEach((cloud, i) => {
-                    gsap.killTweensOf(cloud.group.node);
+                    gsap.killTweensOf(cloud);
                     // animate clouds with gsap
                     if (cloud.offset > this.sizes.card.width * 2.5){
                         cloud.offset = -(this.sizes.card.width * 1.5);
                     }
-                    gsap.to(cloud.group.node, {
+                    gsap.to(cloud, {
                         duration: this.settings.windSpeed * (i+1),
                         ease: "none",
                         x: "+=800",
@@ -631,8 +623,8 @@ class WeatherCard {
             default:
                 // animate clouds
                 this.clouds.forEach((cloud, i) => {
-                    gsap.killTweensOf(cloud.group.node);
-                    gsap.to(cloud.group.node, {
+                    gsap.killTweensOf(cloud);
+                    gsap.to(cloud, {
                         duration: 10 * (i + 1) / this.settings.windSpeed,
                         ease: "none",
                         x: `+=${this.sizes.card.width}`,
@@ -679,7 +671,7 @@ class WeatherCard {
             points.push(x + ',' + y);
         }
 
-        var strike = this.weatherContainer1.path('M' + points.join(' ')).attr({
+        var strike = this.innerLeafHolder.path('M' + points.join(' ')).attr({
             fill: 'none',
             stroke: 'white',
             strokeWidth: 2 + Math.random()
@@ -697,15 +689,9 @@ class WeatherCard {
 
     init() {
         // ☁️ draw clouds
-        this.clouds.forEach((cloud, i) => {
-            cloud.offset = Math.random() * this.sizes.card.width;
-            this.drawCloud(cloud, i);
-        });
+        this.clouds = [...Array(3).keys()].map(i => this.drawCloud(i));
         // draw fog
-        this.fog.forEach((fog, i) => {
-            fog.offset = Math.random() * this.sizes.card.width;
-            this.drawFog(fog, i);
-        });
+        this.fog = [...Array(3).keys()].map(i => this.drawFog(i));
 
     }
 

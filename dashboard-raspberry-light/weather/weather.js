@@ -84,7 +84,7 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
             colorConfig.cloud2Opacity = 1;
             colorConfig.cloud3Opacity = 1;
         }
-        colorConfig.dateTextColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-darknessLevel);
+        colorConfig.dateTextColor = interpolateColor(colorConfig.dateTextColor, nightColorConfig.dateTextColor, 1-darknessLevel);
         if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
             colorConfig.night = true;
         }
@@ -112,6 +112,13 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
  */
 function adaptColorToWeather(tempColor, weatherType) {
 
+    let cloud1Color = 0xefefef;
+    let cloud2Color = 0xE6E6E6;
+    let cloud3Color = 0xD5D5D5;
+    let cloud1Opacity = 1;
+    let cloud2Opacity = 1;
+    let cloud3Opacity = 1;
+
     switch (weatherType) {
         case "rain":
             tempColor = 0xcdcdcd;
@@ -128,6 +135,13 @@ function adaptColorToWeather(tempColor, weatherType) {
         case "thunder":
             tempColor = 0x9FA4AD;
             break;
+        case "snow":
+            cloud1Color = 0xfcfcff;
+            cloud2Color = 0xfcfcff;
+            cloud3Color = 0xfcfcff;
+            cloud2Opacity = 0.5;
+            cloud3Opacity = 0.5;
+            break;
     }
 
     // day config
@@ -136,9 +150,9 @@ function adaptColorToWeather(tempColor, weatherType) {
     return {
         "top": hslToHex(hslColor.h, hslColor.s, Math.min(1, hslColor.l * 1.05)),
         "bottom":  hslToHex(hslColor.h, hslColor.s, hslColor.l / 1.1),
-        "cloud1": 0xefefef, "cloud1Opacity": 1,
-        "cloud2": 0xE6E6E6, "cloud2Opacity": 1,
-        "cloud3": 0xD5D5D5, "cloud3Opacity": 1,
+        "cloud1": cloud1Color, "cloud1Opacity": cloud1Opacity,
+        "cloud2": cloud2Color, "cloud2Opacity": cloud2Opacity,
+        "cloud3": cloud3Color, "cloud3Opacity": cloud3Opacity,
         "dateTextColor": 0x888888,
         "detailsTextColor": 0x888888,
         "supportPlateOpacity": 0,
@@ -151,9 +165,6 @@ function computeColorConfig(weatherObj) {
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset);
     timeColors.top = numberToHexString(timeColors.top);
     timeColors.bottom = numberToHexString(timeColors.bottom);
-    timeColors.cloud1 = numberToHexString(timeColors.cloud1, timeColors.cloud1Opacity);
-    timeColors.cloud2 = numberToHexString(timeColors.cloud2, timeColors.cloud2Opacity);
-    timeColors.cloud3 = numberToHexString(timeColors.cloud3, timeColors.cloud3Opacity);
     timeColors.dateTextColor = numberToHexString(timeColors.dateTextColor);
     timeColors.detailsTextColor = numberToHexString(timeColors.detailsTextColor);
     timeColors.supportPlateColor = numberToHexString(0x000000, timeColors.supportPlateOpacity);
@@ -176,7 +187,7 @@ function changeWeather(data) {
     }
 
 
-function adaptToDaytime(day_weather) {
+function adaptToDaytime(cards, day_weather) {
     const colorMap = computeColorConfig(day_weather);
     $(".canvas").css("color", `${colorMap.detailsTextColor}`);
     $(".datetime-container").css({
@@ -184,9 +195,14 @@ function adaptToDaytime(day_weather) {
         "background": `${colorMap.supportPlateColor}`
     });
     $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
-    $(".weather #cloud1").css("fill", `${colorMap.cloud1}`);
-    $(".weather #cloud2").css("fill", `${colorMap.cloud2}`);
-    $(".weather #cloud3").css("fill", `${colorMap.cloud3}`);
+    cards.forEach(card => {
+        card.clouds[0].tint = colorMap.cloud1;
+        card.clouds[0].alpha = colorMap.cloud1Opacity;
+        card.clouds[1].tint = colorMap.cloud2;
+        card.clouds[1].alpha = colorMap.cloud2Opacity;
+        card.clouds[2].tint = colorMap.cloud3;
+        card.clouds[2].alpha = colorMap.cloud3Opacity;
+    });
     if (colorMap["night"] === true) {
         $(".canvas").addClass("night");
     } else {
@@ -204,9 +220,9 @@ function onGetLocation(position) {
             if (i === 0) {
                 day_weather = weather.current;
                 card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
-                adaptToDaytime(day_weather);
+                adaptToDaytime(cards, day_weather);
                 clearInterval(funcDayTimeUpdates);
-                funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, day_weather);
+                funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, cards, day_weather);
             } else {
                 day_weather = weather.daily[i];
                 card.updateTempText(day_weather.temp);
