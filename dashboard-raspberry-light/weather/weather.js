@@ -79,11 +79,6 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
             colorConfig.cloud3Opacity = nightColorConfig.cloud3Opacity;
             colorConfig.detailsTextColor = nightColorConfig.detailsTextColor;
         }
-        // if sunrise -- set to day colors
-        else {
-            colorConfig.cloud2Opacity = 1;
-            colorConfig.cloud3Opacity = 1;
-        }
         colorConfig.dateTextColor = interpolateColor(colorConfig.dateTextColor, nightColorConfig.dateTextColor, 1-darknessLevel);
         if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
             colorConfig.night = true;
