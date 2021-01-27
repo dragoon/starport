@@ -186,7 +186,7 @@ class WeatherCard {
         return fog;
     }
 
-    makeRain() {
+    makeRain(line = null) {
         // 💧 This is where we draw one drop of rain
 
         // first we set the line width of the line, we use this
@@ -209,22 +209,25 @@ class WeatherCard {
         let x = Math.random() * (this.sizes.card.width - 40) + 20;
         // TODO: large lines were in different layers/holders
 
-        // Draw the line
-        let line = new PIXI.Graphics();
-        
+        if (line == null) {
+            // Draw the line
+            line = new PIXI.Graphics();
+        } else {
+            line.clear();
+        }
         line.lineStyle({width: lineWidth, color: strokeColor, alpha: 1, cap: "round"});
-
         // Define line position - this aligns the top left corner of our canvas
         line.position.x = x - windOffset;
         line.position.y = 0 - lineLength;
 
         // Define pivot to the center of the element (think transformOrigin)
-        line.pivot.set(0, lineLength/2);
+        line.pivot.set(0, lineLength / 2);
         //line.rotation = 0.785398; // in radiants, TODO: depend on wind
 
         // Draw line
-        line.moveTo(0,0);
+        line.moveTo(0, 0);
         line.lineTo(0, lineLength);
+        
 
         // add line to the scene for rendering
         this.weatherContainers[2].addChild(line);
@@ -248,15 +251,16 @@ class WeatherCard {
         // first lets get rid of the drop of rain 💧
 
         this.scene.removeChild(line);
-        line.destroy();
-        line = null;
         this.rain_count -= 1;
         
         // If there is less rain than the rainCount we should
         // make more.
 
         if (this.rain_count < this.settings.rainCount) {
-            this.makeRain();
+            this.makeRain(line);
+        } else {
+            line.destroy();
+            line = null;
         }
     }
 
