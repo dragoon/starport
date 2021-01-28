@@ -59,16 +59,17 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
     } else {
         // TWILIGHT!
         console.log("TWILIGHT");
-        const hslColor = hexToHsl(colorConfig.bottom);
+        const hslColorTop = hexToHsl(colorConfig.top);
+        const hslColorBottom = hexToHsl(colorConfig.bottom);
         // compute percentage to make darker
         const darknessLevel = Math.min(
             Math.abs( now + hourSeconds - sunriseTimestamp),
             Math.abs(now - hourSeconds - sunsetTimestamp)) / (2*hourSeconds);
 
         // first color bottom gradient
-        colorConfig.bottom = hslToHex(hslColor.h, hslColor.s, hslColor.l * darknessLevel);
+        colorConfig.bottom = hslToHex(hslColorBottom.h, hslColorBottom.s, hslColorBottom.l * darknessLevel);
         // top gradient -- darker
-        colorConfig.top = hslToHex(hslColor.h, hslColor.s, hslColor.l * (darknessLevel - darknessLevel/2));
+        colorConfig.top = hslToHex(hslColorTop.h, hslColorTop.s, hslColorTop.l * (darknessLevel - darknessLevel/2));
 
         // if sunset -- set clouds to night colors
         if (now > sunsetTimestamp - hourSeconds) {
