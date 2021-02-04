@@ -589,8 +589,8 @@ class WeatherCard {
         // animate fog
         if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
             this.fog.forEach((fog, i) => {
-                gsap.killTweensOf(fog.group.node);
-                gsap.to(fog.group.node, {
+                gsap.killTweensOf(fog);
+                gsap.to(fog, {
                     duration: 10 * (i + 1) / this.settings.windSpeed,
                     ease: "none",
                     x: `+=${this.sizes.card.width}`,
