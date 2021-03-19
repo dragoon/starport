@@ -117,7 +117,7 @@ function adaptColorToWeather(tempColor, weatherType) {
 
     switch (weatherType) {
         case "rain":
-            tempColor = 0xcdcdcd;
+            tempColor = 0x8d8f9e;
             break;
         case "haze":
             tempColor = 0xefefef;
@@ -212,16 +212,14 @@ function onGetLocation(position) {
     $.getJSON(weather_url).done(function (weather) {
 
         cards.forEach((card, i) => {
-            let day_weather;
+            let day_weather = weather.daily[i];
+            card.updateTempText(day_weather.temp);
             if (i === 0) {
                 day_weather = weather.current;
-                card.updateTempText({"day": day_weather.temp, "min": weather.daily[i].temp.min});
+                $(".datetime-container .cur-temp").html(Math.round(weather.current.temp) + "°");
                 adaptToDaytime(cards, day_weather);
                 clearInterval(funcDayTimeUpdates);
                 funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, cards, day_weather);
-            } else {
-                day_weather = weather.daily[i];
-                card.updateTempText(day_weather.temp);
             }
             card.updateDateText(new Date(day_weather.dt * 1000));
             card.changeWeather({

@@ -14,9 +14,17 @@
     font-weight: 600;
 }
 
+.datetime-container .cur-temp {
+    font-size: 100px;
+    line-height: 100px;
+    font-weight: 600;
+    margin-left: 50px;
+}
+
+
 .datetime-container .date {
-    font-size: 40px;
-    line-height: 40px;
+    font-size: 50px;
+    line-height: 50px;
     font-weight: 600;
     margin-top: 20px;
 }
