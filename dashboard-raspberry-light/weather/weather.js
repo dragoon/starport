@@ -190,6 +190,12 @@ function adaptToDaytime(cards, day_weather) {
         "color": `${colorMap.dateTextColor}`,
         "background": `${colorMap.supportPlateColor}`
     });
+    $(".datetime-container .temp-icon svg").css({
+        "fill": `${colorMap.dateTextColor}`
+    });
+    $(".datetime-container .wind svg").css({
+        "fill": `${colorMap.dateTextColor}`
+    });
     $(".sky").css("background", `linear-gradient(to top, ${colorMap.bottom} 0%, ${colorMap.top} 100%)`);
     cards.forEach(card => {
         card.clouds[0].tint = colorMap.cloud1;
@@ -206,6 +212,11 @@ function adaptToDaytime(cards, day_weather) {
     }
 }
 
+function updateUpdateCurWeather(currentWeather) {
+    $(".datetime-container .cur-temp").html(Math.round(currentWeather.temp));
+    $(".datetime-container .cur-wind").html(Math.round(currentWeather.wind_speed*3.6));
+}
+
 
 function onGetLocation(position) {
     const weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
@@ -215,8 +226,7 @@ function onGetLocation(position) {
             let day_weather = weather.daily[i];
             card.updateTempText(day_weather.temp);
             if (i === 0) {
-                day_weather = weather.current;
-                $(".datetime-container .cur-temp").html(Math.round(weather.current.temp) + "°");
+                updateUpdateCurWeather(weather.current);
                 adaptToDaytime(cards, day_weather);
                 clearInterval(funcDayTimeUpdates);
                 funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, cards, day_weather);

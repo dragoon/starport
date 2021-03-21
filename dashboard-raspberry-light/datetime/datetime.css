@@ -14,11 +14,27 @@
     font-weight: 600;
 }
 
-.datetime-container .cur-temp {
+.datetime-container .temp-icon, .datetime-container .wind-icon {
+    margin-left: 30px;
+}
+
+
+.datetime-container .cur-temp, .datetime-container .cur-wind {
     font-size: 100px;
     line-height: 100px;
     font-weight: 600;
-    margin-left: 50px;
+}
+
+.datetime-container .temp-units {
+    font-size: 50px;
+    font-weight: 600;
+    vertical-align: top;
+}
+
+.datetime-container .wind-units {
+    font-size: 50px;
+    line-height: 100px;
+    font-weight: 600;
 }
 
 
