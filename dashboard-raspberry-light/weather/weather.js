@@ -117,7 +117,7 @@ function adaptColorToWeather(tempColor, weatherType) {
 
     switch (weatherType) {
         case "rain":
-            tempColor = 0x8d8f9e;
+            tempColor = 0xdcdcdc;
             break;
         case "haze":
             tempColor = 0xefefef;
