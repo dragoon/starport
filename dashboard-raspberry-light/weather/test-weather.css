@@ -2,6 +2,29 @@
 
 body {
     background-color: #eee;
+    cursor: default !important;
+}
+
+#test_container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+#weather_cards_test {
+  display: flex;
+  flex-direction: row;
+}
+
+#settings {
+  align-items: center;
+  margin-top: 20px;
+}
+
+#time_of_day_range {
+    width: 500px;
 }
 
 nav {

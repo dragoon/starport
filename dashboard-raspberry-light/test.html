@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="background/nightsky.css"/>
     <link rel="stylesheet" href="datetime/datetime.css"/>
     <link rel="stylesheet" href="weather/test-weather.css"/>
+    <link rel="stylesheet" href="util/range_slider.css"/>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
@@ -62,54 +63,61 @@
         </div>
         <div class="date"></div>
     </div>
-    <div class="weather-cards">
-        <nav class="test-nav">
-            <ul>
-                <!-- ko foreach: weatherMap -->
-                <li>
-                    <a data-bind="click: function(data, event){ $parent.changeWeather(data, event)}">
-                        <i class="wi" data-bind="css: icon, attr: {title: name}"></i>
-                    </a>
-                </li>
-                <!-- /ko -->
-            </ul>
-        </nav>
-        <div class="container" id="card-weather-1">
-            <div class="card-container">
-                <div class="card weather">
-                    <svg class="inner">
-                        <defs>
-                            <path id="leaf"
-                                  d="M41.9,56.3l0.1-2.5c0,0,4.6-1.2,5.6-2.2c1-1,3.6-13,12-15.6c9.7-3.1,19.9-2,26.1-2.1c2.7,0-10,23.9-20.5,25 c-7.5,0.8-17.2-5.1-17.2-5.1L41.9,56.3z"/>
-                        </defs>
-                        <g id="layer3"></g>
-                        <g id="cloud3" class="cloud"></g>
-                        <g id="fog3" class="fog"></g>
-                        <g id="layer2"></g>
-                        <g id="fog2" class="fog"></g>
-                        <g id="cloud2" class="cloud"></g>
-                        <g id="layer1"></g>
-                        <g id="cloud1" class="cloud"></g>
-                        <g id="fog1" class="fog"></g>
-                    </svg>
-                    <canvas id="canvas"></canvas>
-                    <div class="details">
-                        <div class="temp">
-                            <span id="temperature"></span><span class="temp-degrees"></span>
-                            <span class="temperature-night"></span><span class="temp-degrees"></span>
+    <div id="test_container">
+        <div id="weather_cards_test">
+            <nav class="test-nav">
+                <ul>
+                    <!-- ko foreach: weatherMap -->
+                    <li>
+                        <a data-bind="click: function(data, event){ $parent.changeWeather(data, event)}">
+                            <i class="wi" data-bind="css: icon, attr: {title: name}"></i>
+                        </a>
+                    </li>
+                    <!-- /ko -->
+                </ul>
+            </nav>
+            <div class="container" id="card-weather-1">
+                <div class="card-container">
+                    <div class="card weather">
+                        <svg class="inner">
+                            <defs>
+                                <path id="leaf"
+                                      d="M41.9,56.3l0.1-2.5c0,0,4.6-1.2,5.6-2.2c1-1,3.6-13,12-15.6c9.7-3.1,19.9-2,26.1-2.1c2.7,0-10,23.9-20.5,25 c-7.5,0.8-17.2-5.1-17.2-5.1L41.9,56.3z"/>
+                            </defs>
+                            <g id="layer3"></g>
+                            <g id="cloud3" class="cloud"></g>
+                            <g id="fog3" class="fog"></g>
+                            <g id="layer2"></g>
+                            <g id="fog2" class="fog"></g>
+                            <g id="cloud2" class="cloud"></g>
+                            <g id="layer1"></g>
+                            <g id="cloud1" class="cloud"></g>
+                            <g id="fog1" class="fog"></g>
+                        </svg>
+                        <canvas id="canvas"></canvas>
+                        <div class="details">
+                            <div class="temp">
+                                <span id="temperature"></span><span class="temp-degrees"></span>
+                                <span class="temperature-night"></span><span class="temp-degrees"></span>
+                            </div>
+                            <div class="right">
+                                <div id="date"></div>
+                                <div id="summary"></div>
+                            </div>
                         </div>
-                        <div class="right">
-                            <div id="date"></div>
-                            <div id="summary"></div>
+                        <div id="sun"></div>
+                        <div class="details-bottom">
                         </div>
-                    </div>
-                    <div id="sun"></div>
-                    <div class="details-bottom">
                     </div>
                 </div>
+                <canvas class="canvas-outer"></canvas>
+                <svg class="outer"></svg>
             </div>
-            <canvas class="canvas-outer"></canvas>
-            <svg class="outer"></svg>
+        </div>
+        <div id="settings">
+            <label>
+                <input id="time_of_day_range" type="range" class="range-slider__range range blue" min="0" max="1440" value="0" name="time of day"/>
+            </label>
         </div>
     </div>
 </div>
