@@ -48,7 +48,7 @@ function getTemperatureColor(currentTemperature) {
  */
 function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
     // get now in seconds
-    let now = (new Date()).getTime()/1000;
+    let now = dateService.getDate().getTime()/1000;
     const hourSeconds = 60 * 60;
     if (now < sunriseTimestamp - hourSeconds || now > sunsetTimestamp + hourSeconds) {
         // copy of night
@@ -170,6 +170,7 @@ function computeColorConfig(weatherObj) {
 
 let cards;
 let funcDayTimeUpdates;
+let dayWeather;
 
 function changeWeather(data) {
         cards.forEach((card, i) => {
@@ -223,20 +224,20 @@ function onGetLocation(position) {
     $.getJSON(weather_url).done(function (weather) {
 
         cards.forEach((card, i) => {
-            let day_weather = weather.daily[i];
-            card.updateTempText(day_weather.temp);
+            dayWeather = weather.daily[i];
+            card.updateTempText(dayWeather.temp);
             if (i === 0) {
                 updateUpdateCurWeather(weather.current);
-                adaptToDaytime(cards, day_weather);
+                adaptToDaytime(cards, dayWeather);
                 clearInterval(funcDayTimeUpdates);
-                funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, cards, day_weather);
+                funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, cards, dayWeather);
             }
-            card.updateDateText(new Date(day_weather.dt * 1000));
+            card.updateDateText(new Date(dayWeather.dt * 1000));
             card.changeWeather({
-                "type": day_weather.ui_params.type,
-                "intensity": day_weather.ui_params.intensity,
-                "name": day_weather.ui_params.name,
-                "classes": day_weather.ui_params.classes
+                "type": dayWeather.ui_params.type,
+                "intensity": dayWeather.ui_params.intensity,
+                "name": dayWeather.ui_params.name,
+                "classes": dayWeather.ui_params.classes
             });
         });
     });
