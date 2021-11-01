@@ -11,16 +11,6 @@
   bottom: 0;
 }
 
-.canvas .sky {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  background: #eee;
-  background: linear-gradient(0deg, rgba(0, 0, 200, 0.2), rgba(0, 0, 200, 0));
-  transition: background-color 3s ease;
-  z-index: -1;
-}
-
 .star-blink {
   position: absolute;
   width: 7px;

@@ -1,0 +1,106 @@
+
+#sun_r {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background: -webkit-radial-gradient(bottom, circle, rgba(242, 248, 247, 1) 0%, rgba(249, 249, 28, 1) 3%, rgba(247, 214, 46, 1) 8%, rgba(248, 200, 95, 1) 12%, rgba(201, 165, 132, 1) 30%, rgba(115, 130, 133, 1) 51%, rgba(46, 97, 122, 1) 85%, rgba(24, 75, 106, 1) 100%);
+    background: -moz-radial-gradient(bottom, circle, rgba(242, 248, 247, 1) 0%, rgba(249, 249, 28, 1) 3%, rgba(247, 214, 46, 1) 8%, rgba(248, 200, 95, 1) 12%, rgba(201, 165, 132, 1) 30%, rgba(115, 130, 133, 1) 51%, rgba(46, 97, 122, 1) 85%, rgba(24, 75, 106, 1) 100%);
+    background: -ms-radial-gradient(bottom, circle, rgba(242, 248, 247, 1) 0%, rgba(249, 249, 28, 1) 3%, rgba(247, 214, 46, 1) 8%, rgba(248, 200, 95, 1) 12%, rgba(201, 165, 132, 1) 30%, rgba(115, 130, 133, 1) 51%, rgba(46, 97, 122, 1) 85%, rgba(24, 75, 106, 1) 100%);
+    opacity: 0.5;
+
+    z-index: -3;
+}
+
+#sunDay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background: -webkit-radial-gradient(bottom, circle, rgba(252, 255, 251, 0.9) 0%, rgba(253, 250, 219, 0.4) 30%, rgba(226, 219, 197, 0.01) 70%, rgba(226, 219, 197, 0.0) 70%, rgba(201, 165, 132, 0) 100%);
+    background: -moz-radial-gradient(bottom, circle, rgba(252, 255, 251, 0.9) 0%, rgba(253, 250, 219, 0.4) 30%, rgba(226, 219, 197, 0.01) 70%, rgba(226, 219, 197, 0.0) 70%, rgba(201, 165, 132, 0) 100%);
+    background: -ms-radial-gradient(bottom, circle, rgba(252, 255, 251, 0.9) 0%, rgba(253, 250, 219, 0.4) 30%, rgba(226, 219, 197, 0.01) 70%, rgba(226, 219, 197, 0.0) 70%, rgba(201, 165, 132, 0) 100%);
+
+    opacity: 0.5;
+
+    z-index: -2;
+}
+
+#sunSet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background: -webkit-radial-gradient(bottom, circle, rgba(254, 255, 255, 0.8) 5%, rgba(236, 255, 0, 1) 10%, rgba(253, 50, 41, 1) 25%, rgba(243, 0, 0, 1) 40%, rgba(93, 0, 0, 1) 100%);
+    background: -moz-radial-gradient(bottom, circle, rgba(254, 255, 255, 0.8) 5%, rgba(236, 255, 0, 1) 10%, rgba(253, 50, 41, 1) 25%, rgba(243, 0, 0, 1) 40%, rgba(93, 0, 0, 1) 100%);
+    background: -ms-radial-gradient(bottom, circle, rgba(254, 255, 255, 0.8) 5%, rgba(236, 255, 0, 1) 10%, rgba(253, 50, 41, 1) 25%, rgba(243, 0, 0, 1) 40%, rgba(93, 0, 0, 1) 100%);
+    opacity: 0.3;
+
+    z-index: -2;
+}
+
+#sky {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: -webkit-linear-gradient(bottom, rgba(249, 251, 240, 1) 10%, rgba(215, 253, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -moz-linear-gradient(bottom, rgba(249, 251, 240, 1) 10%, rgba(215, 253, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -ms-linear-gradient(bottom, rgba(249, 251, 240, 1) 10%, rgba(215, 253, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: linear-gradient(bottom, rgba(249, 251, 240, 1) 10%, rgba(215, 253, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    opacity: 0.52;
+    z-index: -5;
+}
+
+#horizon {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background: -webkit-linear-gradient(bottom, rgba(212, 87, 43, 0.9) 0%, rgba(246, 149, 52, 0.8) 20%, rgba(24, 75, 106, 0) 100%);
+    background: -moz-linear-gradient(bottom, rgba(212, 87, 43, 0.9) 0%, rgba(246, 149, 52, 0.8) 20%, rgba(24, 75, 106, 0) 100%);
+    background: -ms-linear-gradient(bottom, rgba(212, 87, 43, 0.9) 0%, rgba(246, 149, 52, 0.8) 20%, rgba(24, 75, 106, 0) 100%);
+    background: linear-gradient(bottom, rgba(212, 87, 43, 0.9) 0%, rgba(246, 149, 52, 0.8) 20%, rgba(24, 75, 106, 0) 100%);
+    opacity: 0.99;
+    z-index: -5;
+}
+
+#horizonNight {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background: -webkit-linear-gradient(bottom, rgba(0, 0, 70, 1) 0%, rgba(0, 11, 22, 0.1) 60%);
+    background: -moz-linear-gradient(bottom, rgba(0, 0, 70, 1) 0%, rgba(0, 11, 22, 0.1) 60%);
+    background: -ms-linear-gradient(bottom, rgba(0, 0, 70, 1) 0%, rgba(0, 11, 22, 0.1) 60%);
+    background: linear-gradient(bottom, rgba(0, 0, 70, 1) 0%, rgba(0, 11, 22, 0.1) 60%);
+    opacity: 0;
+
+    z-index: 0;
+}
+
+#darknessOverlaySky {
+    background-color: #000;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    z-index: -1;
+}

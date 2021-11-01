@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="sunrise/sunrise.css"/>
     <link rel="stylesheet" href="weather/weather.css"/>
     <link rel="stylesheet" href="background/nightsky.css"/>
     <link rel="stylesheet" href="datetime/datetime.css"/>
@@ -13,6 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.8/pixi.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.js"></script>
+    <script type="text/javascript" src="sunrise/sunrise.js"></script>
     <script type="text/javascript" src="weather/weather.js"></script>
     <script type="text/javascript" src="weather/weather_card.js"></script>
     <script type="text/javascript" src="datetime/time.js"></script>
@@ -21,8 +23,16 @@
     <title>Dashboard</title>
 </head>
 <body>
+<!-- inner sun -->
+<div id="sun_r"></div>
+<div id="sunDay"></div>
+<div id="sunSet"></div>
+<div id="sky"></div>
+<div id="horizon"></div>
+<!-- night sky -->
+<div id="horizonNight"></div>
+<div id="darknessOverlaySky"></div>
 <div class="canvas">
-    <div class="sky"></div>
     <div class="datetime-container">
         <div style="display: flex; flex-direction: row">
             <div class="time"></div>
