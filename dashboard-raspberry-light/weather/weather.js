@@ -12,7 +12,6 @@ const nightColorConfig = {
     "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6,
     "detailsTextColor": 0xdddddd,
     "dateTextColor": 0xdddddd,
-    "supportPlateOpacity": 0,
     "night": true
 };
 
@@ -41,27 +40,27 @@ function getTemperatureColor(currentTemperature) {
  *    _____
  *   /     \
  * _/       \____
- * @param colorConfig {{brightnessLevel: number, cloud1: number, cloud2: number, cloud3: number, dateTextColor: number}}
+ * @param colorConfig {{brightnessLevel: number, cloud1: number, cloud2: number, cloud3: number, dateTextColor: number, night: boolean}}
  * @param sunriseTimestamp timestamp (seconds since epoch) of sunrise
  * @param sunsetTimestamp timestamp (seconds since epoch) of sunset
  * @return {{y: number, cloud1: number}}
  */
 function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
-    // get now in seconds
+    // get current time in seconds
     let now = dateService.getDate().getTime()/1000;
-    const hourSeconds = 60 * 60;
-    if (now < sunriseTimestamp - hourSeconds || now > sunsetTimestamp + hourSeconds) {
+    const twilightSeconds = 30 * 60;
+    if (now < sunriseTimestamp - twilightSeconds || now > sunsetTimestamp + twilightSeconds) {
         // copy of night
         return {...nightColorConfig};
-    } else if (now > sunriseTimestamp + hourSeconds && now < sunsetTimestamp - hourSeconds) {
+    } else if (now > sunriseTimestamp + twilightSeconds && now < sunsetTimestamp - twilightSeconds) {
         // day
         colorConfig.brightnessLevel = 1.0;
         return colorConfig;
     } else {
         // compute percentage to make darker
         const brightnessLevel = Math.min(
-            Math.abs( now + hourSeconds - sunriseTimestamp),
-            Math.abs(now - hourSeconds - sunsetTimestamp)) / (2*hourSeconds);
+            Math.abs( now + twilightSeconds - sunriseTimestamp),
+            Math.abs(now - twilightSeconds - sunsetTimestamp)) / (2*twilightSeconds);
         // 0 -- dark , 1 - bright
         console.log("Brightness Level:", brightnessLevel);
 
@@ -69,7 +68,7 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
         colorConfig.brightnessLevel = brightnessLevel;
 
         // if sunset -- set clouds to night colors
-        if (now > sunsetTimestamp - hourSeconds) {
+        if (now > sunsetTimestamp - twilightSeconds) {
             colorConfig.cloud1 = nightColorConfig.cloud1;
             colorConfig.cloud2 = nightColorConfig.cloud2;
             colorConfig.cloud3 = nightColorConfig.cloud3;
@@ -80,12 +79,6 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
         if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
             colorConfig.night = true;
         }
-        if (brightnessLevel <= 0.5) {
-            colorConfig.supportPlateOpacity = brightnessLevel;
-        } else {
-            colorConfig.supportPlateOpacity = (1 - brightnessLevel);
-        }
-
         return colorConfig;
     }
 }
@@ -140,8 +133,7 @@ function adaptColorToWeather(tempColor, weatherType) {
         "cloud2": cloud2Color, "cloud2Opacity": cloud2Opacity,
         "cloud3": cloud3Color, "cloud3Opacity": cloud3Opacity,
         "dateTextColor": 0x888888,
-        "detailsTextColor": 0x888888,
-        "supportPlateOpacity": 0,
+        "detailsTextColor": 0x888888
     }
 }
 
@@ -151,7 +143,6 @@ function computeColorConfig(weatherObj) {
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset);
     timeColors.dateTextColor = numberToHexString(timeColors.dateTextColor);
     timeColors.detailsTextColor = numberToHexString(timeColors.detailsTextColor);
-    timeColors.supportPlateColor = numberToHexString(0x000000, timeColors.supportPlateOpacity);
     return timeColors;
 
 }
@@ -172,6 +163,10 @@ function changeWeather(data) {
     }
 
 
+/**
+ * Return brightness level to properly set update frequency
+ * @return number
+ */
 function adaptToDaytime(cards, day_weather) {
     const colorMap = computeColorConfig(day_weather);
     $(".canvas").css("color", `${colorMap.detailsTextColor}`);
@@ -189,6 +184,7 @@ function adaptToDaytime(cards, day_weather) {
     } else {
         $(".canvas").removeClass("night");
     }
+    return colorMap.brightnessLevel;
 }
 
 function updateUpdateCurWeather(currentWeather) {
@@ -206,9 +202,14 @@ function onGetLocation(position) {
             card.updateTempText(dayWeather.temp);
             if (i === 0) {
                 updateUpdateCurWeather(weather.current);
-                adaptToDaytime(cards, dayWeather);
+                var brightness = adaptToDaytime(cards, dayWeather);
                 clearInterval(funcDayTimeUpdates);
-                funcDayTimeUpdates = setInterval(adaptToDaytime, 60*1000, cards, dayWeather);
+                if (brightness < 0.01 || brightness > 0.99) {
+                    funcDayTimeUpdates = setInterval(adaptToDaytime, 60 * 1000, cards, dayWeather);
+                } else {
+                    // every 10 sec update if sunset/sunrise
+                    funcDayTimeUpdates = setInterval(adaptToDaytime, 10 * 1000, cards, dayWeather);
+                }
             }
             card.updateDateText(new Date(dayWeather.dt * 1000));
             card.changeWeather({
@@ -225,6 +226,7 @@ function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(onGetLocation, function error(message) {
             console.log(message);
+            // Zurich default
             onGetLocation({"coords": {"latitude": 47.3386721, "longitude": 8.5198395}})
         });
     } else {
