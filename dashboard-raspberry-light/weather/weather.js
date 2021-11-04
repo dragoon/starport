@@ -66,16 +66,6 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
 
         // sun position
         colorConfig.brightnessLevel = brightnessLevel;
-
-        // if sunset -- set clouds to night colors
-        if (now > sunsetTimestamp - twilightSeconds) {
-            colorConfig.cloud1 = nightColorConfig.cloud1;
-            colorConfig.cloud2 = nightColorConfig.cloud2;
-            colorConfig.cloud3 = nightColorConfig.cloud3;
-            colorConfig.cloud2Opacity = nightColorConfig.cloud2Opacity;
-            colorConfig.cloud3Opacity = nightColorConfig.cloud3Opacity;
-            colorConfig.detailsTextColor = nightColorConfig.detailsTextColor;
-        }
         if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
             colorConfig.night = true;
         }
