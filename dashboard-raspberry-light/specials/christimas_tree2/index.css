@@ -1,0 +1,196 @@
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+}
+
+#tree {
+  -webkit-animation: hide 3s infinite;
+}
+
+svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+
+#Layer_1 {
+  filter: drop-shadow(0 0 5px #fff);
+}
+
+#Layer_2 {
+  filter: drop-shadow(0 0 10px #fff);
+}
+
+#Layer_3 {
+  filter: drop-shadow(0 0 20px #00ff80);
+}
+
+#Layer_4 {
+  filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.5));
+}
+
+#Layer_5 {
+  filter: drop-shadow(0 0 35px #00ff80);
+  -webkit-animation: shine 6s infinite;
+}
+
+#Layer_6 {
+  filter: drop-shadow(0 0 75px #00ff80);
+  -webkit-animation: shine 6s infinite;
+}
+
+@-webkit-keyframes shine {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes shine {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes shine {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes shine {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes hide {
+  0% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  61% {
+    opacity: 0.3;
+  }
+  62% {
+    opacity: 1;
+  }
+  64% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes hide {
+  0% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  61% {
+    opacity: 0.3;
+  }
+  62% {
+    opacity: 1;
+  }
+  64% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes hide {
+  0% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  61% {
+    opacity: 0.3;
+  }
+  62% {
+    opacity: 1;
+  }
+  64% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes hide {
+  0% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  61% {
+    opacity: 0.3;
+  }
+  62% {
+    opacity: 1;
+  }
+  64% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
