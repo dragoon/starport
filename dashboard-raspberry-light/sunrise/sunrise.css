@@ -46,7 +46,6 @@
 }
 
 #sky {
-    cursor: pointer;
     position: absolute;
     top: 0;
     left: 0;
@@ -61,7 +60,6 @@
 }
 
 #horizon {
-    cursor: pointer;
     position: absolute;
     top: 0;
     left: 0;
@@ -77,7 +75,6 @@
 }
 
 #horizonNight {
-    cursor: pointer;
     position: absolute;
     top: 0;
     left: 0;
