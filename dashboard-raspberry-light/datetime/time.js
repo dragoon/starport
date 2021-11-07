@@ -25,8 +25,8 @@ function currentTime() {
     hour = updateTime(hour);
     min = updateTime(min);
     sec = updateTime(sec);
-    $(".datetime-container .time").text(hour + ":" + min);
-    $(".datetime-container .date").text(date.toLocaleDateString("en-US", {weekday: 'long', month: 'long', day: 'numeric'}));
+    document.querySelector(".datetime-container .time").innerHTML = hour + ":" + min;
+    document.querySelector(".datetime-container .date").innerHTML = date.toLocaleDateString("en-US", {weekday: 'long', month: 'long', day: 'numeric'});
     setTimeout(function () {
         currentTime()
     }, 60000); /* setting timer */
@@ -40,6 +40,4 @@ function updateTime(k) {
     }
 }
 
-$(function () {
-    currentTime();
-});
+currentTime();
