@@ -186,31 +186,32 @@ function updateUpdateCurWeather(currentWeather) {
 
 function onGetLocation(position) {
     const weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
-    $.getJSON(weather_url).done(function (weather) {
-
-        cards.forEach((card, i) => {
-            dayWeather = weather.daily[i];
-            card.updateTempText(dayWeather.temp);
-            if (i === 0) {
-                updateUpdateCurWeather(weather.current);
-                var brightness = adaptToDaytime(cards, dayWeather);
-                clearInterval(funcDayTimeUpdates);
-                if (brightness < 0.01 || brightness > 0.99) {
-                    funcDayTimeUpdates = setInterval(adaptToDaytime, 60 * 1000, cards, dayWeather);
-                } else {
-                    // every 10 sec update if sunset/sunrise
-                    funcDayTimeUpdates = setInterval(adaptToDaytime, 10 * 1000, cards, dayWeather);
+    fetch(weather_url)
+        .then(response => response.json())
+        .then(function (weather) {
+            cards.forEach((card, i) => {
+                dayWeather = weather.daily[i];
+                card.updateTempText(dayWeather.temp);
+                if (i === 0) {
+                    updateUpdateCurWeather(weather.current);
+                    var brightness = adaptToDaytime(cards, dayWeather);
+                    clearInterval(funcDayTimeUpdates);
+                    if (brightness < 0.01 || brightness > 0.99) {
+                        funcDayTimeUpdates = setInterval(adaptToDaytime, 60 * 1000, cards, dayWeather);
+                    } else {
+                        // every 10 sec update if sunset/sunrise
+                        funcDayTimeUpdates = setInterval(adaptToDaytime, 10 * 1000, cards, dayWeather);
+                    }
                 }
-            }
-            card.updateDateText(new Date(dayWeather.dt * 1000));
-            card.changeWeather({
-                "type": dayWeather.ui_params.type,
-                "intensity": dayWeather.ui_params.intensity,
-                "name": dayWeather.ui_params.name,
-                "classes": dayWeather.ui_params.classes
+                card.updateDateText(new Date(dayWeather.dt * 1000));
+                card.changeWeather({
+                    "type": dayWeather.ui_params.type,
+                    "intensity": dayWeather.ui_params.intensity,
+                    "name": dayWeather.ui_params.name,
+                    "classes": dayWeather.ui_params.classes
+                });
             });
         });
-    });
 }
 
 function getLocation() {
@@ -226,31 +227,27 @@ function getLocation() {
 }
 
 
-// 📝 Fetch all DOM nodes in jQuery and Snap SVG
-$(function () {
-    gsap.registerPlugin(PixiPlugin);
 
-    cards = Array.from(document.querySelectorAll('.container')).map(c => new WeatherCard(c));
+gsap.registerPlugin(PixiPlugin);
+cards = Array.from(document.querySelectorAll('.container')).map(c => new WeatherCard(c));
 
-    function init() {
-        onResize();
-        cards.forEach(card => card.init());
-        getLocation();
-    }
+function init() {
+    cards.forEach(card => card.resize());
+    cards.forEach(card => card.init());
+    getLocation();
+}
 
-    function onResize() {
-        cards.forEach(card => card.resize());
-    }
-
-    function tick(timestamp) {
-        // iterate over all weather cards
-        cards.forEach(card => card.tick(timestamp));
-        requestAnimationFrame(tick);
-    }
-
-    init();
-    $(window).resize(onResize);
+function tick(timestamp) {
+    // iterate over all weather cards
+    cards.forEach(card => card.tick(timestamp));
     requestAnimationFrame(tick);
-    setInterval(getLocation, 60 * 60 * 1000); // 1 hour
+}
 
-});
+init();
+
+window.addEventListener('resize', function(event) {
+    cards.forEach(card => card.resize());
+}, true);
+requestAnimationFrame(tick);
+setInterval(getLocation, 60 * 60 * 1000); // 1 hour
+
