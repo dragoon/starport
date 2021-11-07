@@ -33,7 +33,7 @@ class WeatherCard {
         this.scene.sortableChildren = true;
         this.weatherContainers.forEach(wc => this.scene.addChild(wc));
 
-        this.innerLeafHolder = Snap.select(`#${elem_id} .card #layer1`);
+        this.innerLeafHolder = this.innerSVG.group();
         this.outerLeafHolder = this.outerSVG.group();
 
         // technical
@@ -377,9 +377,7 @@ class WeatherCard {
 
         // TODO: big snow was in a different cloud holder
         if (scale > 0.8) {
-            endY = this.sizes.container.height + 10;
-            y = this.sizes.card.offset.top + this.settings.cloudHeight;
-            x = x + this.sizes.card.offset.left;
+            endY = this.sizes.container.height - this.sizes.card.offset.top + 10;
             this.weatherContainers[1].addChild(flake);
         } else {
             endY = this.sizes.card.height + 10;
@@ -389,13 +387,12 @@ class WeatherCard {
         this.flake_count += 1;
 
         gsap.fromTo(flake, {x: x, y: y}, {
-            duration: 3 + Math.random() * 5,
+            duration: 5 + Math.random() * 5,
             y: endY,
             onComplete: this.onSnowEnd.bind(this),
             onCompleteParams: [flake],
             ease: Power0.easeIn
         });
-        //gsap.fromTo(circle, {scale: 0}, {duration: 1, scale: scale, ease: Power1.easeInOut});
         gsap.to(flake, {duration: 3, x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
     }
 
