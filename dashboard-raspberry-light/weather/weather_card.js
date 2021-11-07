@@ -17,8 +17,8 @@ class WeatherCard {
         };
 
         let elem_id = container.id;
-        this.container = $(container);
-        this.card = $(`#${elem_id} .card`);
+        this.container = document.getElementById(elem_id);
+        this.card = document.querySelector(`#${elem_id} .card`);
         this.outerSVG = Snap(`#${elem_id} .outer`);
         this.innerSVG = Snap(`#${elem_id} .card .inner`);
 
@@ -55,22 +55,22 @@ class WeatherCard {
         this.clouds = [];
         this.fog = [];
 
-        this.summary = $(`#${elem_id} .card .details #summary`);
-        this.date = $(`#${elem_id} .card .details #date`);
-        this.temp = $(`#${elem_id} .card .details #temperature`);
-        this.temp_min = $(`#${elem_id} .card .details .temp .temperature-night`);
-        this.tempFormat = $(`#${elem_id} .card .details .temp-degrees`);
+        this.summary = document.querySelector(`#${elem_id} .card .details #summary`);
+        this.date = document.querySelector(`#${elem_id} .card .details #date`);
+        this.temp = document.querySelector(`#${elem_id} .card .details #temperature`);
+        this.temp_min = document.querySelector(`#${elem_id} .card .details .temp .temperature-night`);
+        this.tempFormat = document.querySelector(`#${elem_id} .card .details .temp-degrees`);
         this.leaf = Snap.select(`#${elem_id} .card #leaf`);
-        this.sun = $(`#${elem_id} .card #sun`);
+        this.sun = document.querySelector(`#${elem_id} .card #sun`);
     }
 
     resize() {
         // 📏 grab window and card sizes
         this.sizes.container.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
         this.sizes.container.height = window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight;
-        this.sizes.card.width = this.card.width();
-        this.sizes.card.height = this.card.height();
-        this.sizes.card.offset = this.card.offset();
+        this.sizes.card.width = this.card.clientWidth;
+        this.sizes.card.height = this.card.clientHeight;
+        this.sizes.card.offset = { left: this.card.offsetLeft, top: this.card.offsetTop };
 
         // 📐 update svg sizes
 
@@ -98,7 +98,7 @@ class WeatherCard {
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         //this.date.html(days[d.getDay()] + " " + d.getDate() + " " + months[d.getMonth()]);
-        this.date.html(days[d.getDay()]);
+        this.date.innerHTML = days[d.getDay()];
         gsap.fromTo(this.date, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
@@ -423,7 +423,7 @@ class WeatherCard {
             ease: Power4.easeIn
         });
 
-        this.container.addClass(weather.type);
+        this.container.classList.add(weather.type);
 
         // windSpeed
 
@@ -612,14 +612,14 @@ class WeatherCard {
     }
 
     updateSummaryText() {
-        this.summary.html(this.currentWeather.name);
+        this.summary.innerHTML = this.currentWeather.name;
         gsap.fromTo(this.summary, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
     updateTempText(newTemp) {
-        this.temp.html(Math.round(newTemp.day));
-        this.temp_min.html(Math.round(newTemp.min));
-        this.tempFormat.html("°");
+        this.temp.innerHTML = Math.round(newTemp.day);
+        this.temp_min.innerHTML = Math.round(newTemp.min);
+        this.tempFormat.innerHTML = "°";
         gsap.fromTo(this.temp, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
         gsap.fromTo(this.tempFormat, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
@@ -670,7 +670,7 @@ class WeatherCard {
     }
 
     reset() {
-        weather_types.forEach(t => this.container.removeClass(t));
+        weather_types.forEach(t => this.container.classList.remove(t));
     }
 
     tick(timestamp) {

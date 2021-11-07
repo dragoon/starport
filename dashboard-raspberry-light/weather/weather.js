@@ -159,7 +159,8 @@ function changeWeather(data) {
  */
 function adaptToDaytime(cards, day_weather) {
     const colorMap = computeColorConfig(day_weather);
-    $(".canvas").css("color", `${colorMap.detailsTextColor}`);
+    const canvases = Array.from(document.querySelectorAll(".canvas"));
+    canvases.forEach((c) => c.style.color = colorMap.detailsTextColor);
     cards.forEach(card => {
         card.clouds[0].tint = colorMap.cloud1;
         card.clouds[0].alpha = colorMap.cloud1Opacity;
@@ -170,16 +171,16 @@ function adaptToDaytime(cards, day_weather) {
     });
     updateSunrise(colorMap.brightnessLevel);
     if (colorMap["night"] === true) {
-        $(".canvas").addClass("night");
+        canvases.forEach((c) => c.classList.add("night"));
     } else {
-        $(".canvas").removeClass("night");
+        canvases.forEach((c) => c.classList.remove("night"));
     }
     return colorMap.brightnessLevel;
 }
 
 function updateUpdateCurWeather(currentWeather) {
-    $(".datetime-container .cur-temp").html(Math.round(currentWeather.temp));
-    $(".datetime-container .cur-wind").html(Math.round(currentWeather.wind_speed*3.6));
+    document.querySelector(".datetime-container .cur-temp").innerHTML = Math.round(currentWeather.temp);
+    document.querySelector(".datetime-container .cur-wind").innerHTML = Math.round(currentWeather.wind_speed*3.6);
 }
 
 
@@ -229,7 +230,7 @@ function getLocation() {
 $(function () {
     gsap.registerPlugin(PixiPlugin);
 
-    cards = $('.container').toArray().map(c => new WeatherCard(c));
+    cards = Array.from(document.querySelectorAll('.container')).map(c => new WeatherCard(c));
 
     function init() {
         onResize();
