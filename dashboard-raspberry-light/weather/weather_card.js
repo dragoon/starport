@@ -28,7 +28,7 @@ class WeatherCard {
             c.zIndex = -i;
             return c;
         });
-        this.canvas = $(`#${elem_id} #canvas`);
+        this.canvas = document.querySelectorAll(`#${elem_id} #canvas`);
         this.scene = new PIXI.Container();
         this.scene.sortableChildren = true;
         this.weatherContainers.forEach(wc => this.scene.addChild(wc));
@@ -89,7 +89,7 @@ class WeatherCard {
             {
                 "width": this.sizes.card.width,
                 "height": this.sizes.card.height,
-                "view": this.canvas.get(0), transparent: true, antialias: true
+                "view": this.canvas[0], transparent: true, antialias: true
             });
     }
 
