@@ -42,7 +42,6 @@ const weatherMap = {
     40: {type: 'rain', class: '', intensity: .75, icon: 'wi-showers', name: 'Scattered Showers'}, //scattered showers
     41: {type: 'snow', class: 'cold', intensity: 1.75, icon: 'wi-snow', name: 'Heavy Snow'}, //heavy snow
     42: {type: 'snow', class: 'cold', intensity: .5, icon: 'wi-snow', name: 'Scattered Snow Showers'}, //scattered snow showers
-    43: {type: 'snow', class: 'cold', intensity: 1.75, icon: 'wi-snow', name: 'Heavy Snow'}, //heavy snow
     44: {type: 'cloud', class: '', intensity: .1, icon: 'wi-day-cloudy', name: 'Partly Cloudy'}, //partly cloudy
     45: {type: 'thunder', class: '', intensity: .5, icon: 'wi-storm-showers', name: 'Thundershowers'}, //thundershowers
     46: {type: 'snow', class: 'cold', intensity: .75, icon: 'wi-snow', name: 'Snow Showers'}, //snow showers

@@ -35,15 +35,12 @@ class WeatherCard {
 
         this.innerLeafHolder = Snap.select(`#${elem_id} .card #layer1`);
         this.outerLeafHolder = this.outerSVG.group();
-        // Set mask for leaf holder
-        this.leafMask = this.outerSVG.rect();
-        this.outerLeafHolder.attr({'clip-path': this.leafMask});
 
         // technical
         this.lightningTimeout = 0;
         this.start = undefined;
         this.rain_count = 0;
-        this.leafs = [];
+        this.leaf_count = 0;
         this.flake_count = 0;
         this.hail_count = 0;
 
@@ -69,8 +66,8 @@ class WeatherCard {
 
     resize() {
         // 📏 grab window and card sizes
-        this.sizes.container.width = this.container.width();
-        this.sizes.container.height = this.container.height();
+        this.sizes.container.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        this.sizes.container.height = window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight;
         this.sizes.card.width = this.card.width();
         this.sizes.card.height = this.card.height();
         this.sizes.card.offset = this.card.offset();
@@ -87,17 +84,6 @@ class WeatherCard {
             width: this.sizes.container.width,
             height: this.sizes.container.height
         });
-
-        // 🍃 The leaf mask is for the leafs that float out of the
-        // container, it is full window height and starts on the left
-        // inline with the card
-        this.leafMask.attr({
-                x: this.sizes.card.offset.left,
-                y: 0,
-                width: this.sizes.container.width,
-                height: this.sizes.container.height
-            }
-        );
 
         this.renderer = PIXI.autoDetectRenderer(
             {
@@ -265,41 +251,31 @@ class WeatherCard {
     }
 
     makeLeaf() {
-        var scale = 0.5 + Math.random() * 0.5;
-        var newLeaf;
+        const scale = 0.5 + Math.random() * 0.5;
+        let newLeaf;
 
-        var areaY = this.sizes.card.height / 2;
-        var y = areaY + Math.random() * areaY;
-        var endY = y - (Math.random() * (areaY * 2) - areaY);
-        var x;
-        var endX;
-        var colors = ['#76993E', '#4A5E23', '#6D632F'];
-        var color = colors[Math.floor(Math.random() * colors.length)];
-        var xBezier;
+        const areaY = this.sizes.card.height / 2;
+        let y = areaY + Math.random() * areaY;
+        let endY = y - (Math.random() * (areaY * 2) - areaY);
+        const x = -100;
+        let endX;
+        const colors = ['#b7a851', '#76993E', '#4A5E23', '#6D632F'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        let xBezier;
 
         if (scale > 0.8) {
             newLeaf = this.leaf.clone().appendTo(this.outerLeafHolder).attr({fill: color});
-
-            y = y + this.sizes.card.offset.top / 2;
-            endY = endY + this.sizes.card.offset.top / 2;
-
-            x = this.sizes.card.offset.left - 100;
             xBezier = x + (this.sizes.container.width - this.sizes.card.offset.left) / 2;
-            endX = this.sizes.container.width + 50;
+            endX = this.sizes.container.width - this.sizes.card.offset.left + 50;
         } else {
-            newLeaf = this.leaf.clone().appendTo(this.innerLeafHolder).attr({
-                fill: color
-            });
-
-            x = -100;
+            newLeaf = this.leaf.clone().appendTo(this.innerLeafHolder).attr({fill: color});
             xBezier = this.sizes.card.width / 2;
             endX = this.sizes.card.width + 50;
 
         }
 
-        this.leafs.push(newLeaf);
-
         var bezier = [{x: xBezier, y: Math.random() * endY + endY / 3}, {x: endX, y: endY}];
+        this.leaf_count += 1;
         gsap.fromTo(newLeaf.node,
             {
                 rotation: Math.random() * 180,
@@ -319,12 +295,9 @@ class WeatherCard {
     onLeafEnd(leaf) {
         leaf.remove();
         leaf = null;
+        this.leaf_count -= 1;
 
-        for (var i in this.leafs) {
-            if (!this.leafs[i].paper) this.leafs.splice(i, 1);
-        }
-
-        if (this.leafs.length < this.settings.leafCount) {
+        if (this.leaf_count < this.settings.leafCount) {
             this.makeLeaf();
         }
     }
@@ -711,7 +684,7 @@ class WeatherCard {
         if (elapsed > 100) {
             if (this.rain_count < this.settings.rainCount) this.makeRain();
             if (this.flake_count < this.settings.snowCount) this.makeSnow();
-            if (this.leafs.length < this.settings.leafCount) this.makeLeaf();
+            if (this.leaf_count < this.settings.leafCount) this.makeLeaf();
             if (this.hail_count < this.settings.hailCount) this.makeHail();
             this.start = timestamp;
         }
