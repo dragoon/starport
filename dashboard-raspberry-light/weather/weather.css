@@ -162,8 +162,8 @@ html, body {
 .weather #sun {
     --pulse-color: #F7ED47;
     background-color: var(--pulse-color);
-    box-shadow: 0 0 8px var(--pulse-color), inset 0 0 8px var(--pulse-color);
-    animation: pulse 2s linear 1s infinite;
+    box-shadow: 0 0 28px var(--pulse-color), inset 0 0 28px var(--pulse-color);
+    /**animation: pulse 2s linear 1s infinite;* Drains performance*/
     border-radius: 50px;
     height: 100px;
     width: 100px;
