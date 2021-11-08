@@ -21,15 +21,15 @@ svg {
 }
 
 #Layer_1 {
-    filter: drop-shadow(0 0 5px #fff);
+    filter: drop-shadow(0 0 5px #d0fae5);
 }
 
 #Layer_2 {
-    filter: drop-shadow(0 0 10px #fff);
+    filter: drop-shadow(0 0 10px #d0fae5);
 }
 
 #Layer_3 {
-    filter: drop-shadow(0 0 20px #00ff80);
+    filter: drop-shadow(0 0 20px #0cd36e);
 }
 
 #Layer_4 {
@@ -37,12 +37,12 @@ svg {
 }
 
 #Layer_5 {
-    filter: drop-shadow(0 0 35px #00ff80);
+    filter: drop-shadow(0 0 35px #1ec471);
     -webkit-animation: shine 6s infinite;
 }
 
 #Layer_6 {
-    filter: drop-shadow(0 0 75px #00ff80);
+    filter: drop-shadow(0 0 75px #0fe179);
     -webkit-animation: shine 6s infinite;
 }
 
