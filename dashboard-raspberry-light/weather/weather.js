@@ -211,6 +211,7 @@ function onGetLocation(position) {
                     "classes": dayWeather.ui_params.classes
                 });
             });
+            addExtras(weather.extras);
         });
 }
 
