@@ -49,7 +49,6 @@ function randomBetween(min, max) {
 
 function flicker(p) {
 
-    //console.log("flivker")
     TweenMax.killTweensOf(p, {opacity: true});
     TweenMax.fromTo(p, 0.07, {
         alpha: 1
@@ -173,10 +172,6 @@ function drawStar() {
 
 
     //TweenMax.staggerTo(particlePool, 2, {})
-
-}
-
-function textAnim() {
 
 }
 
