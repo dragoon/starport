@@ -54,10 +54,13 @@ clearInterval(funcDayTimeUpdates);
 
 $('#time_of_day_range').on('input', function () {
     // set time of day
-    var minutes = $(this).val();
-    var date = new Date();
+    let minutes = $(this).val();
+    let date = new Date();
     date.setHours(minutes / 60);
     date.setMinutes(minutes % 60);
     dateService = new DateService(date);
     adaptToDaytime(cards, currentWeather);
 });
+
+function addExtras(extras) {
+}
