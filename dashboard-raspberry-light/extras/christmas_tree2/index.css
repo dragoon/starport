@@ -4,11 +4,11 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: transparent;
+    background: black;
 }
 
 #tree {
-    -webkit-animation: hide 3s infinite;
+    -webkit-animation: hide 4s infinite;
 }
 
 svg {
@@ -46,42 +46,6 @@ svg {
     -webkit-animation: shine 6s infinite;
 }
 
-@-webkit-keyframes shine {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.3;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@-moz-keyframes shine {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.3;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@-o-keyframes shine {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.3;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
 @keyframes shine {
     0% {
         opacity: 1;
@@ -94,107 +58,17 @@ svg {
     }
 }
 
-@-webkit-keyframes hide {
-    0% {
-        opacity: 1;
-    }
-    60% {
-        opacity: 1;
-    }
-    61% {
-        opacity: 0.3;
-    }
-    62% {
-        opacity: 1;
-    }
-    64% {
-        opacity: 1;
-    }
-    65% {
-        opacity: 0.6;
-    }
-    80% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@-moz-keyframes hide {
-    0% {
-        opacity: 1;
-    }
-    60% {
-        opacity: 1;
-    }
-    61% {
-        opacity: 0.3;
-    }
-    62% {
-        opacity: 1;
-    }
-    64% {
-        opacity: 1;
-    }
-    65% {
-        opacity: 0.6;
-    }
-    80% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@-o-keyframes hide {
-    0% {
-        opacity: 1;
-    }
-    60% {
-        opacity: 1;
-    }
-    61% {
-        opacity: 0.3;
-    }
-    62% {
-        opacity: 1;
-    }
-    64% {
-        opacity: 1;
-    }
-    65% {
-        opacity: 0.6;
-    }
-    80% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
 @keyframes hide {
     0% {
         opacity: 1;
     }
+    40% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
     60% {
-        opacity: 1;
-    }
-    61% {
-        opacity: 0.3;
-    }
-    62% {
-        opacity: 1;
-    }
-    64% {
-        opacity: 1;
-    }
-    65% {
-        opacity: 0.6;
-    }
-    80% {
         opacity: 1;
     }
     100% {
