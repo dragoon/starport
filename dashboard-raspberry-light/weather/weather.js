@@ -139,7 +139,7 @@ function computeColorConfig(weatherObj) {
 
 let cards;
 let funcDayTimeUpdates;
-let dayWeather;
+let currentWeather;
 
 function changeWeather(data) {
         cards.forEach((card, i) => {
@@ -190,17 +190,18 @@ function onGetLocation(position) {
         .then(response => response.json())
         .then(function (weather) {
             cards.forEach((card, i) => {
-                dayWeather = weather.daily[i];
+                let dayWeather = weather.daily[i];
                 card.updateTempText(dayWeather.temp);
                 if (i === 0) {
+                    currentWeather = dayWeather;
                     updateUpdateCurWeather(weather.current);
-                    var brightness = adaptToDaytime(cards, dayWeather);
+                    var brightness = adaptToDaytime(cards, currentWeather);
                     clearInterval(funcDayTimeUpdates);
                     if (brightness < 0.01 || brightness > 0.99) {
-                        funcDayTimeUpdates = setInterval(adaptToDaytime, 60 * 1000, cards, dayWeather);
+                        funcDayTimeUpdates = setInterval(adaptToDaytime, 60 * 1000, cards, currentWeather);
                     } else {
                         // every 10 sec update if sunset/sunrise
-                        funcDayTimeUpdates = setInterval(adaptToDaytime, 10 * 1000, cards, dayWeather);
+                        funcDayTimeUpdates = setInterval(adaptToDaytime, 10 * 1000, cards, currentWeather);
                     }
                 }
                 card.updateDateText(new Date(dayWeather.dt * 1000));

@@ -59,5 +59,5 @@ $('#time_of_day_range').on('input', function () {
     date.setHours(minutes / 60);
     date.setMinutes(minutes % 60);
     dateService = new DateService(date);
-    adaptToDaytime(cards, dayWeather);
+    adaptToDaytime(cards, currentWeather);
 });
