@@ -48,17 +48,16 @@ const weatherMap = {
     47: {type: 'thunder', class: '', intensity: .25, icon: 'wi-storm-showers', name: 'Isolated Thunderstorms'} //isolated thundershowers
 };
 
-$(function () {
-    // we don't want automatic updates
-    clearInterval(funcDayTimeUpdates);
 
-    $('#time_of_day_range').on('input', function () {
-        // set time of day
-        var minutes = $(this).val();
-        var date = new Date();
-        date.setHours(minutes / 60);
-        date.setMinutes(minutes % 60);
-        dateService = new DateService(date);
-        adaptToDaytime(cards, dayWeather);
-    });
+// we don't want automatic updates
+clearInterval(funcDayTimeUpdates);
+
+$('#time_of_day_range').on('input', function () {
+    // set time of day
+    var minutes = $(this).val();
+    var date = new Date();
+    date.setHours(minutes / 60);
+    date.setMinutes(minutes % 60);
+    dateService = new DateService(date);
+    adaptToDaytime(cards, dayWeather);
 });

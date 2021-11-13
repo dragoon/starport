@@ -18,12 +18,9 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.js"></script>
     <script type="text/javascript" src="sunrise/sunrise.js"></script>
-    <script type="text/javascript" src="weather/weather.js"></script>
     <script type="text/javascript" src="weather/weather_card.js"></script>
-    <script type="text/javascript" src="weather/weather_test.js"></script>
-    <script type="text/javascript" src="datetime/time.js"></script>
     <script type="text/javascript" src="util/color.js"></script>
-    <script type="text/javascript" src="util/fps.js"></script>
+    <script type="text/javascript" src="extras/extras.js"></script>
     <title>Dashboard</title>
     <script type="text/javascript">
         // register the plugin
@@ -59,9 +56,6 @@
         <div style="display: flex; flex-direction: row">
             <div class="time"></div>
             <div>
-                <span class="temp-icon">
-                    <svg width="50" height="60" viewbox="0 0 20 30"><g><path d="M18.83,3.17A4,4,0,0,0,12,6V19.54a6,6,0,1,0,8,0V6A4,4,0,0,0,18.83,3.17ZM16,28a4,4,0,0,1-2.4-7.2l.05-.05a1,1,0,0,0,.13-.16.83.83,0,0,0,.11-.15l.06-.17c0-.07,0-.13,0-.2S14,20,14,20V6a2,2,0,0,1,2-2,2,2,0,0,1,2,2V20s0,0,0,.07,0,.13,0,.2l.06.17a.83.83,0,0,0,.11.15,1,1,0,0,0,.13.16l0,.05A4,4,0,0,1,16,28Z"/><path d="M17,21.18V13a1,1,0,0,0-2,0v8.18a3,3,0,1,0,2,0ZM16,25a1,1,0,1,1,1-1A1,1,0,0,1,16,25Z"/></g></svg>
-                </span>
                 <span class="cur-temp"></span>
                 <span class="temp-units">°</span>
             </div>
@@ -75,8 +69,8 @@
         </div>
         <div class="date"></div>
     </div>
-    <div id="test_container">
-        <div id="weather_cards_test">
+    <div class="weather-cards">
+        <div class="weather-card-selector">
             <nav class="test-nav">
                 <ul>
                     <!-- ko foreach: weatherMap -->
@@ -116,13 +110,177 @@
                 <svg class="outer"></svg>
             </div>
         </div>
-        <div id="settings">
-            <label>
-                <input id="time_of_day_range" type="range" class="range-slider__range range blue" min="0" max="1440" value="0" name="time of day"/>
-            </label>
+        <div class="weather-card-selector">
+            <nav class="test-nav">
+                <ul>
+                    <!-- ko foreach: weatherMap -->
+                    <li>
+                        <a data-bind="click: function(data, event){ $parent.changeWeather(data, event)}">
+                            <i class="wi" data-bind="css: icon, attr: {title: name}"></i>
+                        </a>
+                    </li>
+                    <!-- /ko -->
+                </ul>
+            </nav>
+            <div class="container" id="card-weather-2">
+                <div class="card-container">
+                    <div class="card weather">
+                        <svg class="inner">
+                            <defs>
+                                <path id="leaf"
+                                      d="M41.9,56.3l0.1-2.5c0,0,4.6-1.2,5.6-2.2c1-1,3.6-13,12-15.6c9.7-3.1,19.9-2,26.1-2.1c2.7,0-10,23.9-20.5,25 c-7.5,0.8-17.2-5.1-17.2-5.1L41.9,56.3z"/>
+                            </defs>
+                        </svg>
+                        <canvas id="canvas"></canvas>
+                        <div class="details">
+                            <div class="temp">
+                                <span id="temperature"></span><span class="temp-degrees"></span>
+                                <span class="temperature-night"></span><span class="temp-degrees"></span>
+                            </div>
+                            <div class="right">
+                                <div id="date"></div>
+                                <div id="summary"></div>
+                            </div>
+                        </div>
+                        <div id="sun"></div>
+                        <div class="details-bottom">
+                        </div>
+                    </div>
+                </div>
+                <svg class="outer"></svg>
+            </div>
+        </div>
+        <div class="weather-card-selector">
+            <nav class="test-nav">
+                <ul>
+                    <!-- ko foreach: weatherMap -->
+                    <li>
+                        <a data-bind="click: function(data, event){ $parent.changeWeather(data, event)}">
+                            <i class="wi" data-bind="css: icon, attr: {title: name}"></i>
+                        </a>
+                    </li>
+                    <!-- /ko -->
+                </ul>
+            </nav>
+            <div class="container" id="card-weather-3">
+                <div class="card-container">
+                    <div class="card weather">
+                        <svg class="inner">
+                            <defs>
+                                <path id="leaf"
+                                      d="M41.9,56.3l0.1-2.5c0,0,4.6-1.2,5.6-2.2c1-1,3.6-13,12-15.6c9.7-3.1,19.9-2,26.1-2.1c2.7,0-10,23.9-20.5,25 c-7.5,0.8-17.2-5.1-17.2-5.1L41.9,56.3z"/>
+                            </defs>
+                        </svg>
+                        <canvas id="canvas"></canvas>
+                        <div class="details">
+                            <div class="temp">
+                                <span id="temperature"></span><span class="temp-degrees"></span>
+                                <span class="temperature-night"></span><span class="temp-degrees"></span>
+                            </div>
+                            <div class="right">
+                                <div id="date"></div>
+                                <div id="summary"></div>
+                            </div>
+                        </div>
+                        <div id="sun"></div>
+                        <div class="details-bottom">
+                        </div>
+                    </div>
+                </div>
+                <svg class="outer"></svg>
+            </div>
+        </div>
+        <div class="weather-card-selector">
+            <nav class="test-nav">
+                <ul>
+                    <!-- ko foreach: weatherMap -->
+                    <li>
+                        <a data-bind="click: function(data, event){ $parent.changeWeather(data, event)}">
+                            <i class="wi" data-bind="css: icon, attr: {title: name}"></i>
+                        </a>
+                    </li>
+                    <!-- /ko -->
+                </ul>
+            </nav>
+            <div class="container" id="card-weather-4">
+                <div class="card-container">
+                    <div class="card weather">
+                        <svg class="inner">
+                            <defs>
+                                <path id="leaf"
+                                      d="M41.9,56.3l0.1-2.5c0,0,4.6-1.2,5.6-2.2c1-1,3.6-13,12-15.6c9.7-3.1,19.9-2,26.1-2.1c2.7,0-10,23.9-20.5,25 c-7.5,0.8-17.2-5.1-17.2-5.1L41.9,56.3z"/>
+                            </defs>
+                        </svg>
+                        <canvas id="canvas"></canvas>
+                        <div class="details">
+                            <div class="temp">
+                                <span id="temperature"></span><span class="temp-degrees"></span>
+                                <span class="temperature-night"></span><span class="temp-degrees"></span>
+                            </div>
+                            <div class="right">
+                                <div id="date"></div>
+                                <div id="summary"></div>
+                            </div>
+                        </div>
+                        <div id="sun"></div>
+                        <div class="details-bottom">
+                        </div>
+                    </div>
+                </div>
+                <svg class="outer"></svg>
+            </div>
+        </div>
+        <div class="weather-card-selector">
+            <nav class="test-nav">
+                <ul>
+                    <!-- ko foreach: weatherMap -->
+                    <li>
+                        <a data-bind="click: function(data, event){ $parent.changeWeather(data, event)}">
+                            <i class="wi" data-bind="css: icon, attr: {title: name}"></i>
+                        </a>
+                    </li>
+                    <!-- /ko -->
+                </ul>
+            </nav>
+            <div class="container" id="card-weather-5">
+                <div class="card-container">
+                    <div class="card weather">
+                        <svg class="inner">
+                            <defs>
+                                <path id="leaf"
+                                      d="M41.9,56.3l0.1-2.5c0,0,4.6-1.2,5.6-2.2c1-1,3.6-13,12-15.6c9.7-3.1,19.9-2,26.1-2.1c2.7,0-10,23.9-20.5,25 c-7.5,0.8-17.2-5.1-17.2-5.1L41.9,56.3z"/>
+                            </defs>
+                        </svg>
+                        <canvas id="canvas"></canvas>
+                        <div class="details">
+                            <div class="temp">
+                                <span id="temperature"></span><span class="temp-degrees"></span>
+                                <span class="temperature-night"></span><span class="temp-degrees"></span>
+                            </div>
+                            <div class="right">
+                                <div id="date"></div>
+                                <div id="summary"></div>
+                            </div>
+                        </div>
+                        <div id="sun"></div>
+                        <div class="details-bottom">
+                        </div>
+                    </div>
+                </div>
+                <svg class="outer"></svg>
+            </div>
         </div>
     </div>
+    <div id="settings">
+        <label>
+            <input id="time_of_day_range" type="range" class="range-slider__range range blue" min="0" max="1440" value="0" name="time of day"/>
+        </label>
+    </div>
+    <div id="fps-monitor" style="position: absolute;bottom: 0;right: 0;color: #8B8E98;margin-right: 10px;margin-bottom: 10px;"></div>
 </div>
-<div id="fps-monitor" style="position: absolute;bottom: 0;right: 0;color: #8B8E98;margin-right: 10px;margin-bottom: 10px;"></div>
+<script type="text/javascript" src="weather/weather.js"></script>
+<script type="text/javascript" src="datetime/time.js"></script>
+<script type="text/javascript" src="util/fps.js"></script>
+<script type="text/javascript" src="weather/weather_test.js"></script>
 </body>
 </html>

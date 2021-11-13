@@ -5,22 +5,10 @@ body {
     cursor: default !important;
 }
 
-#test_container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-#weather_cards_test {
-  display: flex;
-  flex-direction: row;
-}
-
 #settings {
-  align-items: center;
-  margin-top: 20px;
+    position: absolute;
+    right: 0;
+    margin-right: 100px;
 }
 
 #time_of_day_range {
@@ -28,23 +16,26 @@ body {
 }
 
 nav {
-    height: 400px;
-    min-height: 300px;
-    max-height: 100%;
+    height: auto;
+    width: 100%;
+    margin-left: 20px;
+    margin-right: 20px;
+    text-shadow: 1px 1px #aaa;
+    margin-bottom: 20px;
 }
 
 nav ul {
     list-style-type: none;
     padding: 0;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 nav li a {
     display: block;
-    width: 50px;
+    width: 40px;
     text-align: center;
-    color: #aaa;
+    color: #fff;
     cursor: pointer;
 }
 
@@ -53,23 +44,12 @@ nav li a:hover {
 }
 
 nav li a.active {
-    color: #4444ff;
+    color: #1b2e8b;
 }
 
 .test-nav ul {
-    flex-wrap: wrap-reverse;
+    flex-wrap: wrap;
     width: auto;
     height: 100%;
     margin: 0;
-}
-
-.test-nav ul li a {
-    width: 25px;
-    height: 25px;
-}
-
-.weather-cards {
-    align-items: center;
-    justify-content: center;
-    height: 100%;
 }
