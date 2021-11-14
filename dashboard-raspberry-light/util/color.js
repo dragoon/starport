@@ -146,3 +146,14 @@ function relativeLuminance(colorInt) {
     // For the sRGB colorspace, the relative luminance of a color is defined as:
     return 0.2126 * R + 0.7152 * G + 0.0722 * B;
 }
+
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}

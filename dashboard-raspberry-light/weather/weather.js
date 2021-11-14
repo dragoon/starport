@@ -8,10 +8,9 @@ const normal_color = 0xccccff;
 const nightColorConfig = {
     "brightnessLevel": 0,
     "cloud1": 0x00002e, "cloud1Opacity": 1,
-    "cloud2": 0x4f525c, "cloud2Opacity": 0.6,
+    "cloud2": 0x434a63, "cloud2Opacity": 0.6,
     "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6,
-    "detailsTextColor": 0xdddddd,
-    "dateTextColor": 0xdddddd,
+    "textColor": 0xdddddd,
     "night": true
 };
 
@@ -40,7 +39,7 @@ function getTemperatureColor(currentTemperature) {
  *    _____
  *   /     \
  * _/       \____
- * @param colorConfig {{brightnessLevel: number, cloud1: number, cloud2: number, cloud3: number, dateTextColor: number, night: boolean}}
+ * @param colorConfig {{brightnessLevel: number, cloud1: number, cloud2: number, cloud3: number, textColor: number, night: boolean}}
  * @param sunriseTimestamp timestamp (seconds since epoch) of sunrise
  * @param sunsetTimestamp timestamp (seconds since epoch) of sunset
  * @return {{y: number, cloud1: number}}
@@ -63,6 +62,20 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
             Math.abs(now - twilightSeconds - sunsetTimestamp)) / (2*twilightSeconds);
         // 0 -- dark , 1 - bright
         console.log("Brightness Level:", brightnessLevel);
+
+        // cloud colors have several stops during twilight
+        if (brightnessLevel < 0.25) {
+            colorConfig.cloud1 = interpolateColor(0xa62929, nightColorConfig.cloud1, 1-brightnessLevel*4);
+            colorConfig.cloud2 = interpolateColor(0xc78585, nightColorConfig.cloud2, 1-brightnessLevel*4);
+            colorConfig.cloud3 = interpolateColor(0x8a5b5b, nightColorConfig.cloud3, 1-brightnessLevel*4);
+        } else {
+            colorConfig.cloud1 = interpolateColor(colorConfig.cloud1, 0xa62929, (1-brightnessLevel)*4/3);
+            colorConfig.cloud2 = interpolateColor(colorConfig.cloud2, 0xc78585, (1-brightnessLevel)*4/3);
+            colorConfig.cloud3 = interpolateColor(colorConfig.cloud3, 0x8a5b5b, (1-brightnessLevel)*4/3);
+        }
+        colorConfig.textColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-brightnessLevel);
+        colorConfig.cloud2Opacity = nightColorConfig.cloud2Opacity + (1-nightColorConfig.cloud2Opacity)*brightnessLevel;
+        colorConfig.cloud3Opacity = nightColorConfig.cloud3Opacity + (1-nightColorConfig.cloud3Opacity)*brightnessLevel;
 
         // sun position
         colorConfig.brightnessLevel = brightnessLevel;
@@ -122,8 +135,7 @@ function adaptColorToWeather(tempColor, weatherType) {
         "cloud1": cloud1Color, "cloud1Opacity": cloud1Opacity,
         "cloud2": cloud2Color, "cloud2Opacity": cloud2Opacity,
         "cloud3": cloud3Color, "cloud3Opacity": cloud3Opacity,
-        "dateTextColor": 0x888888,
-        "detailsTextColor": 0x888888
+        "textColor": 0x888888,
     }
 }
 
@@ -131,8 +143,7 @@ function computeColorConfig(weatherObj) {
     const tempColor = getTemperatureColor(weatherObj.temp);
     const weatherColors = adaptColorToWeather(tempColor, weatherObj["ui_params"]["type"]);
     const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset);
-    timeColors.dateTextColor = numberToHexString(timeColors.dateTextColor);
-    timeColors.detailsTextColor = numberToHexString(timeColors.detailsTextColor);
+    timeColors.textColor = numberToHexString(timeColors.textColor);
     return timeColors;
 
 }
@@ -160,7 +171,7 @@ function changeWeather(data) {
 function adaptToDaytime(cards, day_weather) {
     const colorMap = computeColorConfig(day_weather);
     const canvases = Array.from(document.querySelectorAll(".canvas"));
-    canvases.forEach((c) => c.style.color = colorMap.detailsTextColor);
+    canvases.forEach((c) => c.style.color = colorMap.textColor);
     cards.forEach(card => {
         card.clouds[0].tint = colorMap.cloud1;
         card.clouds[0].alpha = colorMap.cloud1Opacity;
