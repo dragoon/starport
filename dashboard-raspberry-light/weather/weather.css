@@ -144,11 +144,6 @@ html, body {
     z-index: 1;
 }
 
-.weather .cloud {
-    -webkit-transition: fill 2s ease;
-    transition: fill 2s ease;
-}
-
 .weather .fog {
     opacity: 0;
     -webkit-transition: opacity 2s ease, fill 2s ease;
@@ -164,7 +159,7 @@ html, body {
     background-color: var(--pulse-color);
     box-shadow: 0 0 28px var(--pulse-color), inset 0 0 28px var(--pulse-color);
     /**animation: pulse 2s linear 1s infinite;* Drains performance*/
-    border-radius: 50px;
+    border-radius: 50%;
     height: 100px;
     width: 100px;
     position: absolute;
