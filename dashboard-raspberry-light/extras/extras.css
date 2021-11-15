@@ -23,3 +23,12 @@
     right: 100px;
     top: 0;
 }
+
+#valentines_day1 {
+    width: 50%;
+    height: 100%;
+    border: 0;
+    position: absolute;
+    right: 0;
+    top: -20%;
+}
