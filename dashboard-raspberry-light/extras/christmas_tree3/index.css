@@ -7,10 +7,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1200px;
   transform-style: preserve-3d;
 }
 .tree {
+  top: 10vmin;
   position: relative;
   height: 50vmin;
   width: 25vmin;
