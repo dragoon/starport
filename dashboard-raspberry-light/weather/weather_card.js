@@ -360,6 +360,22 @@ class WeatherCard {
         }
     }
 
+    createCloud() {
+        const cloudMiddleHeight = getRandomInt(this.sizes.card.width/4, this.sizes.card.width/4 + 40);
+        // needs to be more or less circle
+        const cloudMiddleWidth = cloudMiddleHeight * getRandomArbitrary(0.8, 1.2);
+
+        // needs to be a bit smaller
+        const cloudLeftHeight = cloudMiddleHeight * getRandomArbitrary(0.4, 0.8);
+        const cloudLeftWidth = cloudLeftHeight * getRandomArbitrary(0.8, 1.2);
+
+        const cloudRightHeight = cloudMiddleHeight * getRandomArbitrary(0.4, 0.8);
+        const cloudRightWidth = cloudRightHeight * getRandomArbitrary(0.8, 1.2);
+        const topOffset = this.sizes.card.height * getRandomArbitrary(0, 0.1);
+        const leftOffset = this.sizes.card.width * getRandomArbitrary(0.2, 0.6);
+        const delay = getRandomInt(0, 2000);
+    }
+
     makeSnow(flake = null) {
         let offset = 0.5 * this.currentWeather.intensity;
         let scale = offset + Math.random() * offset;
@@ -542,7 +558,7 @@ class WeatherCard {
                 });
                 break;
             case 'cloud':
-                var ypos =  100 + this.sizes.card.height / 2 - this.sizes.card.height * Math.max(0, weather.intensity - 1) / 2;
+                var ypos =  100 + this.sizes.card.height / 2 - this.sizes.card.height * weather.intensity / 4;
                 gsap.to(this.sun, {
                     duration: 4,
                     x: 0,
