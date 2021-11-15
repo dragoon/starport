@@ -234,17 +234,12 @@ class WeatherCard {
     }
 
     onRainEnd(line) {
-        // first lets get rid of the drop of rain 💧
-
-        this.scene.removeChild(line);
         this.rain_count -= 1;
-        
-        // If there is less rain than the rainCount we should
-        // make more.
 
         if (this.rain_count < this.settings.rainCount) {
             this.makeRain(line);
         } else {
+            this.scene.removeChild(line);
             line.destroy();
             line = null;
         }
@@ -302,38 +297,44 @@ class WeatherCard {
         }
     }
 
-    makeHail() {
+    makeHail(stone = null) {
         const windOffset = this.settings.windSpeed * 10;
         const offset = 0.25 * this.currentWeather.intensity;
         const scale = offset + Math.random() * offset;
-        let newHail;
 
         let x;
         let y = -10;
         let endY;
         const size = 5 * scale;
         const fillColor = this.currentWeather.type === 'sleet' || this.currentWeather.type.indexOf('mix') > -1 ? 0x86a3f9 : 0xffffff;
-        newHail = new PIXI.Graphics()
+
+        if (stone == null) {
+            stone = new PIXI.Graphics()
             .beginFill(fillColor, 1)
             .drawCircle(0, 0, size);
+        } else {
+            stone.clear();
+            stone.beginFill(0xffffff, 1)
+                .drawCircle(x, y, r);
+        }
 
         if (size > 4) {
             x = 20 + Math.random() * (this.sizes.card.width - 40) + windOffset;
             endY = this.sizes.container.height + 10;
             x = x + this.sizes.card.offset.left;
-            this.weatherContainers[1].addChild(newHail);
+            this.weatherContainers[1].addChild(stone);
 
         } else {
             x = 20 + Math.random() * (this.sizes.card.width + windOffset - 20);
             endY = this.sizes.card.height + 10;
-            this.weatherContainers[2].addChild(newHail);
+            this.weatherContainers[2].addChild(stone);
 
         }
         this.hail_count += 1;
 
         // Start the falling animation, calls onHailEnd when the
         // animation finishes.
-        gsap.fromTo(newHail,
+        gsap.fromTo(stone,
             {x: x - windOffset, y: y},
             {
                 duration: 1,
@@ -341,19 +342,21 @@ class WeatherCard {
                 y: endY, x: x,
                 ease: Power2.easeIn,
                 onComplete: this.onHailEnd.bind(this),
-                onCompleteParams: [newHail]
+                onCompleteParams: [stone]
             }
         );
     }
 
     onHailEnd(stone) {
-        this.scene.removeChild(stone);
-        stone.destroy();
-        stone = null;
         this.hail_count -= 1;
         
         if (this.hail_count < this.settings.hailCount) {
-            this.makeHail();
+            this.makeHail(stone);
+        } else {
+            this.scene.removeChild(stone);
+            gsap.killTweensOf(stone);
+            stone.destroy();
+            stone = null;
         }
     }
 
@@ -397,13 +400,13 @@ class WeatherCard {
     }
 
     onSnowEnd(flake) {
-        this.scene.removeChild(flake);
-        gsap.killTweensOf(flake);
         this.flake_count -= 1;
 
         if (this.flake_count < this.settings.snowCount) {
             this.makeSnow(flake);
         } else {
+            this.scene.removeChild(flake);
+            gsap.killTweensOf(flake);
             flake.destroy();
             flake = null;
         }
