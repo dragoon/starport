@@ -50,28 +50,21 @@ html, body {
 
 .card-container .card {
     overflow: hidden;
-    width: 300px;
+    width: 15.5vw;
     padding: 0;
-    height: 400px;
-    min-height: 300px;
-    max-height: 100%;
+    height: 41vh;
     border-radius: 5px;
     position: relative;
 }
 
 .card-container .card .details {
     position: absolute;
-    border-radius: 8px;
     top: 0;
     left: 0;
     right: 0;
     padding: 16px 20px;
-    display: -webkit-box;
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
     flex-direction: row;
-    -webkit-box-pack: justify;
     justify-content: space-between;
     transition: color 2s ease;
     z-index: 1;
@@ -109,29 +102,23 @@ html, body {
 
 .card-container .card .details #summary {
     font-weight: 600;
-    font-size: 22px;
+    font-size: 2.3vh;
 }
 
 .card-container .card .details .temp {
-    font-size: 60px;
-    line-height: 60px;
+    font-size: 6vh;
+    line-height: 6vh;
 }
 
 .card-container .card .details .temp .temp-degrees {
-    font-size: 18px;
-    line-height: 30px;
+    font-size: 3vh;
+    line-height: 3vh;
     vertical-align: top;
 }
 
 .card-container .card .details .temp .temperature-night {
-    font-size: 28px;
+    font-size: 3vh;
     color: #777;
-}
-
-.card-container .card .details .temp .temperature-night + .temp-degrees {
-    color: #777;
-    line-height: 65px;
-    font-size: 14px;
 }
 
 .weather {
@@ -160,10 +147,10 @@ html, body {
     box-shadow: 0 0 28px var(--pulse-color), inset 0 0 28px var(--pulse-color);
     /**animation: pulse 2s linear 1s infinite;* Drains performance*/
     border-radius: 50%;
-    height: 100px;
-    width: 100px;
+    height: 10vh;
+    width: 10vh;
     position: absolute;
-    top: -150px;
+    top: -15vh;
     left: 0;
     right: 0;
     margin-left: auto;
