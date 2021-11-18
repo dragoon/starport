@@ -196,8 +196,14 @@ function updateUpdateCurWeather(currentWeather) {
 
 
 function onGetLocation(position) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
     const weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
-    fetch(weather_url)
+    fetch(weather_url, {
+        headers: {
+            'Authorization': `token ${token}`,
+        }
+    })
         .then(response => response.json())
         .then(function (weather) {
             cards.forEach((card, i) => {
