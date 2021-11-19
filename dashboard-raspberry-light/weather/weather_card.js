@@ -31,6 +31,7 @@ class WeatherCard {
         this.canvas = document.querySelectorAll(`#${elem_id} #canvas`);
         this.scene = new PIXI.Container();
         this.scene.sortableChildren = true;
+        this.scene.interactiveChildren = false;
         this.weatherContainers.forEach(wc => this.scene.addChild(wc));
 
         this.innerLeafHolder = this.innerSVG.group();
@@ -104,13 +105,11 @@ class WeatherCard {
 
     drawCloud(i) {
         /*
-
         ☁️ We want to create a shape thats loopable but that can also
         be animated in and out. So we use Snap SVG to draw a shape
         with 4 sections. The 2 ends and 2 arches the same width as
         the card. So the final shape is about 4 x the width of the
         card.
-
         */
         let offset = Math.random() * this.sizes.card.width;
         let space = this.settings.cloudSpace * i;
@@ -140,13 +139,12 @@ class WeatherCard {
 
     drawFog(i) {
         /*
-            ☁️ We want to create a shape thats loopable but that can also
-            be animated in and out. So we use Snap SVG to draw a shape
-            with 4 sections. The 2 ends and 2 arches the same width as
-            the card. So the final shape is about 4 x the width of the
-            card.
-
-            */
+        ☁️ We want to create a shape thats loopable but that can also
+        be animated in and out. So we use Snap SVG to draw a shape
+        with 4 sections. The 2 ends and 2 arches the same width as
+        the card. So the final shape is about 4 x the width of the
+        card.
+        */
         let offset = Math.random() * this.sizes.card.width;
         let space = this.settings.cloudSpace * i;
         let height = space + this.settings.cloudHeight;
@@ -161,7 +159,7 @@ class WeatherCard {
             .quadraticCurveTo(width * 0.5, -arch + height, 0, 0)
             .quadraticCurveTo(width * -0.5, -arch + height, -width, 0)
             .quadraticCurveTo(-(width * 2), height / 2, -width, height);
-        fog.alpha = 0;
+        fog.visible = false;
         fog.position.y = (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i);
         this.weatherContainers[i].addChild(fog);
         gsap.to(fog, {
@@ -577,6 +575,7 @@ class WeatherCard {
 
         // animate fog
         if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
+            this.fog.forEach(f => {f.visible=true});
             this.fog.forEach((fog, i) => {
                 gsap.killTweensOf(fog);
                 gsap.to(fog, {
@@ -589,6 +588,11 @@ class WeatherCard {
                     repeat: -1
                 });
             })
+        } else {
+            this.fog.forEach(fog => {
+                fog.visible=false;
+                gsap.killTweensOf(fog);
+            });
         }
 
         // lightning
