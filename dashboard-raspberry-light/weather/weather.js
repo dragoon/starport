@@ -100,11 +100,11 @@ function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
 function adaptColorToWeather(tempColor, weatherType) {
 
     let cloud1Color = 0xefefef;
-    let cloud2Color = 0xE6E6E6;
-    let cloud3Color = 0xD5D5D5;
+    let cloud2Color = 0xEaEaEa;
+    let cloud3Color = 0xD1D1D1;
     let cloud1Opacity = 1;
-    let cloud2Opacity = 1;
-    let cloud3Opacity = 1;
+    let cloud2Opacity = 0.7;
+    let cloud3Opacity = 0.7;
 
     switch (weatherType) {
         case "rain":
@@ -179,6 +179,13 @@ function adaptToDaytime(cards, day_weather) {
         card.clouds[1].alpha = colorMap.cloud2Opacity;
         card.clouds[2].tint = colorMap.cloud3;
         card.clouds[2].alpha = colorMap.cloud3Opacity;
+
+        card.fog[0].tint = colorMap.cloud1;
+        card.fog[0].alpha = colorMap.cloud1Opacity;
+        card.fog[1].tint = colorMap.cloud2;
+        card.fog[1].alpha = colorMap.cloud2Opacity;
+        card.fog[2].tint = colorMap.cloud3;
+        card.fog[2].alpha = colorMap.cloud3Opacity;
     });
     updateSunrise(colorMap.brightnessLevel);
     if (colorMap["night"] === true) {
