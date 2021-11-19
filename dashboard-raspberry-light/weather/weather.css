@@ -142,15 +142,16 @@ html, body {
 }
 
 .weather #sun {
-    --pulse-color: #F7ED47;
-    background-color: var(--pulse-color);
-    box-shadow: 0 0 28px var(--pulse-color), inset 0 0 28px var(--pulse-color);
+    --pulse-color: rgba(247, 237, 71, 1);
+    --pulse-color1: rgba(247, 237, 71, 0.7);
+    --pulse-color2: rgba(247, 237, 71, 0);
+    background:  -webkit-radial-gradient(center, circle,  var(--pulse-color) 0%, var(--pulse-color2) 60%, var(--pulse-color2) 100%);
     /**animation: pulse 2s linear 1s infinite;* Drains performance*/
     border-radius: 50%;
-    height: 10vh;
-    width: 10vh;
+    height: 20vh;
+    width: 20vh;
     position: absolute;
-    top: -15vh;
+    top: -20vh;
     left: 0;
     right: 0;
     margin-left: auto;
@@ -159,8 +160,12 @@ html, body {
 }
 
 .night .weather #sun {
-    background-color: #ccdbef;
+    background-color: var(--pulse-color);
+    box-shadow: 0 0 28px var(--pulse-color), inset 0 0 28px var(--pulse-color);
     --pulse-color: #ccdbef;
+    height: 10vh;
+    width: 10vh;
+    top: -15vh;
 }
 
 .weather #fog1 {
