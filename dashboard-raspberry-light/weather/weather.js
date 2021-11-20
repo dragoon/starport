@@ -135,7 +135,7 @@ function adaptColorToWeather(tempColor, weatherType) {
         "cloud1": cloud1Color, "cloud1Opacity": cloud1Opacity,
         "cloud2": cloud2Color, "cloud2Opacity": cloud2Opacity,
         "cloud3": cloud3Color, "cloud3Opacity": cloud3Opacity,
-        "textColor": 0x888888,
+        "textColor": 0x888888
     }
 }
 
@@ -171,7 +171,10 @@ function changeWeather(data) {
 function adaptToDaytime(cards, day_weather) {
     const colorMap = computeColorConfig(day_weather);
     const canvases = Array.from(document.querySelectorAll(".canvas"));
-    canvases.forEach((c) => c.style.color = colorMap.textColor);
+    canvases.forEach((c) => {
+        c.style.color = colorMap.textColor;
+        c.style.textShadow = "1px 1px "+ numberToHexString(0x00002e, 1-colorMap.brightnessLevel);
+    });
     cards.forEach(card => {
         card.clouds[0].tint = colorMap.cloud1;
         card.clouds[0].alpha = colorMap.cloud1Opacity;
