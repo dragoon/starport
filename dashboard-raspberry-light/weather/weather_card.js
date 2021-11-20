@@ -426,6 +426,35 @@ class WeatherCard {
         }
     }
 
+    setSunPosition(weather) {
+        switch (weather.type) {
+            case 'sun':
+                gsap.to(this.sun, {
+                    duration: 4,
+                    x: 0,
+                    y: this.sizes.card.height / 2  + this.sun.clientHeight, // center
+                    ease: Power2.easeInOut
+                });
+                break;
+            case 'cloud':
+                let ypos =  this.sun.clientHeight + this.sizes.card.height / 2 - this.sizes.card.height * weather.intensity / 4;
+                gsap.to(this.sun, {
+                    duration: 4,
+                    x: 0,
+                    y: ypos, ease: Power2.easeInOut
+                });
+                break;
+            default:
+                gsap.to(this.sun, {
+                    duration: 2,
+                    x: 0,
+                    y: -this.sun.clientHeight,
+                    ease: Power2.easeInOut
+                });
+                break;
+        }
+    }
+
     changeWeather(weather) {
         if (weather.data) weather = weather.data;
         this.reset();
@@ -545,33 +574,7 @@ class WeatherCard {
 
         // sun position
 
-        switch (weather.type) {
-
-            case 'sun':
-                gsap.to(this.sun, {
-                    duration: 4,
-                    x: 0,
-                    y: this.sizes.card.height / 2 + 100,
-                    ease: Power2.easeInOut
-                });
-                break;
-            case 'cloud':
-                var ypos =  100 + this.sizes.card.height / 2 - this.sizes.card.height * weather.intensity / 4;
-                gsap.to(this.sun, {
-                    duration: 4,
-                    x: 0,
-                    y: ypos, ease: Power2.easeInOut
-                });
-                break;
-            default:
-                gsap.to(this.sun, {
-                    duration: 2,
-                    x: 0,
-                    y: -100,
-                    ease: Power2.easeInOut
-                });
-                break;
-        }
+        this.setSunPosition(weather);
 
         // animate fog
         if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
