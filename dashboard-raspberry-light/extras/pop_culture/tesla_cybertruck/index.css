@@ -21,17 +21,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
   transition: all 0.25s ease;
 }
 .truck {
-  -webkit-animation: movex 10s infinite linear;
-          animation: movex 10s infinite linear;
+   animation: movex 25s linear;
 }
-@-webkit-keyframes movex {
-  to {
-    transform: translateX(140vw);
-  }
-}
+
 @keyframes movex {
-  to {
-    transform: translateX(140vw);
+  0% {
+    transform: translateX(0) scaleX(1);
+  }
+  50% {
+    transform: translateX(260vw) scaleX(1);
+  }
+  51% {
+    transform: translateX(260vw) scaleX(-1);
+  }
+  100% {
+    transform: translateX(0) scaleX(-1);
   }
 }
 body {
@@ -43,7 +47,7 @@ body {
 
 .truck {
   position: relative;
-  left: -40vw;
+  left: -100vw;
   width: 27vw;
   height: 9vw;
 }
