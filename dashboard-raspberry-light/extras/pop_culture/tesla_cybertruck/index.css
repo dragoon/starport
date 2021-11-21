@@ -39,19 +39,13 @@ body {
   overflow: hidden;
   width: 100vw;
 }
-:root {
-  --width: 300;
-}
-@media (min-width: 768px) {
-  :root {
-    --width: 600;
-  }
-}
+
+
 .truck {
   position: relative;
   left: -40vw;
-  width: calc(var(--width) * 1px);
-  height: calc(var(--width) * 0.33px);
+  width: 27vw;
+  height: 9vw;
 }
 .truck:after {
   content: '';
@@ -150,8 +144,8 @@ body {
 }
 .truck-wheel {
   border-radius: 100%;
-  height: calc(var(--width) * 0.15px);
-  width: calc(var(--width) * 0.15px);
+  height: 4vw;
+  width: 4vw;
   background: #242424;
   border-top: 1px solid #ccc;
   position: absolute;
