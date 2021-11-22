@@ -36,6 +36,7 @@
 #tesla_cybertruck {
     border: 0;
     position: absolute;
-    width: 100vw;
+    width: 100%;
     bottom: 0;
+    height: 100%;
 }
