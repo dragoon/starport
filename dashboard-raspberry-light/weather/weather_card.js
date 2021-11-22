@@ -376,11 +376,11 @@ class WeatherCard {
 
     makeSnow(flake = null) {
         let offset = 0.5 * this.currentWeather.intensity;
-        let scale = offset + Math.random() * offset;
+        let scale =  offset + Math.random() * offset;
 
         let x = 20 + Math.random() * (this.sizes.card.width - 40);
         let y = -10;
-        let r = 5 * (offset + Math.random() * offset);
+        let r = getRandomNormal(5*offset, 10*offset);
         let endY;
         if (flake == null) {
             flake = new PIXI.Graphics()
@@ -403,14 +403,16 @@ class WeatherCard {
 
         this.flake_count += 1;
 
+        let fall_duration = getRandomNormal(5, 10);
+
         gsap.fromTo(flake, {x: x, y: y}, {
-            duration: getRandomNormal(5, 10),
+            duration: fall_duration,
             y: endY,
             onComplete: this.onSnowEnd.bind(this),
             onCompleteParams: [flake],
             ease: Power0.easeIn
         });
-        gsap.to(flake, {duration: 3, x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
+        gsap.to(flake, {duration: Math.ceil(fall_duration/3), x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
     }
 
     onSnowEnd(flake) {
