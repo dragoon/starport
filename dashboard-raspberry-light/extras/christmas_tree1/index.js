@@ -221,5 +221,12 @@ mainTl.staggerFrom(['.treePathMask', '.treePotMask', '.treeBottomMask'], 6, {
         ease: Sine.easeIn
     }, '+=2')
 
+const colors = ['#cb9866', '#2e6c21'];
+let random_color = colors[Math.floor(Math.random() * colors.length)];
+document.querySelector(".tree").setAttribute("fill", random_color);
+document.querySelector(".treeBottom").setAttribute("fill", random_color);
+document.querySelector(".treePot").setAttribute("fill", random_color);
+
+
 mainTl.add(starTl, 0)
 TweenMax.globalTimeScale(1.5);
