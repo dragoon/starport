@@ -189,6 +189,7 @@ function adaptToDaytime(cards, day_weather) {
         card.fog[1].alpha = colorMap.cloud2Opacity;
         card.fog[2].tint = colorMap.cloud3;
         card.fog[2].alpha = colorMap.cloud3Opacity;
+        card.setSunPosition();
     });
     updateSunrise(colorMap.brightnessLevel);
     if (colorMap["night"] === true) {
@@ -219,18 +220,6 @@ function onGetLocation(position) {
             cards.forEach((card, i) => {
                 let dayWeather = weather.daily[i];
                 card.updateTempText(dayWeather.temp);
-                if (i === 0) {
-                    currentWeather = dayWeather;
-                    updateUpdateCurWeather(weather.current);
-                    var brightness = adaptToDaytime(cards, currentWeather);
-                    clearInterval(funcDayTimeUpdates);
-                    if (brightness < 0.01 || brightness > 0.99) {
-                        funcDayTimeUpdates = setInterval(adaptToDaytime, 60 * 1000, cards, currentWeather);
-                    } else {
-                        // every 10 sec update if sunset/sunrise
-                        funcDayTimeUpdates = setInterval(adaptToDaytime, 10 * 1000, cards, currentWeather);
-                    }
-                }
                 card.updateDateText(new Date(dayWeather.dt * 1000));
                 card.changeWeather({
                     "type": dayWeather.ui_params.type,
@@ -239,6 +228,17 @@ function onGetLocation(position) {
                     "classes": dayWeather.ui_params.classes
                 });
             });
+
+            currentWeather = weather.daily[0];
+            updateUpdateCurWeather(weather.current);
+            let brightness = adaptToDaytime(cards, currentWeather);
+            clearInterval(funcDayTimeUpdates);
+            if (brightness < 0.01 || brightness > 0.99) {
+                funcDayTimeUpdates = setInterval(adaptToDaytime, 60 * 1000, cards, currentWeather);
+            } else {
+                // every 10 sec update if sunset/sunrise
+                funcDayTimeUpdates = setInterval(adaptToDaytime, 10 * 1000, cards, currentWeather);
+            }
             addExtras(weather.extras);
         });
 }

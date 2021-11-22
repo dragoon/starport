@@ -404,7 +404,7 @@ class WeatherCard {
         this.flake_count += 1;
 
         gsap.fromTo(flake, {x: x, y: y}, {
-            duration: 5 + Math.random() * 5,
+            duration: getRandomNormal(5, 10),
             y: endY,
             onComplete: this.onSnowEnd.bind(this),
             onCompleteParams: [flake],
@@ -426,37 +426,22 @@ class WeatherCard {
         }
     }
 
-    setSunPosition(weather) {
-        switch (weather.type) {
+    setSunPosition() {
+        switch (this.currentWeather.type) {
             case 'sun':
-                gsap.to(this.sun, {
-                    duration: 4,
-                    x: 0,
-                    y: this.sizes.card.height / 2  + this.sun.clientHeight, // center
-                    ease: Power2.easeInOut
-                });
+                this.sun.style.top = (this.sizes.card.height/2 - this.sun.clientHeight/2) + 'px';
                 break;
             case 'cloud':
-                let ypos =  this.sun.clientHeight + this.sizes.card.height / 2 - this.sizes.card.height * weather.intensity / 4;
-                gsap.to(this.sun, {
-                    duration: 4,
-                    x: 0,
-                    y: ypos, ease: Power2.easeInOut
-                });
+                let ypos =  this.sizes.card.height/2 - this.sun.clientHeight/2 - this.sizes.card.height * this.currentWeather.intensity / 4;
+                this.sun.style.top = ypos + 'px';
                 break;
             default:
-                gsap.to(this.sun, {
-                    duration: 2,
-                    x: 0,
-                    y: -this.sun.clientHeight,
-                    ease: Power2.easeInOut
-                });
+                this.sun.style.top = -this.sun.clientHeight + 'px';
                 break;
         }
     }
 
     changeWeather(weather) {
-        if (weather.data) weather = weather.data;
         this.reset();
 
         this.currentWeather = weather;
@@ -469,16 +454,16 @@ class WeatherCard {
             ease: Power4.easeIn
         });
 
-        this.container.classList.add(weather.type);
+        this.container.classList.add(this.currentWeather.type);
 
         // windSpeed
 
-        switch (weather.type) {
+        switch (this.currentWeather.type) {
 
             case 'severe':
             case 'wind':
             case 'smoke':
-                gsap.to(this.settings, {duration: 3, windSpeed: 3 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, windSpeed: 3 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             case 'sun':
                 gsap.to(this.settings,{duration: 3, windSpeed: 20, ease: Power2.easeInOut});
@@ -495,20 +480,20 @@ class WeatherCard {
 
         // rainCount
 
-        switch (weather.type) {
+        switch (this.currentWeather.type) {
 
             case 'mix':
             case 'mix-rain-snow':
             case 'mix-rain-sleet':
             case 'rain':
-                gsap.to(this.settings, {duration: 3, rainCount: 40 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, rainCount: 40 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             case 'hail':
-                gsap.to(this.settings, {duration: 3, rainCount: 10 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, rainCount: 10 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             case 'severe':
             case 'thunder':
-                gsap.to(this.settings, {duration: 3, rainCount: 60 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, rainCount: 60 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             default:
                 gsap.to(this.settings, {duration: 1, rainCount: 0, ease: Power2.easeOut});
@@ -518,23 +503,23 @@ class WeatherCard {
 
         // hailCount
 
-        switch (weather.type) {
+        switch (this.currentWeather.type) {
 
             case 'mix':
-                gsap.to(this.settings, {duration: 3, hailCount: 3 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 3 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             case 'mix-snow-sleet':
             case 'mix-rain-sleet':
-                gsap.to(this.settings, {duration: 3, hailCount: 10 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 10 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             case 'sleet':
-                gsap.to(this.settings, {duration: 3, hailCount: 20 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 20 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             case 'severe':
-                gsap.to(this.settings, {duration: 3, hailCount: 3 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 3 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             case 'hail':
-                gsap.to(this.settings, {duration: 3, hailCount: 20 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, hailCount: 20 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             default:
                 gsap.to(this.settings, {duration: 1, hailCount: 0, ease: Power2.easeOut});
@@ -544,11 +529,11 @@ class WeatherCard {
 
         // leafCount
 
-        switch (weather.type) {
+        switch (this.currentWeather.type) {
 
             case 'severe':
             case 'wind':
-                gsap.to(this.settings, {duration: 3, leafCount: 5 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, leafCount: 5 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             default:
                 gsap.to(this.settings, {duration: 1, leafCount: 0, ease: Power2.easeOut});
@@ -558,13 +543,13 @@ class WeatherCard {
 
         // snowCount
 
-        switch (weather.type) {
+        switch (this.currentWeather.type) {
 
             case 'mix':
             case 'mix-rain-snow':
             case 'mix-snow-sleet':
             case 'snow':
-                gsap.to(this.settings, {duration: 3, snowCount: 40 * weather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, snowCount: 40 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             default:
                 gsap.to(this.settings, {duration: 1, snowCount: 0, ease: Power2.easeOut});
@@ -573,8 +558,7 @@ class WeatherCard {
 
 
         // sun position
-
-        this.setSunPosition(weather);
+        this.setSunPosition();
 
         // animate fog
         if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
