@@ -47,6 +47,17 @@ body {
   bottom: 0;
 }
 
+.fog {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  background: -webkit-linear-gradient(bottom, rgb(0 0 70 / 55%) 0%, rgb(1 2 47 / 49%) 100%);
+  background: -moz-linear-gradient(bottom, rgb(0 0 70 / 55%) 0%, rgb(1 2 47 / 49%) 100%);
+  background: -ms-linear-gradient(bottom, rgb(0 0 70 / 55%) 0%, rgb(1 2 47 / 49%) 100%);
+  z-index: 6;
+}
+
 
 .truck {
   position: relative;
@@ -253,7 +264,7 @@ body {
   width: 100%;
 }
 .truck__body--top {
-  background: linear-gradient(90deg, #f4f1f1, #bfbfbf 50%), #e8e3e3;
+  background: linear-gradient(90deg, hsl(0deg 12% 65%), #737373 50%), #e8e3e3;
   height: 33%;
   width: 100%;
   top: 0;
