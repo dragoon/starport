@@ -391,6 +391,7 @@ class WeatherCard {
             flake.beginFill(0xffffff, 1)
                 .drawCircle(x, y, r);
         }
+        flake.alpha = Math.random();
 
         // TODO: big snow was in a different cloud holder
         if (scale > 0.8) {
@@ -403,7 +404,7 @@ class WeatherCard {
 
         this.flake_count += 1;
 
-        let fall_duration = getRandomNormal(5, 10);
+        let fall_duration = getRandomNormal(6, 11);
 
         gsap.fromTo(flake, {x: x, y: y}, {
             duration: fall_duration,
