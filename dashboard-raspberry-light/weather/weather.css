@@ -108,6 +108,7 @@ html, body {
 .card-container .card .details .temp {
     font-size: 6vh;
     line-height: 6vh;
+    flex-shrink: 0;
 }
 
 .card-container .card .details .temp .temp-degrees {
