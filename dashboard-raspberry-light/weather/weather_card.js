@@ -412,7 +412,7 @@ class WeatherCard {
             onCompleteParams: [flake],
             ease: Power0.easeIn
         });
-        gsap.to(flake, {duration: Math.ceil(fall_duration/3), x: x + (Math.random() * 150 - 75), repeat: -1, yoyo: true, ease: Power1.easeInOut});
+        gsap.to(flake, {duration: 3, x: x + (Math.random() * 150 - 75), repeat: Math.ceil(fall_duration/3), yoyo: true, ease: Power1.easeInOut});
     }
 
     onSnowEnd(flake) {
