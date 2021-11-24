@@ -312,8 +312,8 @@ class WeatherCard {
             .drawCircle(0, 0, size);
         } else {
             stone.clear();
-            stone.beginFill(0xffffff, 1)
-                .drawCircle(x, y, r);
+            stone.beginFill(fillColor, 1)
+                .drawCircle(0, 0, size);
         }
 
         if (size > 4) {
