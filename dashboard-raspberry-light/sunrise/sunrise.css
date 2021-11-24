@@ -63,6 +63,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     z-index: -3;
 }
 
+.hot #sky {
+    background: -webkit-linear-gradient(bottom, rgb(255, 228, 217) 10%, rgb(255, 228, 217) 20%, rgb(252, 192, 167) 40%, rgb(255, 154, 110) 100%);
+    background: -moz-linear-gradient(bottom, rgb(255, 228, 217) 10%, rgb(255, 228, 217) 20%, rgb(252, 192, 167) 40%, rgb(255, 154, 110) 100%);
+    background: -ms-linear-gradient(bottom, rgb(255, 228, 217) 10%, rgb(255, 228, 217) 20%, rgb(252, 192, 167) 40%, rgb(255, 154, 110) 100%);
+    background: linear-gradient(bottom, rgb(255, 228, 217) 10%, rgb(255, 228, 217) 20%, rgb(252, 192, 167) 40%, rgb(255, 154, 110) 100%);
+}
+
 #sky {
     position: absolute;
     top: 0;
