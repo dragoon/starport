@@ -148,8 +148,6 @@ function computeColorConfig(weatherObj) {
 
 }
 
-let cards;
-let funcDayTimeUpdates;
 let currentWeather;
 
 function changeWeather(data) {
@@ -164,47 +162,6 @@ function changeWeather(data) {
     }
 
 
-/**
- * Return brightness level to properly set update frequency
- * @return number
- */
-function adaptToDaytime(cards, day_weather) {
-    const colorMap = computeColorConfig(day_weather);
-    const canvases = Array.from(document.querySelectorAll(".canvas"));
-    canvases.forEach((c) => {
-        c.style.color = colorMap.textColor;
-        c.style.textShadow = "1px 1px "+ numberToHexString(0x00002e, 1-colorMap.brightnessLevel);
-    });
-    cards.forEach(card => {
-        card.clouds[0].tint = colorMap.cloud1;
-        card.clouds[0].alpha = colorMap.cloud1Opacity;
-        card.clouds[1].tint = colorMap.cloud2;
-        card.clouds[1].alpha = colorMap.cloud2Opacity;
-        card.clouds[2].tint = colorMap.cloud3;
-        card.clouds[2].alpha = colorMap.cloud3Opacity;
-
-        card.fog[0].tint = colorMap.cloud1;
-        card.fog[0].alpha = colorMap.cloud1Opacity;
-        card.fog[1].tint = colorMap.cloud2;
-        card.fog[1].alpha = colorMap.cloud2Opacity;
-        card.fog[2].tint = colorMap.cloud3;
-        card.fog[2].alpha = colorMap.cloud3Opacity;
-        card.setSunPosition();
-    });
-    updateSunrise(colorMap.brightnessLevel);
-    if (colorMap["night"] === true) {
-        canvases.forEach((c) => c.classList.add("night"));
-    } else {
-        canvases.forEach((c) => c.classList.remove("night"));
-    }
-    return colorMap.brightnessLevel;
-}
-
-function updateUpdateCurWeather(currentWeather) {
-    document.querySelector(".datetime-container .cur-temp").innerHTML = Math.round(currentWeather.temp);
-    document.querySelector(".datetime-container .cur-wind").innerHTML = Math.round(currentWeather.wind_speed*3.6);
-}
-
 
 function onGetLocation(position) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -217,29 +174,7 @@ function onGetLocation(position) {
     })
         .then(response => response.json())
         .then(function (weather) {
-            cards.forEach((card, i) => {
-                let dayWeather = weather.daily[i];
-                card.updateTempText(dayWeather.temp);
-                card.updateDateText(new Date(dayWeather.dt * 1000));
-                card.changeWeather({
-                    "type": dayWeather.ui_params.type,
-                    "intensity": dayWeather.ui_params.intensity,
-                    "name": dayWeather.ui_params.name,
-                    "classes": dayWeather.ui_params.classes
-                });
-            });
-
-            currentWeather = weather.daily[0];
-            updateUpdateCurWeather(weather.current);
-            let brightness = adaptToDaytime(cards, currentWeather);
-            clearInterval(funcDayTimeUpdates);
-            if (brightness < 0.01 || brightness > 0.99) {
-                funcDayTimeUpdates = setInterval(adaptToDaytime, 60 * 1000, cards, currentWeather);
-            } else {
-                // every 10 sec update if sunset/sunrise
-                funcDayTimeUpdates = setInterval(adaptToDaytime, 10 * 1000, cards, currentWeather);
-            }
-            addExtras(weather.extras);
+            manager.setWeather(weather);
         });
 }
 
@@ -257,26 +192,82 @@ function getLocation() {
 
 
 
-gsap.registerPlugin(PixiPlugin);
-cards = Array.from(document.querySelectorAll('.container')).map(c => new WeatherCard(c));
-
-function init() {
-    cards.forEach(card => card.resize());
-    cards.forEach(card => card.init());
-    getLocation();
-}
-
 function tick(timestamp) {
-    // iterate over all weather cards
-    cards.forEach(card => card.tick(timestamp));
+    manager.tick(timestamp);
     requestAnimationFrame(tick);
 }
 
-init();
 
-window.addEventListener('resize', function(event) {
-    cards.forEach(card => card.resize());
-}, true);
-requestAnimationFrame(tick);
-setInterval(getLocation, 60 * 60 * 1000); // 1 hour
+class WeatherManager {
+    constructor(autoupdates = true) {
+        this.cards = Array.from(document.querySelectorAll('.container')).map(c => new WeatherCard(c));
+        this.start = window.performance.now();
+        this.brightness = 1;
+        this.autoupdates = autoupdates;
+    }
+
+    init() {
+        this.cards.forEach(card => card.resize());
+        this.cards.forEach(card => card.init());
+    }
+
+    resize() {
+        this.cards.forEach(card => card.resize());
+    }
+
+    tick(timestamp) {
+        this.cards.forEach(card => card.tick(timestamp));
+
+        // autoupdates are disabled in the test page
+        if (!this.autoupdates) return;
+        
+        const elapsed = timestamp - this.start; // float in milliseconds
+        if (this.brightness < 0.01 || this.brightness > 0.99) {
+            if (elapsed > 60 * 1000) {
+                this.start = timestamp;
+                this.brightness = this.adaptToDaytime(currentWeather);
+            }
+        } else {
+            if (elapsed > 20 * 1000) {
+                this.start = timestamp;
+                this.brightness = this.adaptToDaytime(currentWeather);
+            }
+        }
+    }
+
+    static #updateCurWeather(currentWeather) {
+        document.querySelector(".datetime-container .cur-temp").innerHTML = Math.round(currentWeather.temp);
+        document.querySelector(".datetime-container .cur-wind").innerHTML = Math.round(currentWeather.wind_speed * 3.6);
+    }
+
+    setWeather(weather_json) {
+        this.cards.forEach((card, i) => {
+            let dayWeather = weather_json.daily[i];
+            card.changeWeather(dayWeather);
+        });
+
+        currentWeather = weather_json.current;
+        WeatherManager.#updateCurWeather(currentWeather);
+        let brightness = this.adaptToDaytime(currentWeather);
+        addExtras(weather_json.extras);
+    }
+
+    /**
+     * Return brightness level to properly set update frequency
+     * @return number
+     */
+    adaptToDaytime(day_weather) {
+        const colorMap = computeColorConfig(day_weather);
+        const canvases = Array.from(document.querySelectorAll(".canvas"));
+        canvases.forEach((c) => {
+            c.style.color = colorMap.textColor;
+            c.style.textShadow = "1px 1px " + numberToHexString(interpolateColor(0x00002e, 0xffffff, colorMap.brightnessLevel));
+        });
+        updateSunrise(colorMap.brightnessLevel);
+        this.cards.forEach(card => card.adaptToDayTime(colorMap));
+
+        return colorMap.brightnessLevel;
+    }
+
+}
 

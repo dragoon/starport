@@ -48,9 +48,17 @@ const weatherMap = {
     47: {type: 'thunder', class: '', intensity: .25, icon: 'wi-storm-showers', name: 'Isolated Thunderstorms'} //isolated thundershowers
 };
 
+const manager = new WeatherManager(false);
 
-// we don't want automatic updates
-clearInterval(funcDayTimeUpdates);
+manager.init();
+getLocation();
+
+window.addEventListener('resize', function(event) {
+    manager.resize();
+}, true);
+
+requestAnimationFrame(tick);
+
 
 $('#time_of_day_range').on('input', function () {
     // set time of day
@@ -59,7 +67,7 @@ $('#time_of_day_range').on('input', function () {
     date.setHours(minutes / 60);
     date.setMinutes(minutes % 60);
     dateService = new DateService(date);
-    adaptToDaytime(cards, currentWeather);
+    manager.adaptToDaytime(currentWeather);
 });
 
 function addExtras(extras) {
