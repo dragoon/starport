@@ -97,8 +97,6 @@ class WeatherCard {
     updateDateText(d) {
         // d is a Date
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        //this.date.html(days[d.getDay()] + " " + d.getDate() + " " + months[d.getMonth()]);
         this.date.innerHTML = days[d.getDay()];
         gsap.fromTo(this.date, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
@@ -444,29 +442,12 @@ class WeatherCard {
         }
     }
 
-    changeWeather(weather) {
-        this.reset();
-
-        this.currentWeather = weather;
-        gsap.killTweensOf(this.summary);
-        gsap.to(this.summary, {
-            duration: 1,
-            opacity: 0,
-            x: -30,
-            onComplete: this.updateSummaryText.bind(this),
-            ease: Power4.easeIn
-        });
-
-        this.container.classList.add(this.currentWeather.type);
-
-        // windSpeed
-
+    setWindSpeed() {
         switch (this.currentWeather.type) {
-
             case 'severe':
             case 'wind':
             case 'smoke':
-                gsap.to(this.settings, {duration: 3, windSpeed: 3 * this.currentWeather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, windSpeed: 2 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             case 'sun':
                 gsap.to(this.settings,{duration: 3, windSpeed: 20, ease: Power2.easeInOut});
@@ -480,9 +461,9 @@ class WeatherCard {
                 break;
         }
 
+    }
 
-        // rainCount
-
+    setRainCount() {
         switch (this.currentWeather.type) {
 
             case 'mix':
@@ -503,11 +484,10 @@ class WeatherCard {
                 break;
         }
 
+    }
 
-        // hailCount
-
+    setHailCount() {
         switch (this.currentWeather.type) {
-
             case 'mix':
                 gsap.to(this.settings, {duration: 3, hailCount: 3 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
@@ -528,24 +508,23 @@ class WeatherCard {
                 gsap.to(this.settings, {duration: 1, hailCount: 0, ease: Power2.easeOut});
                 break;
         }
+    }
 
-
-        // leafCount
-
+    setLeafCount() {
         switch (this.currentWeather.type) {
 
             case 'severe':
             case 'wind':
-                gsap.to(this.settings, {duration: 3, leafCount: 5 * this.currentWeather.intensity, ease: Power2.easeInOut});
+                gsap.to(this.settings, {duration: 3, leafCount: 4 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             default:
                 gsap.to(this.settings, {duration: 1, leafCount: 0, ease: Power2.easeOut});
                 break;
         }
+    }
 
 
-        // snowCount
-
+    setSnowCount() {
         switch (this.currentWeather.type) {
 
             case 'mix':
@@ -558,12 +537,9 @@ class WeatherCard {
                 gsap.to(this.settings, {duration: 1, snowCount: 0, ease: Power2.easeOut});
                 break;
         }
+    }
 
-
-        // sun position
-        this.setSunPosition();
-
-        // animate fog
+    setFog() {
         if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
             this.fog.forEach(f => {f.visible=true});
             this.fog.forEach((fog, i) => {
@@ -584,23 +560,19 @@ class WeatherCard {
                 gsap.killTweensOf(fog);
             });
         }
+    }
 
-        // lightning
-
-        this.startLightningTimer();
-
-        // remove clouds if sunny
-        switch (weather.type) {
-
+    setClouds() {
+        switch (this.currentWeather.type) {
             case 'sun':
                 this.clouds.forEach((cloud, i) => {
                     gsap.killTweensOf(cloud);
                     // animate clouds with gsap
-                    if (cloud.offset > this.sizes.card.width * 2.5){
+                    if (cloud.offset > this.sizes.card.width * 2.5) {
                         cloud.offset = -(this.sizes.card.width * 1.5);
                     }
                     gsap.to(cloud, {
-                        duration: this.settings.windSpeed * (i+1),
+                        duration: this.settings.windSpeed * (i + 1),
                         ease: "none",
                         x: "+=800",
                         repeat: 0
@@ -622,6 +594,35 @@ class WeatherCard {
                     });
                 });
         }
+    }
+
+    changeWeather(weather) {
+        this.reset();
+
+        this.currentWeather = weather;
+        gsap.killTweensOf(this.summary);
+        gsap.to(this.summary, {
+            duration: 1,
+            opacity: 0,
+            x: -30,
+            onComplete: this.updateSummaryText.bind(this),
+            ease: Power4.easeIn
+        });
+
+        this.container.classList.add(this.currentWeather.type);
+
+        this.setWindSpeed();
+        this.setRainCount();
+        this.setSnowCount();
+        this.setHailCount();
+        this.setLeafCount();
+        // sun position
+        this.setSunPosition();
+        this.setFog();
+        this.setClouds();
+
+        // lightning
+        this.startLightningTimer();
     }
 
     updateSummaryText() {

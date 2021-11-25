@@ -50,9 +50,9 @@ html, body {
 
 .card-container .card {
     overflow: hidden;
-    width: 15.5vw;
+    width: 15.5vmax;
     padding: 0;
-    height: 41vh;
+    height: 38vmin;
     border-radius: 5px;
     position: relative;
 }
@@ -87,17 +87,12 @@ html, body {
     transition: color 2s ease;
 }
 
-
-.smoke .card .details, .hail .card .details, .severe .card .details, .thunder .card .details {
-    color: #ddd;
-}
-
 .card-container .card .details .right {
     text-align: right;
 }
 
 .card .details #date {
-    margin: 4px 0;
+    margin: 0.3em 0;
 }
 
 .card-container .card .details #summary {
@@ -130,16 +125,6 @@ html, body {
     background-color: transparent;
     position: absolute;
     z-index: 1;
-}
-
-.weather .fog {
-    opacity: 0;
-    -webkit-transition: opacity 2s ease, fill 2s ease;
-    transition: opacity 2s ease, fill 2s ease;
-}
-
-.smoke .weather .fog, .haze .weather .fog {
-    opacity: 1;
 }
 
 .weather #sun {
