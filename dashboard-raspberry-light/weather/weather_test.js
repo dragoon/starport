@@ -73,14 +73,12 @@ $('#time_of_day_range').on('input', function () {
 function addExtras(extras) {
 }
 
-function changeWeather(data) {
-    manager.setWeather();
-    cards.forEach((card, i) => {
-        card.changeWeather({
+function changeWeather(data, card_id) {
+    manager.weatherJson.daily[card_id].ui_params = {
             "type": data.type,
             "intensity": data.intensity,
             "name": data.name,
             "classes": [data.class]
-        });
-    });
+        };
+    manager.setWeather(manager.weatherJson);
 }

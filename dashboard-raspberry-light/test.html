@@ -34,7 +34,8 @@
                 }
 
                 changeWeather(data, event) {
-                    changeWeather(data);
+                    let card_id = Number($($(event.currentTarget).parentsUntil(".weather-cards")[3]).find(".container").attr("id").substring(13))  - 1;
+                    changeWeather(data, card_id);
                 }
             }
 
