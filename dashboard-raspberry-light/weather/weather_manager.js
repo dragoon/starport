@@ -59,11 +59,12 @@ function tick(timestamp) {
 
 
 class WeatherManager {
-    constructor(autoupdates = true) {
+    constructor() {
         this.cards = Array.from(document.querySelectorAll('.container')).map(c => new WeatherCard(c));
         this.start = window.performance.now();
         this.brightness = 1;
-        this.autoupdates = autoupdates;
+        this.currentWeather = null;
+        this.weatherJson = null;
     }
 
     init() {
@@ -78,21 +79,17 @@ class WeatherManager {
     tick(timestamp) {
         this.cards.forEach(card => card.tick(timestamp));
 
-        // autoupdates are disabled in the test page
-        if (!this.autoupdates) return;
         if (!this.currentWeather) return;
         
         const elapsed = timestamp - this.start; // float in milliseconds
         if (this.brightness < 0.01 || this.brightness > 0.99) {
             if (elapsed > 60 * 1000) {
                 this.start = timestamp;
-                this.brightness = this.#computeBrightness();
                 this.adaptToDaytime();
             }
         } else {
             if (elapsed > 20 * 1000) {
                 this.start = timestamp;
-                this.brightness = this.#computeBrightness();
                 this.adaptToDaytime();
             }
         }
@@ -133,7 +130,9 @@ class WeatherManager {
             card.changeWeather(dayWeather);
         });
 
+        this.weatherJson = weather_json;
         this.currentWeather = weather_json.current;
+
         this.brightness = this.#computeBrightness();
         WeatherManager.#updateCurWeather(this.currentWeather);
         this.adaptToDaytime();
@@ -152,6 +151,7 @@ class WeatherManager {
      * @return number
      */
     adaptToDaytime() {
+        this.brightness = this.#computeBrightness();
         const currentColorMap = this.#computeColorConfig(this.currentWeather["ui_params"]["type"]);
         const canvases = Array.from(document.querySelectorAll(".canvas"));
         canvases.forEach((c) => {

@@ -48,7 +48,7 @@ const weatherMap = {
     47: {type: 'thunder', class: '', intensity: .25, icon: 'wi-storm-showers', name: 'Isolated Thunderstorms'} //isolated thundershowers
 };
 
-const manager = new WeatherManager(false);
+const manager = new WeatherManager();
 
 manager.init();
 getLocation();
@@ -67,8 +67,20 @@ $('#time_of_day_range').on('input', function () {
     date.setHours(minutes / 60);
     date.setMinutes(minutes % 60);
     dateService = new DateService(date);
-    manager.adaptToDaytime(currentWeather);
+    manager.adaptToDaytime();
 });
 
 function addExtras(extras) {
+}
+
+function changeWeather(data) {
+    manager.setWeather();
+    cards.forEach((card, i) => {
+        card.changeWeather({
+            "type": data.type,
+            "intensity": data.intensity,
+            "name": data.name,
+            "classes": [data.class]
+        });
+    });
 }
