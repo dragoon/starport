@@ -1,165 +1,25 @@
 gsap.registerPlugin(PixiPlugin, MotionPathPlugin);
-const weather_types = ["snow", "mix", "mix-rain-sleet", "mix-rain-snow", "mix-snow-sleet", "sleet", "wind", "rain", "hail", "thunder", "severe", "cloud", "sun", "haze", "smoke"];
 
-const hot_color = 0xe6b3b3;
-const cold_color = 0xccdffb;
-const normal_color = 0xccccff;
+// Season enums can be grouped as static members of a class
+class Weather {
+    // Create new instances of the same class as static attributes
+    static RAIN = new Weather("rain")
+    static SNOW = new Weather("snow")
+    static SLEET = new Weather("sleet")
+    static HAIL = new Weather("hail")
+    static MIX = new Weather("mix-rain-snow")
+    static SEVERE = new Weather("thunder")
+    static CLOUD = new Weather("cloud")
+    static FOG = new Weather("haze")
+    static SMOKE = new Weather("smoke")
+    static SUN = new Weather("sun")
 
-const nightColorConfig = {
-    "brightnessLevel": 0,
-    "cloud1": 0x00002e, "cloud1Opacity": 1,
-    "cloud2": 0x434a63, "cloud2Opacity": 0.6,
-    "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6,
-    "textColor": 0xdddddd,
-    "night": true
-};
-
-/**
- *
- * @param currentTemperature in Celsius
- * @return Number: color as int
- */
-function getTemperatureColor(currentTemperature) {
-    if (currentTemperature >= 30) {
-        return hot_color;
-    } else if (currentTemperature >= 15) { // 15 - 30
-        return interpolateColor(normal_color, hot_color, (currentTemperature - 15) / 15);
-    } else if (currentTemperature <= 0) {
-        return cold_color;
-    } else if (currentTemperature < 15) {  // 0 - 15
-        return interpolateColor(cold_color, normal_color, (currentTemperature) / 15);
-    }
-
-    return normal_color;
-}
-
-
-/**
- * Makes color darker according to the time between sunset and sunrise.
- *    _____
- *   /     \
- * _/       \____
- * @param colorConfig {{brightnessLevel: number, cloud1: number, cloud2: number, cloud3: number, textColor: number, night: boolean}}
- * @param sunriseTimestamp timestamp (seconds since epoch) of sunrise
- * @param sunsetTimestamp timestamp (seconds since epoch) of sunset
- * @return {{y: number, cloud1: number}}
- */
-function adaptColorToDaytime(colorConfig, sunriseTimestamp, sunsetTimestamp) {
-    // get current time in seconds
-    let now = dateService.getDate().getTime()/1000;
-    const twilightSeconds = 30 * 60;
-    if (now < sunriseTimestamp - twilightSeconds || now > sunsetTimestamp + twilightSeconds) {
-        // copy of night
-        return {...nightColorConfig};
-    } else if (now > sunriseTimestamp + twilightSeconds && now < sunsetTimestamp - twilightSeconds) {
-        // day
-        colorConfig.brightnessLevel = 1.0;
-        return colorConfig;
-    } else {
-        // compute percentage to make darker
-        const brightnessLevel = Math.min(
-            Math.abs( now + twilightSeconds - sunriseTimestamp),
-            Math.abs(now - twilightSeconds - sunsetTimestamp)) / (2*twilightSeconds);
-        // 0 -- dark , 1 - bright
-        console.log("Brightness Level:", brightnessLevel);
-
-        // cloud colors have several stops during twilight
-        if (brightnessLevel < 0.25) {
-            colorConfig.cloud1 = interpolateColor(0xa62929, nightColorConfig.cloud1, 1-brightnessLevel*4);
-            colorConfig.cloud2 = interpolateColor(0xc78585, nightColorConfig.cloud2, 1-brightnessLevel*4);
-            colorConfig.cloud3 = interpolateColor(0x8a5b5b, nightColorConfig.cloud3, 1-brightnessLevel*4);
-        } else {
-            colorConfig.cloud1 = interpolateColor(colorConfig.cloud1, 0xa62929, (1-brightnessLevel)*4/3);
-            colorConfig.cloud2 = interpolateColor(colorConfig.cloud2, 0xc78585, (1-brightnessLevel)*4/3);
-            colorConfig.cloud3 = interpolateColor(colorConfig.cloud3, 0x8a5b5b, (1-brightnessLevel)*4/3);
-        }
-        colorConfig.textColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-brightnessLevel);
-        colorConfig.cloud2Opacity = nightColorConfig.cloud2Opacity + (1-nightColorConfig.cloud2Opacity)*brightnessLevel;
-        colorConfig.cloud3Opacity = nightColorConfig.cloud3Opacity + (1-nightColorConfig.cloud3Opacity)*brightnessLevel;
-
-        // sun position
-        colorConfig.brightnessLevel = brightnessLevel;
-        if (now <= sunriseTimestamp || now >= sunsetTimestamp) {
-            colorConfig.night = true;
-        }
-        return colorConfig;
+    constructor(name) {
+        this.name = name
     }
 }
 
-/**
- *
- * @param tempColor: number
- * @param weatherType: string
- * @return {{cloud2Opacity: number,
- * cloud3Opacity: number,
- * cloud1Opacity: number,
- * cloud2: number,
- * cloud1: number,
- * cloud3: number}}
- */
-function adaptColorToWeather(tempColor, weatherType) {
-
-    let cloud1Color = 0xefefef;
-    let cloud2Color = 0xEaEaEa;
-    let cloud3Color = 0xD1D1D1;
-    let cloud1Opacity = 1;
-    let cloud2Opacity = 0.7;
-    let cloud3Opacity = 0.7;
-
-    switch (weatherType) {
-        case "rain":
-            tempColor = 0xdcdcdc;
-            break;
-        case "haze":
-            tempColor = 0xefefef;
-            break;
-        case "hail":
-            tempColor = 0x9FA4AD;
-            break;
-        case "severe":
-            tempColor = 0x9FA4AD;
-            break;
-        case "thunder":
-            tempColor = 0x9FA4AD;
-            break;
-        case "snow":
-            cloud1Color = 0xfcfcff;
-            cloud2Color = 0xfcfcff;
-            cloud3Color = 0xfcfcff;
-            cloud2Opacity = 0.5;
-            cloud3Opacity = 0.5;
-            break;
-    }
-
-    return {
-        "cloud1": cloud1Color, "cloud1Opacity": cloud1Opacity,
-        "cloud2": cloud2Color, "cloud2Opacity": cloud2Opacity,
-        "cloud3": cloud3Color, "cloud3Opacity": cloud3Opacity,
-        "textColor": 0x888888
-    }
-}
-
-function computeColorConfig(weatherObj) {
-    const tempColor = getTemperatureColor(weatherObj.temp);
-    const weatherColors = adaptColorToWeather(tempColor, weatherObj["ui_params"]["type"]);
-    const timeColors = adaptColorToDaytime(weatherColors, weatherObj.sunrise, weatherObj.sunset);
-    timeColors.textColor = numberToHexString(timeColors.textColor);
-    return timeColors;
-
-}
-
-let currentWeather;
-
-function changeWeather(data) {
-        cards.forEach((card, i) => {
-            card.changeWeather({
-                "type": data.type,
-                "intensity": data.intensity,
-                "name": data.name,
-                "classes": [data.class]
-            });
-        });
-    }
+const weather_types = ["snow", "mix-rain-snow", "sleet", "rain", "hail", "thunder", "cloud", "sun", "haze", "smoke"];
 
 
 
@@ -220,19 +80,46 @@ class WeatherManager {
 
         // autoupdates are disabled in the test page
         if (!this.autoupdates) return;
+        if (!this.currentWeather) return;
         
         const elapsed = timestamp - this.start; // float in milliseconds
         if (this.brightness < 0.01 || this.brightness > 0.99) {
             if (elapsed > 60 * 1000) {
                 this.start = timestamp;
-                this.brightness = this.adaptToDaytime(currentWeather);
+                this.brightness = this.#computeBrightness();
+                this.adaptToDaytime();
             }
         } else {
             if (elapsed > 20 * 1000) {
                 this.start = timestamp;
-                this.brightness = this.adaptToDaytime(currentWeather);
+                this.brightness = this.#computeBrightness();
+                this.adaptToDaytime();
             }
         }
+    }
+
+    #computeBrightness() {
+        // get current time in seconds
+        let now = dateService.getDate().getTime() / 1000;
+        console.debug(now);
+        let brightness;
+        const sunriseTimestamp = this.currentWeather.sunrise;
+        const sunsetTimestamp = this.currentWeather.sunset;
+        const twilightSeconds = 30 * 60;
+        if (now < sunriseTimestamp - twilightSeconds || now > sunsetTimestamp + twilightSeconds) {
+            brightness = 0;
+        } else if (now > sunriseTimestamp + twilightSeconds && now < sunsetTimestamp - twilightSeconds) {
+            // day
+            brightness = 1.0;
+        } else {
+            // compute percentage to make darker
+            brightness = Math.min(
+                Math.abs(now + twilightSeconds - sunriseTimestamp),
+                Math.abs(now - twilightSeconds - sunsetTimestamp)) / (2 * twilightSeconds);
+            // 0 -- dark , 1 - bright
+            console.log("Brightness Level:", brightness);
+        }
+        return brightness;
     }
 
     static #updateCurWeather(currentWeather) {
@@ -246,27 +133,33 @@ class WeatherManager {
             card.changeWeather(dayWeather);
         });
 
-        currentWeather = weather_json.current;
-        WeatherManager.#updateCurWeather(currentWeather);
-        let brightness = this.adaptToDaytime(currentWeather);
+        this.currentWeather = weather_json.current;
+        this.brightness = this.#computeBrightness();
+        WeatherManager.#updateCurWeather(this.currentWeather);
+        this.adaptToDaytime();
         addExtras(weather_json.extras);
+    }
+
+    #computeColorConfig(weather_type) {
+        const weatherColors = adaptCloudColorsToWeather(weather_type);
+        const timeColors = adaptColorToDaytime(weatherColors, this.brightness);
+        timeColors.textColor = numberToHexString(timeColors.textColor);
+        return timeColors;
     }
 
     /**
      * Return brightness level to properly set update frequency
      * @return number
      */
-    adaptToDaytime(day_weather) {
-        const colorMap = computeColorConfig(day_weather);
+    adaptToDaytime() {
+        const currentColorMap = this.#computeColorConfig(this.currentWeather["ui_params"]["type"]);
         const canvases = Array.from(document.querySelectorAll(".canvas"));
         canvases.forEach((c) => {
-            c.style.color = colorMap.textColor;
-            c.style.textShadow = "1px 1px " + numberToHexString(interpolateColor(0x00002e, 0xffffff, colorMap.brightnessLevel));
+            c.style.color = currentColorMap.textColor;
+            c.style.textShadow = "1px 1px " + numberToHexString(interpolateColor(0x00002e, 0xffffff, this.brightness));
         });
-        updateSunrise(colorMap.brightnessLevel);
-        this.cards.forEach(card => card.adaptToDayTime(colorMap));
-
-        return colorMap.brightnessLevel;
+        updateSunrise(this.brightness);
+        this.cards.forEach(card => card.adaptToDayTime(this.#computeColorConfig(card.currentWeather["type"])));
     }
 
 }

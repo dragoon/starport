@@ -389,7 +389,7 @@ class WeatherCard {
             flake.beginFill(0xffffff, 1)
                 .drawCircle(x, y, r);
         }
-        flake.alpha = Math.random();
+        flake.alpha = getRandomArbitrary(0.2, 1);
 
         // TODO: big snow was in a different cloud holder
         if (scale > 0.8) {

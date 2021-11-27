@@ -70,16 +70,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     background: linear-gradient(bottom, rgb(255, 228, 217) 10%, rgb(255, 228, 217) 20%, rgb(252, 192, 167) 40%, rgb(255, 154, 110) 100%);
 }
 
+.snow #sky {
+    background: -webkit-linear-gradient(bottom, rgb(200, 220, 230) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -moz-linear-gradient(bottom, rgb(200, 220, 230) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -ms-linear-gradient(bottom, rgb(200, 220, 230) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: linear-gradient(bottom, rgb(200, 220, 230) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+}
+
 #sky {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: -webkit-linear-gradient(bottom, rgb(217, 244, 255) 10%, rgba(215, 253, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
-    background: -moz-linear-gradient(bottom, rgb(217, 244, 255) 10%, rgba(215, 253, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
-    background: -ms-linear-gradient(bottom, rgb(217, 244, 255) 10%, rgba(215, 253, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
-    background: linear-gradient(bottom, rgb(217, 244, 255) 10%, rgba(215, 253, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -webkit-linear-gradient(bottom, rgb(217, 244, 255) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -moz-linear-gradient(bottom, rgb(217, 244, 255) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -ms-linear-gradient(bottom, rgb(217, 244, 255) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: linear-gradient(bottom, rgb(217, 244, 255) 10%, rgba(215, 253, 244, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
     opacity: 0.52;
     z-index: -6;
 }
