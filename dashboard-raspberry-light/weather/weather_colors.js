@@ -16,12 +16,8 @@ const nightColorConfig = {
 function getTemperatureColor(currentTemperature) {
     if (currentTemperature >= 25) {
         return hot_color;
-    } else if (currentTemperature >= 15) { // 15 - 25
-        return interpolateColor(normal_color, hot_color, (currentTemperature - 15) / 10);
-    } else if (currentTemperature <= 5) {
-        return cold_color;
-    } else if (currentTemperature < 15) {  // 5 - 15
-        return interpolateColor(cold_color, normal_color, (currentTemperature - 5) / 10);
+    } else if (currentTemperature >= 20) { // 20 - 25
+        return interpolateColor(normal_color, hot_color, (currentTemperature - 20) / 5);
     }
 
     return normal_color;

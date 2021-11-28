@@ -12,7 +12,7 @@ body {
     margin-top: 100px;
 }
 
-#time_of_day_range {
+.range {
     width: 500px;
 }
 
