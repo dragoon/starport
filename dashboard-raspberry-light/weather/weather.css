@@ -161,18 +161,6 @@ html, body {
     fill: #91969f;
 }
 
-.night .weather #fog1 {
-    fill: #00002e99;
-}
-
-.night .weather #fog2 {
-    fill: #4f525c99;
-}
-
-.night .weather #fog3 {
-    fill: #3f3d4c99;
-}
-
 .weather #fog2, .weather #cloud1 {
     fill: #efefef;
 }
