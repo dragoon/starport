@@ -604,8 +604,7 @@ class WeatherCard {
         this.currentWeather = {
             "type": dayWeather.ui_params.type,
             "intensity": dayWeather.ui_params.intensity,
-            "name": dayWeather.ui_params.name,
-            "classes": dayWeather.ui_params.classes
+            "name": dayWeather.ui_params.name
         };
         gsap.killTweensOf(this.summary);
         gsap.to(this.summary, {

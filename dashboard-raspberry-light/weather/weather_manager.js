@@ -160,6 +160,9 @@ class WeatherManager {
         });
         updateSunrise(this.brightness);
         this.cards.forEach(card => card.adaptToDayTime(this.#computeColorConfig(card.currentWeather["type"])));
+        // get all cards' weather types
+        let weather_types = new Set(this.cards.map(c => c.currentWeather["type"]));
+        document.body.classList.add(...weather_types);
         if (currentColorMap["night"] === true) {
             document.body.classList.add("night");
         } else {
