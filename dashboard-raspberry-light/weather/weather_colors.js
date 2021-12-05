@@ -97,8 +97,9 @@ function adaptColorToDaytime(colorConfig, brightness) {
             colorConfig.cloud3 = interpolateColor(colorConfig.cloud3, 0x8a5b5b, (1-brightness)*4/3);
         }
         colorConfig.textColor = interpolateColor(colorConfig.textColor, nightColorConfig.textColor, 1-brightness);
-        colorConfig.cloud2Opacity = nightColorConfig.cloud2Opacity + (1-nightColorConfig.cloud2Opacity)*brightness;
-        colorConfig.cloud3Opacity = nightColorConfig.cloud3Opacity + (1-nightColorConfig.cloud3Opacity)*brightness;
+        colorConfig.cloud1Opacity = nightColorConfig.cloud1Opacity + (colorConfig.cloud1Opacity-nightColorConfig.cloud1Opacity)*brightness;
+        colorConfig.cloud2Opacity = nightColorConfig.cloud2Opacity + (colorConfig.cloud2Opacity-nightColorConfig.cloud2Opacity)*brightness;
+        colorConfig.cloud3Opacity = nightColorConfig.cloud3Opacity + (colorConfig.cloud3Opacity-nightColorConfig.cloud3Opacity)*brightness;
         return colorConfig;
     }
 }
