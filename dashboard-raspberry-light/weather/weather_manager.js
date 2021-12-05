@@ -97,7 +97,7 @@ class WeatherManager {
 
     #computeBrightness() {
         // get current time in seconds
-        let now = dateService.getDate().getTime() / 1000;
+        let now = dateService.getTimestampSeconds();
         console.debug(now);
         let brightness;
         const sunriseTimestamp = this.currentWeather.sunrise;

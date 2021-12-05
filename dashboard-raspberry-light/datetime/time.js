@@ -12,6 +12,10 @@ class DateService {
             return this.#date;
         }
     }
+
+    getTimestampSeconds() {
+        return this.getDate().getTime() / 1000;
+    }
 }
 
 let dateService = new DateService();
