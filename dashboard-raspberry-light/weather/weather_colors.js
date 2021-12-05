@@ -2,8 +2,7 @@ const nightColorConfig = {
     "cloud1": 0x00002e, "cloud1Opacity": 1,
     "cloud2": 0x434a63, "cloud2Opacity": 0.6,
     "cloud3": 0x3f3d4c, "cloud3Opacity": 0.6,
-    "textColor": 0xdddddd,
-    "night": true
+    "textColor": 0xdddddd
 };
 
 
