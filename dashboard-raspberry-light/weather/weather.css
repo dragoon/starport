@@ -127,12 +127,8 @@ html, body {
     z-index: 1;
 }
 
-.weather #sun {
-    --pulse-color: rgba(247, 237, 71, 1);
-    --pulse-color1: rgba(247, 237, 71, 0.7);
-    --pulse-color2: rgba(247, 237, 71, 0);
-    background:  -webkit-radial-gradient(center, circle,  var(--pulse-color) 0%, var(--pulse-color2) 60%, var(--pulse-color2) 100%);
-    /**animation: pulse 2s linear 1s infinite;* Drains performance*/
+.weather .sun {
+    background:  radial-gradient(rgb(255, 253, 218) 0%, rgb(247, 237, 71) 30%, rgba(247, 237, 71, 0.5) 50%, rgba(247, 237, 71, 0.2) 62%, rgba(247, 237, 71, 0) 70%);
     border-radius: 50%;
     height: 20vh;
     width: 20vh;
@@ -145,12 +141,20 @@ html, body {
     z-index: 0;
 }
 
-.night .weather #sun {
-    background-color: var(--pulse-color);
-    box-shadow: 0 0 28px var(--pulse-color), inset 0 0 28px var(--pulse-color);
-    --pulse-color: #ccdbef;
+.weather .moon {
+    background-color: #ccdbef;
+    box-shadow: 0 0 28px #ccdbef, inset 0 0 28px #ccdbef;
+    /**animation: pulse 2s linear 1s infinite;* Drains performance*/
+    border-radius: 50%;
     height: 10vh;
     width: 10vh;
+    position: absolute;
+    top: -20vh;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 0;
 }
 
 .weather #fog1 {

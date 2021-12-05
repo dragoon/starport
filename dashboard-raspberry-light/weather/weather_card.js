@@ -62,7 +62,8 @@ class WeatherCard {
         this.temp_min = document.querySelector(`#${elem_id} .card .details .temp .temperature-night`);
         this.tempFormat = document.querySelector(`#${elem_id} .card .details .temp-degrees`);
         this.leaf = Snap.select(`#${elem_id} .card #leaf`);
-        this.sun = document.querySelector(`#${elem_id} .card #sun`);
+        this.sun = document.querySelector(`#${elem_id} .card .sun`);
+        this.moon = document.querySelector(`#${elem_id} .card .moon`);
     }
 
     resize() {
@@ -427,10 +428,57 @@ class WeatherCard {
         }
     }
 
-    setSunPosition() {
+    #computeSunPosition(now) {
+        const sunriseTimestamp = this.dayWeather.sunrise;
+        const sunsetTimestamp = this.dayWeather.sunset;
+        const middlePosition = (this.sizes.card.height/2 - this.sun.clientHeight/2);
+        const bottomPosition = this.sizes.card.height;
+        let currentPosition;
+
+        if (now < sunriseTimestamp || now > sunsetTimestamp) {
+            currentPosition = bottomPosition;
+        } else if (now < sunriseTimestamp + 30*60) {
+            currentPosition = bottomPosition - (bottomPosition - middlePosition) * (now - sunriseTimestamp)/30/60;
+        }  else if (now > sunsetTimestamp - 30*60) {
+            currentPosition = bottomPosition - (bottomPosition - middlePosition) * (sunsetTimestamp - now)/30/60;
+        }  else {
+            currentPosition = middlePosition;
+        }
+        return currentPosition;
+    }
+
+    #computeMoonPosition(now) {
+        const sunriseTimestamp = this.dayWeather.sunrise;
+        const sunsetTimestamp = this.dayWeather.sunset;
+        const middlePosition = (this.sizes.card.height/2 - this.moon.clientHeight/2);
+        const bottomPosition = this.sizes.card.height + 30;
+        let currentPosition;
+
+        if (now < sunsetTimestamp && now > sunriseTimestamp) {
+            currentPosition = bottomPosition;
+        } else if (now > sunsetTimestamp + 60*60 || now < sunriseTimestamp - 60*60) {
+            currentPosition = middlePosition;
+        } else if (now > sunsetTimestamp + 30*60) {
+            currentPosition = bottomPosition - (bottomPosition - middlePosition) * (now - sunsetTimestamp - 30*60)/30/60;
+        }  else if (now > sunriseTimestamp - 30*60) {
+            currentPosition = bottomPosition - (bottomPosition - middlePosition) * (sunriseTimestamp - now)/30/60;
+        }  else {
+            currentPosition = middlePosition;
+        }
+        return currentPosition;
+    }
+
+    #setSunPosition() {
+        let now = dateService.getTimestampSeconds();
+        while (this.dayWeather.dt - 60*60*12 > now) {
+            now += 60*60*24;
+        }
+
         switch (this.currentWeather.type) {
             case 'sun':
-                this.sun.style.top = (this.sizes.card.height/2 - this.sun.clientHeight/2) + 'px';
+                this.sun.style.top = this.#computeSunPosition(now) + 'px';
+                this.moon.style.top = this.#computeMoonPosition(now) + 'px';
+
                 break;
             case 'cloud':
                 let ypos =  this.sizes.card.height/2 - this.sun.clientHeight/2 - this.sizes.card.height * this.currentWeather.intensity / 4;
@@ -601,6 +649,8 @@ class WeatherCard {
         this.updateTempText(dayWeather.temp);
         this.updateDateText(new Date(dayWeather.dt * 1000));
 
+
+        this.dayWeather = dayWeather;
         this.currentWeather = {
             "type": dayWeather.ui_params.type,
             "intensity": dayWeather.ui_params.intensity,
@@ -623,7 +673,7 @@ class WeatherCard {
         this.#setHailCount();
         this.#setLeafCount();
         // sun position
-        this.setSunPosition();
+        this.#setSunPosition();
         this.#setFog();
         this.#setClouds();
 
@@ -645,7 +695,7 @@ class WeatherCard {
         this.fog[1].alpha = colorMap.cloud2Opacity;
         this.fog[2].tint = colorMap.cloud3;
         this.fog[2].alpha = colorMap.cloud3Opacity;
-        this.setSunPosition();
+        this.#setSunPosition();
     }
 
     #updateSummaryText() {
