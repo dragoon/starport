@@ -71,10 +71,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 }
 
 .snow #sky {
-    background: -webkit-linear-gradient(bottom, rgb(200, 220, 230) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
-    background: -moz-linear-gradient(bottom, rgb(200, 220, 230) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
-    background: -ms-linear-gradient(bottom, rgb(200, 220, 230) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
-    background: linear-gradient(bottom, rgb(200, 220, 230) 10%, rgba(215, 243, 254, 1) 20%, rgba(167, 222, 253, 1) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -webkit-linear-gradient(bottom, rgb(177, 195, 204) 10%, rgb(200, 220, 230) 20%, rgb(157, 206, 231) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -moz-linear-gradient(bottom, rgb(177, 195, 204) 10%, rgb(200, 220, 230) 20%, rgb(157, 206, 231) 40%, rgba(110, 175, 255, 1) 100%);
+    background: -ms-linear-gradient(bottom, rgb(177, 195, 204) 10%, rgb(200, 220, 230) 20%, rgb(157, 206, 231) 40%, rgba(110, 175, 255, 1) 100%);
+    background: linear-gradient(bottom, rgb(177, 195, 204) 10%, rgb(200, 220, 230) 20%, rgb(157, 206, 231) 40%, rgba(110, 175, 255, 1) 100%);
 }
 
 #sky {
