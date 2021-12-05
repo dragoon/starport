@@ -428,7 +428,7 @@ class WeatherCard {
         }
     }
 
-    #computeSunPosition(now) {
+    #computeClearSunPosition(now) {
         const sunriseTimestamp = this.dayWeather.sunrise;
         const sunsetTimestamp = this.dayWeather.sunset;
         const middlePosition = (this.sizes.card.height/2 - this.sun.clientHeight/2);
@@ -447,11 +447,51 @@ class WeatherCard {
         return currentPosition;
     }
 
-    #computeMoonPosition(now) {
+    #computeCloudSunPosition(now) {
+        const sunriseTimestamp = this.dayWeather.sunrise;
+        const sunsetTimestamp = this.dayWeather.sunset;
+        const normalPosition = this.sizes.card.height/2 - this.sun.clientHeight/2 - this.sizes.card.height * this.currentWeather.intensity / 4;
+        const offPosition = -this.sun.clientHeight;
+        let currentPosition;
+
+        if (now < sunriseTimestamp || now > sunsetTimestamp) {
+            currentPosition = offPosition;
+        } else if (now < sunriseTimestamp + 30*60) {
+            currentPosition = offPosition - (offPosition - normalPosition) * (now - sunriseTimestamp)/30/60;
+        }  else if (now > sunsetTimestamp - 30*60) {
+            currentPosition = offPosition - (offPosition - normalPosition) * (sunsetTimestamp - now)/30/60;
+        }  else {
+            currentPosition = normalPosition;
+        }
+        return currentPosition;
+    }
+
+    #computeClearMoonPosition(now) {
         const sunriseTimestamp = this.dayWeather.sunrise;
         const sunsetTimestamp = this.dayWeather.sunset;
         const middlePosition = (this.sizes.card.height/2 - this.moon.clientHeight/2);
         const bottomPosition = this.sizes.card.height + 30;
+        let currentPosition;
+
+        if (now < sunsetTimestamp && now > sunriseTimestamp) {
+            currentPosition = bottomPosition;
+        } else if (now > sunsetTimestamp + 60*60 || now < sunriseTimestamp - 60*60) {
+            currentPosition = middlePosition;
+        } else if (now > sunsetTimestamp + 30*60) {
+            currentPosition = bottomPosition - (bottomPosition - middlePosition) * (now - sunsetTimestamp - 30*60)/30/60;
+        }  else if (now > sunriseTimestamp - 30*60) {
+            currentPosition = bottomPosition - (bottomPosition - middlePosition) * (sunriseTimestamp - now)/30/60;
+        }  else {
+            currentPosition = middlePosition;
+        }
+        return currentPosition;
+    }
+
+    #computeCloudMoonPosition(now) {
+        const sunriseTimestamp = this.dayWeather.sunrise;
+        const sunsetTimestamp = this.dayWeather.sunset;
+        const middlePosition = this.sizes.card.height/2 - this.moon.clientHeight/2 - this.sizes.card.height * this.currentWeather.intensity / 4;
+        const bottomPosition = -this.moon.clientHeight;
         let currentPosition;
 
         if (now < sunsetTimestamp && now > sunriseTimestamp) {
@@ -476,16 +516,15 @@ class WeatherCard {
 
         switch (this.currentWeather.type) {
             case 'sun':
-                this.sun.style.top = this.#computeSunPosition(now) + 'px';
-                this.moon.style.top = this.#computeMoonPosition(now) + 'px';
+                this.sun.style.top = this.#computeClearSunPosition(now) + 'px';
+                this.moon.style.top = this.#computeClearMoonPosition(now) + 'px';
 
                 break;
             case 'cloud':
-                let ypos =  this.sizes.card.height/2 - this.sun.clientHeight/2 - this.sizes.card.height * this.currentWeather.intensity / 4;
-                this.sun.style.top = ypos + 'px';
+                this.sun.style.top = this.#computeCloudSunPosition(now) + 'px';
+                this.moon.style.top = this.#computeCloudMoonPosition(now) + 'px';
                 break;
             default:
-                this.sun.style.top = -this.sun.clientHeight + 'px';
                 break;
         }
     }
