@@ -525,6 +525,8 @@ class WeatherCard {
                 this.moon.style.top = this.#computeCloudMoonPosition(now) + 'px';
                 break;
             default:
+                this.moon.style.top = -this.moon.clientHeight;
+                this.sun.style.top = -this.sun.clientHeight;
                 break;
         }
     }
