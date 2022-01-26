@@ -15,6 +15,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+:root {
+    --animation-duration: 60s;
+    --animation-cycles: 80;
+}
+
 
 .fox {
     width: 470px;
@@ -26,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     transform: scale(0.5);
     bottom: 0;
     left: -400px;
-    animation: fox linear 60s;
+    animation: fox linear var(--animation-duration);
 }
 
 .fox * {
@@ -82,8 +87,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .leg-outer {
     bottom: 0;
     right: 127px;
-    -webkit-animation: leg-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: leg-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: leg-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: leg-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     z-index: 1;
 }
 
@@ -99,8 +104,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .hind-leg-outer {
     bottom: 0;
     right: 263px;
-    -webkit-animation: leg-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: leg-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: leg-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: leg-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     z-index: 1;
@@ -108,8 +113,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 .leg {
     bottom: 0;
-    -webkit-animation: leg 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: leg 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: leg 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: leg 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
 }
 
 @keyframes leg {
@@ -123,8 +128,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 .hind-leg-outer2 {
     bottom: 0;
-    -webkit-animation: leg 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: leg 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: leg 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: leg 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
 }
@@ -139,8 +144,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 }
 
 .paw:after, .hind-paw:after {
-    -webkit-animation: paw 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: paw 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: paw 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: paw 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     content: '';
     position: absolute;
     display: block;
@@ -196,13 +201,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 }
 
 .log {
-    -webkit-animation: log 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: log 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: log 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: log 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
 }
 
 .hind-log {
-    -webkit-animation: hind-log 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: hind-log 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: hind-log 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: hind-log 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
 }
@@ -216,8 +221,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     width: 15px;
     height: 65px;
     transform-origin: bottom center;
-    -webkit-animation: log-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: log-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: log-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: log-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     background-color: #E2DEE8;
     background-image: linear-gradient(to top, #000000, #000000 10px, rgba(0, 0, 0, 0) 11px, rgba(0, 0, 0, 0));
     border-bottom-right-radius: 5px;
@@ -266,8 +271,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     left: -1px;
     height: 80px;
     transform-origin: bottom center;
-    -webkit-animation: hind-log-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: hind-log-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: hind-log-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: hind-log-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     background-color: #E2DEE8;
@@ -341,8 +346,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     border-bottom-left-radius: 25% 50%;
     border-bottom-right-radius: 25% 50%;
     transform-origin: right center;
-    -webkit-animation: body 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: body 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: body 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: body 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-duration: 0.45s;
     animation-duration: 0.45s;
     -webkit-animation-delay: -0.225s;
@@ -381,8 +386,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     border-top-left-radius: 40% 60%;
     border-top-right-radius: 60% 20%;
     background: #E2DEE8;
-    -webkit-animation: head 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: head 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: head 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: head 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-duration: 0.45s;
     animation-duration: 0.45s;
     -webkit-animation-delay: -0.225s;
@@ -441,8 +446,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     border-top-left-radius: 60% 100%;
     border-top-right-radius: 40% 10%;
     z-index: 2;
-    -webkit-animation: face 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: face 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: face 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: face 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
 }
 
 @-webkit-keyframes face {
@@ -468,8 +473,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     display: block;
     position: absolute;
     background: black;
-    -webkit-animation: eye 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: eye 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: eye 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: eye 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
 }
 
 @keyframes eye {
@@ -506,8 +511,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     background-color: #F0E9EC;
     background-image: radial-gradient(circle 6px at top right, #000000, #000000 99%, rgba(0, 0, 0, 0) 99%);
     transform-origin: right;
-    -webkit-animation: snout 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: snout 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: snout 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: snout 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
 }
 
 @-webkit-keyframes snout {
@@ -540,8 +545,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 }
 
 .snout:before {
-    -webkit-animation: snout-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: snout-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: snout-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: snout-outer 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
 }
 
 @-webkit-keyframes snout-outer {
@@ -585,8 +590,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 36px;
     width: 36px;
     top: -8px;
-    -webkit-animation: tail-2 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail-2 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail-2 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail-2 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     transform-origin: calc(100% + 10px);
@@ -627,8 +632,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 70px;
     width: 70px;
     top: -25px;
-    -webkit-animation: tail2-2 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail2-2 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail2-2 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail2-2 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     transform-origin: calc(100% + 10px);
@@ -678,8 +683,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 93px;
     width: 93px;
     top: -28.5px;
-    -webkit-animation: tail-3 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail-3 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail-3 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail-3 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     transform-origin: calc(100% + 18px);
@@ -729,8 +734,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 120px;
     width: 120px;
     top: -25px;
-    -webkit-animation: tail2-3 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail2-3 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail2-3 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail2-3 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -425ms;
     animation-delay: -425ms;
     background: linear-gradient(45deg, #f0e9ec 25%, rgba(0, 0, 0, 0) 25%), linear-gradient(135deg, #f0e9ec 25%, rgba(0, 0, 0, 0) 25%) 0 0, linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 66%, #f0e9ec 66%);
@@ -785,8 +790,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 98px;
     width: 98px;
     top: -2.5px;
-    -webkit-animation: tail-4 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail-4 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail-4 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail-4 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -425ms;
     animation-delay: -425ms;
     background: #F0E9EC !important;
@@ -841,8 +846,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 50px;
     width: 50px;
     top: 35px;
-    -webkit-animation: tail2-4 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail2-4 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail2-4 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail2-4 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     transform-origin: calc(100% + 60px);
@@ -900,8 +905,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 36px;
     width: 36px;
     top: 31px;
-    -webkit-animation: tail-5 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail-5 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail-5 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail-5 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     transform-origin: calc(100% + 49px);
@@ -955,8 +960,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 20px;
     width: 20px;
     top: 15px;
-    -webkit-animation: tail2-5 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail2-5 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail2-5 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail2-5 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     transform-origin: calc(100% + 25px);
@@ -1010,8 +1015,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 15px;
     width: 15px;
     top: 10.5px;
-    -webkit-animation: tail-6 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail-6 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail-6 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail-6 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     transform-origin: calc(100% + 18px);
@@ -1065,8 +1070,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     height: 10px;
     width: 10px;
     top: 5px;
-    -webkit-animation: tail2-6 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: tail2-6 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: tail2-6 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: tail2-6 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.225s;
     animation-delay: -0.225s;
     transform-origin: calc(100% + 10px);
@@ -1177,8 +1182,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     background: #D5D1DC;
     width: 60%;
     right: 0;
-    -webkit-animation: ear-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: ear-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: ear-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: ear-inner 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
     -webkit-animation-delay: -0.45s;
     animation-delay: -0.45s;
     transform-origin: right;
@@ -1198,8 +1203,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 .ear:nth-child(1) {
     right: 0;
-    -webkit-animation: ear-back 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
-    animation: ear-back 0.9s cubic-bezier(0.445, 0, 0.55, 1) both infinite;
+    -webkit-animation: ear-back 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
+    animation: ear-back 0.9s cubic-bezier(0.445, 0, 0.55, 1) both var(--animation-cycles);
 }
 
 @keyframes ear-back {
