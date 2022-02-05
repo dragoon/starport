@@ -8,9 +8,10 @@
 }
 
 .calendar-container {
+	margin-top: 1em;
 	position: relative;
-    font: 100%/1em 'Lato', sans-serif;
-    font-size: 21px;
+    font-size: 25px;
+	line-height: 1em;
     text-shadow: 1px 1px #777;
     font-weight: bolder;
 }
@@ -27,7 +28,7 @@
 }
 
 #calendar td {
-	padding: .5em 1em;
+	padding: .5em 0.7em;
 	text-align: center;
 }
 
