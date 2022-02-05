@@ -1,0 +1,47 @@
+#calendar {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+#calendar td {
+	padding: 0;
+}
+
+.calendar-container {
+	position: relative;
+	width: 450px;
+    font: 100%/1em 'Lato', sans-serif;
+    font-size: 20px;
+    text-shadow: 1px 1px #777;
+    font-weight: bolder;
+}
+
+#calendar {
+	background: transparent;
+	border-radius: 0 0 1em 1em;
+	-webkit-box-shadow: 2px 2px 1px rgba(0, 0, 0, .2), 0 3px 1px #fff;
+	box-shadow: 0 0 8px rgba(0, 0, 0, .2);
+	display: inline-block;
+	padding: 2em;
+}
+
+#calendar thead {
+	color: #e66b6b;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+#calendar td {
+	padding: .5em 1em;
+	text-align: center;
+}
+
+#calendar .current-day {
+	color: #e66b6b;
+}
+
+.prev-month,
+.next-month {
+	color: #999;
+    text-shadow: 1px 1px #777;
+}

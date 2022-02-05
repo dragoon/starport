@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="background/nightsky.css"/>
     <link rel="stylesheet" href="datetime/datetime.css"/>
     <link rel="stylesheet" href="extras/extras.css"/>
+    <link rel="stylesheet" href="calendar/calendar.css"/>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/EasePack.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/MotionPathPlugin.min.js"></script>
@@ -41,12 +42,25 @@
             <div>
                 <span class="cur-wind"></span>
                 <span class="wind-units">km/h</span>
-                <span class="wind">
-                    <svg width="70" height="50" viewbox="0 0 20 30"><g><path d="M15.33,19H7a1,1,0,0,0,0,2h8.33a1.5,1.5,0,0,1,0,3h-2.5a1,1,0,1,0,0,2h2.5a3.5,3.5,0,0,0,0-7Z"/><path d="M25.5,6H24a1,1,0,0,0,0,2h1.5a2.5,2.5,0,0,1,0,5H10a1,1,0,0,0,0,2H25.5a4.5,4.5,0,0,0,0-9Z"/><path d="M5,11a1,1,0,0,0,1,1H21a1,1,0,0,0,0-2H6A1,1,0,0,0,5,11Z"/><path d="M3,18H22a2,2,0,0,1,0,4H21a1,1,0,0,0,0,2h1a4,4,0,0,0,0-8H3a1,1,0,0,0,0,2Z"/></g></svg>
-                </span>
             </div>
         </div>
-        <div class="date"></div>
+        <div class="calendar-container">
+            <table id="calendar">
+                <thead>
+                <tr>
+                    <td>Mon</td>
+                    <td>Tue</td>
+                    <td>Wed</td>
+                    <td>Thu</td>
+                    <td>Fri</td>
+                    <td>Sat</td>
+                    <td>Sun</td>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="weather-cards">
         <div class="container" id="card-weather-1">
@@ -200,6 +214,7 @@
 <script type="text/javascript" src="weather/weather_manager.js"></script>
 <script type="text/javascript" src="weather/index.js"></script>
 <script type="text/javascript" src="datetime/time.js"></script>
+<script type="text/javascript" src="calendar/calendar.js"></script>
 <script type="text/javascript" src="util/fps.js"></script>
 </body>
 </html>
