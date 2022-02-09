@@ -38,6 +38,16 @@
 	border-radius: 10vh;
 }
 
+#calendar .holiday1:after {
+	content: "";
+	width: 0.8vmin;
+	height: 0.8vmin;
+	border-radius: 100%;
+	background-color: #df9494;
+	position: absolute;
+	margin-left: 0.5vmin;
+}
+
 .prev-month,
 .next-month {
 	color: #999;
