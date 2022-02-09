@@ -22,9 +22,10 @@
 }
 
 #calendar thead {
-	color: #e66b6b;
+	color: #9090c9;
 	font-weight: 700;
 	text-transform: uppercase;
+	text-shadow: 1px 1px #333;
 }
 
 #calendar td {
@@ -33,11 +34,11 @@
 }
 
 #calendar .current-day {
-	color: #e66b6b;
+	background-color: #df9494;
+	border-radius: 10vh;
 }
 
 .prev-month,
 .next-month {
 	color: #999;
-    text-shadow: 1px 1px #777;
 }
