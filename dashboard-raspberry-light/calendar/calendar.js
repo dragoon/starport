@@ -52,10 +52,10 @@ function renderCalendar() {
         }
         calTable.appendChild(row); // appending each row into calendar body.
     }
+    setTimeout(function () {
+        renderCalendar()
+    }, 60*60000); /* setting timer */
 
 }
 
 renderCalendar();
-setTimeout(function () {
-        renderCalendar()
-    }, 60*60000); /* setting timer */
