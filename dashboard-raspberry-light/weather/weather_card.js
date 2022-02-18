@@ -102,40 +102,6 @@ class WeatherCard {
         gsap.fromTo(this.date, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
-    drawCloud(i) {
-        /*
-        ☁️ We want to create a shape thats loopable but that can also
-        be animated in and out. So we use Snap SVG to draw a shape
-        with 4 sections. The 2 ends and 2 arches the same width as
-        the card. So the final shape is about 4 x the width of the
-        card.
-        */
-        let offset = Math.random() * this.sizes.card.width;
-        let space = this.settings.cloudSpace * i;
-        let height = space + this.settings.cloudHeight;
-        let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
-        let width = this.sizes.card.width;
-
-        let cloud = new PIXI.Graphics()
-            .moveTo(-width, 0)
-            .lineTo(width, 0)
-            .beginFill(0xffffff, 1)
-            .quadraticCurveTo(width * 2, height / 2, width, height)
-            .quadraticCurveTo(width * 0.5, arch, 0, height)
-            .quadraticCurveTo(width * -0.5, arch, -width, height)
-            .quadraticCurveTo(-(width * 2), height / 2, -width, 0);
-        cloud.alpha = 0.5;
-
-        this.weatherContainers[i].addChild(cloud);
-        gsap.to(cloud, {
-            duration: 0,
-            ease: "none",
-            x: offset,
-        });
-
-        return cloud;
-    }
-
     drawFog(i) {
         /*
         ☁️ We want to create a shape thats loopable but that can also
@@ -357,20 +323,52 @@ class WeatherCard {
         }
     }
 
-    createCloud() {
-        const cloudMiddleHeight = getRandomInt(this.sizes.card.width/4, this.sizes.card.width/4 + 40);
-        // needs to be more or less circle
-        const cloudMiddleWidth = cloudMiddleHeight * getRandomArbitrary(0.8, 1.2);
+    drawCloud(i) {
+        const cloudMiddleHeight = getRandomInt(this.sizes.card.width/6.5, this.sizes.card.width/5.5);
+        const cloudMiddleWidth = cloudMiddleHeight * getRandomArbitrary(1.4, 1.8);
+        const topOffset = this.sizes.card.height * getRandomArbitrary(-0.2, 0.3);
 
-        // needs to be a bit smaller
-        const cloudLeftHeight = cloudMiddleHeight * getRandomArbitrary(0.4, 0.8);
-        const cloudLeftWidth = cloudLeftHeight * getRandomArbitrary(0.8, 1.2);
-
+        // === need to define some right part as we use it in the offset computation
         const cloudRightHeight = cloudMiddleHeight * getRandomArbitrary(0.4, 0.8);
-        const cloudRightWidth = cloudRightHeight * getRandomArbitrary(0.8, 1.2);
-        const topOffset = this.sizes.card.height * getRandomArbitrary(0, 0.1);
-        const leftOffset = this.sizes.card.width * getRandomArbitrary(0.2, 0.6);
-        const delay = getRandomInt(0, 2000);
+        const cloudRightWidth = cloudRightHeight * getRandomArbitrary(1, 1.4);
+
+        const leftOffset = cloudMiddleWidth + cloudRightWidth;
+
+        let cloudMiddle = new PIXI.Graphics()
+                .beginFill(0xffffff, 1)
+                .drawEllipse(-leftOffset, topOffset, cloudMiddleWidth, cloudMiddleHeight);
+
+        // ===== LEFT PART OF THE CLOUD =====
+        const cloudLeftHeight = cloudMiddleHeight * getRandomArbitrary(0.4, 0.8);
+        const cloudLeftWidth = cloudLeftHeight * getRandomArbitrary(1, 1.4);
+        const cloudLeftOffsetTop = topOffset + cloudLeftHeight*getRandomArbitrary(-0.2, 0.2);
+        const cloudLeftOffsetLeft = leftOffset + cloudMiddleWidth;
+        let cloudLeft = new PIXI.Graphics()
+                .beginFill(0xffffff, 1)
+                .drawEllipse(-cloudLeftOffsetLeft, cloudLeftOffsetTop, cloudLeftWidth, cloudLeftHeight);
+
+        // ===== RIGHT PART OF THE CLOUD
+        const cloudRightOffsetTop = topOffset + cloudRightHeight*getRandomArbitrary(-0.2, 0.2);
+        const cloudRightOffsetLeft = leftOffset - cloudMiddleWidth;
+        let cloudRight = new PIXI.Graphics()
+                .beginFill(0xffffff, 1)
+                .drawEllipse(-cloudRightOffsetLeft, cloudRightOffsetTop, cloudRightWidth, cloudRightHeight);
+
+        let cloud = new PIXI.Container();
+        cloud.addChild(cloudMiddle);
+        cloud.addChild(cloudLeft);
+        cloud.addChild(cloudRight);
+        const voidFilter = new PIXI.filters.AlphaFilter();
+        // less transparent clouds at the top
+        if (topOffset < 0) {
+            voidFilter.alpha = getRandomArbitrary(0.9, 1);
+        } else {
+            voidFilter.alpha = getRandomArbitrary(0.5, 0.9);
+        }
+        cloud.filters = [voidFilter];
+
+        this.weatherContainers[0].addChild(cloud);
+        return cloud;
     }
 
     makeSnow(flake = null) {
@@ -673,12 +671,9 @@ class WeatherCard {
                 this.clouds.forEach((cloud, i) => {
                     gsap.killTweensOf(cloud);
                     gsap.to(cloud, {
-                        duration: 10 * (i + 1) / this.settings.windSpeed,
+                        duration: 10 * getRandomArbitrary(1, 1.4) / this.settings.windSpeed,
                         ease: "none",
-                        x: `+=${this.sizes.card.width}`,
-                        modifiers: {
-                            x: gsap.utils.unitize(x => parseFloat(x) % this.sizes.card.width)
-                        },
+                        x: `+=${this.sizes.card.width+cloud.width}`,
                         repeat: -1
                     });
                 });
@@ -723,19 +718,6 @@ class WeatherCard {
     }
 
     adaptToDayTime(colorMap) {
-        this.clouds[0].tint = colorMap.cloud1;
-        this.clouds[0].alpha = colorMap.cloud1Opacity;
-        this.clouds[1].tint = colorMap.cloud2;
-        this.clouds[1].alpha = colorMap.cloud2Opacity;
-        this.clouds[2].tint = colorMap.cloud3;
-        this.clouds[2].alpha = colorMap.cloud3Opacity;
-
-        this.fog[0].tint = colorMap.cloud1;
-        this.fog[0].alpha = colorMap.cloud1Opacity;
-        this.fog[1].tint = colorMap.cloud2;
-        this.fog[1].alpha = colorMap.cloud2Opacity;
-        this.fog[2].tint = colorMap.cloud3;
-        this.fog[2].alpha = colorMap.cloud3Opacity;
         this.#setSunPosition();
     }
 
@@ -791,7 +773,8 @@ class WeatherCard {
 
     init() {
         // ☁️ draw clouds
-        this.clouds = [...Array(3).keys()].map(i => this.drawCloud(i));
+        // TODO: number is based on weather
+        this.clouds = [...Array(8).keys()].map(i => this.drawCloud(i));
         // draw fog
         this.fog = [...Array(3).keys()].map(i => this.drawFog(i));
 
