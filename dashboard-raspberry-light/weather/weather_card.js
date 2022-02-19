@@ -449,9 +449,6 @@ class WeatherCard {
 
         switch (this.currentWeather.type) {
             case 'sun':
-                this.sun.style.top = this.#computeClearSunPosition(now) + 'px';
-                this.moon.style.top = this.#computeClearMoonPosition(now) + 'px';
-                break;
             case 'cloud':
                 this.sun.style.top = this.#computeClearSunPosition(now) + 'px';
                 this.moon.style.top = this.#computeClearMoonPosition(now) + 'px';
@@ -637,6 +634,8 @@ class WeatherCard {
     }
 
     adaptToDayTime(colorMap) {
+        this.clouds.forEach(c => c.children.forEach(r => r.tint = colorMap.cloud));
+        this.fog.forEach(c => c.tint = colorMap.cloud);
         this.#setSunPosition();
     }
 
@@ -664,17 +663,17 @@ class WeatherCard {
         this.startLightningTimer();
         gsap.fromTo(this.card, {y: -30}, {duration: 0.75, y: 0, ease: Elastic.easeOut});
 
-        var pathX = 30 + Math.random() * (this.sizes.card.width - 60);
-        var yOffset = 20;
-        var steps = 20;
-        var points = [pathX + ',0'];
-        for (var i = 0; i < steps; i++) {
-            var x = pathX + (Math.random() * yOffset - yOffset / 2);
-            var y = this.sizes.card.height / steps * (i + 1);
+        let pathX = 30 + Math.random() * (this.sizes.card.width - 60);
+        let yOffset = 20;
+        let steps = 20;
+        let points = [pathX + ',0'];
+        for (let i = 0; i < steps; i++) {
+            let x = pathX + (Math.random() * yOffset - yOffset / 2);
+            let y = this.sizes.card.height / steps * (i + 1);
             points.push(x + ',' + y);
         }
 
-        var strike = this.innerLeafHolder.path('M' + points.join(' ')).attr({
+        let strike = this.innerLeafHolder.path('M' + points.join(' ')).attr({
             fill: 'none',
             stroke: 'white',
             strokeWidth: 2 + Math.random()
