@@ -324,38 +324,47 @@ class WeatherCard {
     }
 
     drawCloud(i) {
-        const cloudMiddleHeight = getRandomInt(this.sizes.card.width/6.5, this.sizes.card.width/5.5);
-        const cloudMiddleWidth = cloudMiddleHeight * getRandomArbitrary(1.4, 1.8);
-        const topOffset = this.sizes.card.height * getRandomArbitrary(-0.2, 0.3);
+        // ==== 2 MIDDLE PARTS =======
+        const cloudMiddle1Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
+        const cloudMiddle2Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
+        const cloudMiddle1Width = cloudMiddle1Height * getRandomArbitrary(1.1, 1.5);
+        const cloudMiddle2Width = cloudMiddle2Height * getRandomArbitrary(1.1, 1.5);
+        const topOffset = this.sizes.card.height * getRandomArbitrary(0, 0.3) - Math.max(cloudMiddle1Height, cloudMiddle2Height);
 
         // === need to define some right part as we use it in the offset computation
-        const cloudRightHeight = cloudMiddleHeight * getRandomArbitrary(0.4, 0.8);
+        const cloudRightHeight = cloudMiddle2Height * getRandomArbitrary(0.4, 0.7);
         const cloudRightWidth = cloudRightHeight * getRandomArbitrary(1, 1.4);
 
-        const leftOffset = cloudMiddleWidth + cloudRightWidth;
+        const left1Offset = cloudMiddle1Width + cloudRightWidth;
+        const left2Offset = cloudMiddle2Width + left1Offset;
 
-        let cloudMiddle = new PIXI.Graphics()
+        let cloudMiddle1 = new PIXI.Graphics()
                 .beginFill(0xffffff, 1)
-                .drawEllipse(-leftOffset, topOffset, cloudMiddleWidth, cloudMiddleHeight);
+                .drawEllipse(-left1Offset, topOffset, cloudMiddle1Width, cloudMiddle1Height);
+
+        let cloudMiddle2 = new PIXI.Graphics()
+                .beginFill(0xffffff, 1)
+                .drawEllipse(-left2Offset, topOffset, cloudMiddle2Width, cloudMiddle2Height);
 
         // ===== LEFT PART OF THE CLOUD =====
-        const cloudLeftHeight = cloudMiddleHeight * getRandomArbitrary(0.4, 0.8);
+        const cloudLeftHeight = cloudMiddle1Height * getRandomArbitrary(0.4, 0.7);
         const cloudLeftWidth = cloudLeftHeight * getRandomArbitrary(1, 1.4);
-        const cloudLeftOffsetTop = topOffset + cloudLeftHeight*getRandomArbitrary(-0.2, 0.2);
-        const cloudLeftOffsetLeft = leftOffset + cloudMiddleWidth;
+        const cloudLeftOffsetTop = topOffset + cloudLeftHeight*getRandomArbitrary(-0.3, 0.3);
+        const cloudLeftOffsetLeft = left2Offset + cloudMiddle1Width;
         let cloudLeft = new PIXI.Graphics()
                 .beginFill(0xffffff, 1)
                 .drawEllipse(-cloudLeftOffsetLeft, cloudLeftOffsetTop, cloudLeftWidth, cloudLeftHeight);
 
         // ===== RIGHT PART OF THE CLOUD
-        const cloudRightOffsetTop = topOffset + cloudRightHeight*getRandomArbitrary(-0.2, 0.2);
-        const cloudRightOffsetLeft = leftOffset - cloudMiddleWidth;
+        const cloudRightOffsetTop = topOffset + cloudRightHeight*getRandomArbitrary(-0.3, 0.3);
+        const cloudRightOffsetLeft = left1Offset - cloudMiddle2Width;
         let cloudRight = new PIXI.Graphics()
                 .beginFill(0xffffff, 1)
                 .drawEllipse(-cloudRightOffsetLeft, cloudRightOffsetTop, cloudRightWidth, cloudRightHeight);
 
         let cloud = new PIXI.Container();
-        cloud.addChild(cloudMiddle);
+        cloud.addChild(cloudMiddle1);
+        cloud.addChild(cloudMiddle2);
         cloud.addChild(cloudLeft);
         cloud.addChild(cloudRight);
         const voidFilter = new PIXI.filters.AlphaFilter();
