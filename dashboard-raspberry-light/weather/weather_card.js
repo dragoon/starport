@@ -102,39 +102,6 @@ class WeatherCard {
         gsap.fromTo(this.date, {x: 30}, {duration: 1.5, opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
-    drawFog(i) {
-        /*
-        ☁️ We want to create a shape thats loopable but that can also
-        be animated in and out. So we use Snap SVG to draw a shape
-        with 4 sections. The 2 ends and 2 arches the same width as
-        the card. So the final shape is about 4 x the width of the
-        card.
-        */
-        let offset = Math.random() * this.sizes.card.width;
-        let space = this.settings.cloudSpace * i;
-        let height = space + this.settings.cloudHeight;
-        let arch = height + this.settings.cloudArch + Math.random() * this.settings.cloudArch;
-        let width = this.sizes.card.width;
-
-        let fog = new PIXI.Graphics()
-            .moveTo(-width, height)
-            .lineTo(width, height)
-            .beginFill(0xffffff, 1)
-            .quadraticCurveTo(width * 2, height / 2, width, 0)
-            .quadraticCurveTo(width * 0.5, -arch + height, 0, 0)
-            .quadraticCurveTo(width * -0.5, -arch + height, -width, 0)
-            .quadraticCurveTo(-(width * 2), height / 2, -width, height);
-        fog.visible = false;
-        fog.position.y = (this.sizes.card.height - this.settings.cloudHeight - this.settings.cloudSpace * i);
-        this.weatherContainers[i].addChild(fog);
-        gsap.to(fog, {
-            duration: 0,
-            ease: "none",
-            x: offset,
-        });
-        return fog;
-    }
-
     makeRain(line = null) {
         // 💧 This is where we draw one drop of rain
 
@@ -336,12 +303,12 @@ class WeatherCard {
         const cloudRightWidth = cloudRightHeight * getRandomArbitrary(1, 1.4);
 
         const left1Offset = cloudMiddle1Width + cloudRightWidth;
-        const left2Offset = cloudMiddle2Width + left1Offset;
 
         let cloudMiddle1 = new PIXI.Graphics()
                 .beginFill(0xffffff, 1)
                 .drawEllipse(-left1Offset, topOffset, cloudMiddle1Width, cloudMiddle1Height);
 
+        const left2Offset = cloudMiddle2Width + left1Offset;
         let cloudMiddle2 = new PIXI.Graphics()
                 .beginFill(0xffffff, 1)
                 .drawEllipse(-left2Offset, topOffset, cloudMiddle2Width, cloudMiddle2Height);
@@ -357,10 +324,9 @@ class WeatherCard {
 
         // ===== RIGHT PART OF THE CLOUD
         const cloudRightOffsetTop = topOffset + cloudRightHeight*getRandomArbitrary(-0.3, 0.3);
-        const cloudRightOffsetLeft = left1Offset - cloudMiddle2Width;
         let cloudRight = new PIXI.Graphics()
                 .beginFill(0xffffff, 1)
-                .drawEllipse(-cloudRightOffsetLeft, cloudRightOffsetTop, cloudRightWidth, cloudRightHeight);
+                .drawEllipse(-cloudRightWidth, cloudRightOffsetTop, cloudRightWidth, cloudRightHeight);
 
         let cloud = new PIXI.Container();
         cloud.addChild(cloudMiddle1);
@@ -454,51 +420,11 @@ class WeatherCard {
         return currentPosition;
     }
 
-    #computeCloudSunPosition(now) {
-        const sunriseTimestamp = this.dayWeather.sunrise;
-        const sunsetTimestamp = this.dayWeather.sunset;
-        const normalPosition = this.sizes.card.height/2 - this.sun.clientHeight/2 - this.sizes.card.height * this.currentWeather.intensity / 4;
-        const offPosition = -this.sun.clientHeight;
-        let currentPosition;
-
-        if (now < sunriseTimestamp || now > sunsetTimestamp) {
-            currentPosition = offPosition;
-        } else if (now < sunriseTimestamp + 30*60) {
-            currentPosition = offPosition - (offPosition - normalPosition) * (now - sunriseTimestamp)/30/60;
-        }  else if (now > sunsetTimestamp - 30*60) {
-            currentPosition = offPosition - (offPosition - normalPosition) * (sunsetTimestamp - now)/30/60;
-        }  else {
-            currentPosition = normalPosition;
-        }
-        return currentPosition;
-    }
-
     #computeClearMoonPosition(now) {
         const sunriseTimestamp = this.dayWeather.sunrise;
         const sunsetTimestamp = this.dayWeather.sunset;
         const middlePosition = (this.sizes.card.height/2 - this.moon.clientHeight/2);
         const bottomPosition = this.sizes.card.height + 30;
-        let currentPosition;
-
-        if (now < sunsetTimestamp && now > sunriseTimestamp) {
-            currentPosition = bottomPosition;
-        } else if (now > sunsetTimestamp + 60*60 || now < sunriseTimestamp - 60*60) {
-            currentPosition = middlePosition;
-        } else if (now > sunsetTimestamp + 30*60) {
-            currentPosition = bottomPosition - (bottomPosition - middlePosition) * (now - sunsetTimestamp - 30*60)/30/60;
-        }  else if (now > sunriseTimestamp - 30*60) {
-            currentPosition = bottomPosition - (bottomPosition - middlePosition) * (sunriseTimestamp - now)/30/60;
-        }  else {
-            currentPosition = middlePosition;
-        }
-        return currentPosition;
-    }
-
-    #computeCloudMoonPosition(now) {
-        const sunriseTimestamp = this.dayWeather.sunrise;
-        const sunsetTimestamp = this.dayWeather.sunset;
-        const middlePosition = this.sizes.card.height/2 - this.moon.clientHeight/2 - this.sizes.card.height * this.currentWeather.intensity / 4;
-        const bottomPosition = -this.moon.clientHeight;
         let currentPosition;
 
         if (now < sunsetTimestamp && now > sunriseTimestamp) {
@@ -525,15 +451,14 @@ class WeatherCard {
             case 'sun':
                 this.sun.style.top = this.#computeClearSunPosition(now) + 'px';
                 this.moon.style.top = this.#computeClearMoonPosition(now) + 'px';
-
                 break;
             case 'cloud':
-                this.sun.style.top = this.#computeCloudSunPosition(now) + 'px';
-                this.moon.style.top = this.#computeCloudMoonPosition(now) + 'px';
+                this.sun.style.top = this.#computeClearSunPosition(now) + 'px';
+                this.moon.style.top = this.#computeClearMoonPosition(now) + 'px';
                 break;
             default:
-                this.moon.style.top = -this.moon.clientHeight + 'px';
-                this.sun.style.top = -this.sun.clientHeight + 'px';
+                this.moon.style.top = -this.moon.clientHeight*1.5 + 'px';
+                this.sun.style.top = -this.sun.clientHeight*1.5 + 'px';
                 break;
         }
     }
@@ -637,24 +562,9 @@ class WeatherCard {
 
     #setFog() {
         if (this.currentWeather.type === 'haze' || this.currentWeather.type === 'smoke') {
-            this.fog.forEach(f => {f.visible=true});
-            this.fog.forEach((fog, i) => {
-                gsap.killTweensOf(fog);
-                gsap.to(fog, {
-                    duration: 10 * (i + 1) / this.settings.windSpeed,
-                    ease: "none",
-                    x: `+=${this.sizes.card.width}`,
-                    modifiers: {
-                        x: gsap.utils.unitize(x => parseFloat(x) % this.sizes.card.width)
-                    },
-                    repeat: -1
-                });
-            })
+
         } else {
-            this.fog.forEach(fog => {
-                fog.visible=false;
-                gsap.killTweensOf(fog);
-            });
+
         }
     }
 
@@ -784,8 +694,6 @@ class WeatherCard {
         // ☁️ draw clouds
         // TODO: number is based on weather
         this.clouds = [...Array(8).keys()].map(i => this.drawCloud(i));
-        // draw fog
-        this.fog = [...Array(3).keys()].map(i => this.drawFog(i));
 
     }
 
