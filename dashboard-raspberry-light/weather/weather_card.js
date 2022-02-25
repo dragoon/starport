@@ -290,16 +290,21 @@ class WeatherCard {
         }
     }
 
-    drawCloud(i) {
+    drawCloud(precip=false) {
         // ==== 2 MIDDLE PARTS =======
         const cloudMiddle1Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
         const cloudMiddle2Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
         const cloudMiddle1Width = cloudMiddle1Height * getRandomArbitrary(1.1, 1.5);
         const cloudMiddle2Width = cloudMiddle2Height * getRandomArbitrary(1.1, 1.5);
-        const topOffset = this.sizes.card.height * getRandomArbitrary(0, 0.3) - Math.max(cloudMiddle1Height, cloudMiddle2Height);
+        let topOffset;
+        if (precip) {
+            topOffset = this.sizes.card.height * getRandomArbitrary(0, 0.3) - Math.max(cloudMiddle1Height, cloudMiddle2Height);
+        } else {
+            topOffset = this.sizes.card.height/2  + cloudMiddle1Height * getRandomArbitrary(-1.5, 1.5);
+        }
 
         // === need to define some right part as we use it in the offset computation
-        const cloudRightHeight = cloudMiddle2Height * getRandomArbitrary(0.4, 0.7);
+        const cloudRightHeight = cloudMiddle2Height * getRandomArbitrary(0.5, 0.7);
         const cloudRightWidth = cloudRightHeight * getRandomArbitrary(1, 1.4);
 
         const left1Offset = cloudMiddle1Width + cloudRightWidth;
@@ -314,7 +319,7 @@ class WeatherCard {
                 .drawEllipse(-left2Offset, topOffset, cloudMiddle2Width, cloudMiddle2Height);
 
         // ===== LEFT PART OF THE CLOUD =====
-        const cloudLeftHeight = cloudMiddle1Height * getRandomArbitrary(0.4, 0.7);
+        const cloudLeftHeight = cloudMiddle1Height * getRandomArbitrary(0.5, 0.7);
         const cloudLeftWidth = cloudLeftHeight * getRandomArbitrary(1, 1.4);
         const cloudLeftOffsetTop = topOffset + cloudLeftHeight*getRandomArbitrary(-0.3, 0.3);
         const cloudLeftOffsetLeft = left2Offset + cloudMiddle1Width;
@@ -567,15 +572,21 @@ class WeatherCard {
 
     #setClouds() {
         switch (this.currentWeather.type) {
+            case 'cloud':
+            case 'sun':
+                this.clouds = [...Array(8).keys()].map(i => this.drawCloud());
+                break;
+            default:
+                this.clouds = [...Array(8).keys()].map(i => this.drawCloud(true));
+                break;
+        }
+
+        switch (this.currentWeather.type) {
             case 'sun':
                 this.clouds.forEach((cloud, i) => {
                     gsap.killTweensOf(cloud);
-                    // animate clouds with gsap
-                    if (cloud.offset > this.sizes.card.width * 2.5) {
-                        cloud.offset = -(this.sizes.card.width * 1.5);
-                    }
                     gsap.to(cloud, {
-                        duration: this.settings.windSpeed * (i + 1),
+                        duration: 10 * getRandomArbitrary(0.4, 1.5) / this.settings.windSpeed,
                         ease: "none",
                         x: "+=800",
                         repeat: 0
@@ -634,7 +645,14 @@ class WeatherCard {
     }
 
     adaptToDayTime(colorMap) {
-        this.clouds.forEach(c => c.children.forEach(r => r.tint = colorMap.cloud));
+        this.clouds.forEach(c => {
+            let hsl = hexToHsl(colorMap.cloud);
+            hsl.l = Math.min(getRandomArbitrary(0.95, 1.1) * hsl.l, 1);
+            let color = hslToHex(hsl.h, hsl.s, hsl.l);
+            c.children.forEach(r => {
+                r.tint = color;
+            })
+        });
         this.fog.forEach(c => c.tint = colorMap.cloud);
         this.#setSunPosition();
     }
@@ -690,10 +708,6 @@ class WeatherCard {
     }
 
     init() {
-        // ☁️ draw clouds
-        // TODO: number is based on weather
-        this.clouds = [...Array(8).keys()].map(i => this.drawCloud(i));
-
     }
 
     reset() {
