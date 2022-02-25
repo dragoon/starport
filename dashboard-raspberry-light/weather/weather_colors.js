@@ -36,7 +36,7 @@ function adaptCloudColorsToWeather(weatherType) {
     switch (weatherType) {
         case "snow":
         case "hail":
-            cloudColor = 0xfcfcff;
+            cloudColor = 0xffffff;
             break;
     }
 
