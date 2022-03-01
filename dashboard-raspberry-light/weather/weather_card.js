@@ -290,7 +290,7 @@ class WeatherCard {
         }
     }
 
-    drawCloud(precip=false) {
+    drawCloud(cloudTotal, precip=false) {
         // ==== 2 MIDDLE PARTS =======
         const cloudMiddle1Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
         const cloudMiddle2Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
@@ -300,7 +300,7 @@ class WeatherCard {
         if (precip) {
             topOffset = this.sizes.card.height * getRandomArbitrary(0, 0.3) - Math.max(cloudMiddle1Height, cloudMiddle2Height);
         } else {
-            topOffset = this.sizes.card.height/2  + cloudMiddle1Height * getRandomArbitrary(-1.5, 1.5);
+            topOffset = this.sizes.card.height/2 + this.sizes.card.height/2 * getRandomArbitrary(-0.1*cloudTotal, Math.min(0.1*cloudTotal, 1));
         }
 
         // === need to define some right part as we use it in the offset computation
@@ -473,7 +473,7 @@ class WeatherCard {
                 gsap.to(this.settings, {duration: 3, windSpeed: 2 * this.currentWeather.intensity, ease: Power2.easeInOut});
                 break;
             case 'sun':
-                gsap.to(this.settings,{duration: 3, windSpeed: 20, ease: Power2.easeInOut});
+                gsap.to(this.settings,{duration: 3, windSpeed: 0, ease: Power2.easeInOut});
                 break;
             case 'haze':
             case 'cloud':
@@ -546,7 +546,6 @@ class WeatherCard {
         }
     }
 
-
     #setSnowCount() {
         switch (this.currentWeather.type) {
 
@@ -571,40 +570,34 @@ class WeatherCard {
     }
 
     #setClouds() {
+        this.clouds.forEach((cloud, i) => {
+            gsap.killTweensOf(cloud);
+            this.scene.removeChild(cloud);
+            cloud.destroy();
+        });
+        let cloudTotal = Math.ceil(this.currentWeather.clouds/8);
         switch (this.currentWeather.type) {
             case 'cloud':
+                this.clouds = [...Array(cloudTotal).keys()].map(i => this.drawCloud(cloudTotal));
+                break;
             case 'sun':
-                this.clouds = [...Array(8).keys()].map(i => this.drawCloud());
+                this.clouds = [];
                 break;
             default:
-                this.clouds = [...Array(8).keys()].map(i => this.drawCloud(true));
+                this.clouds = [...Array(10).keys()].map(i => this.drawCloud(0, true));
                 break;
         }
 
-        switch (this.currentWeather.type) {
-            case 'sun':
-                this.clouds.forEach((cloud, i) => {
-                    gsap.killTweensOf(cloud);
-                    gsap.to(cloud, {
-                        duration: 10 * getRandomArbitrary(0.4, 1.5) / this.settings.windSpeed,
-                        ease: "none",
-                        x: "+=800",
-                        repeat: 0
-                    });
-                });
-                break;
-            default:
-                // animate clouds
-                this.clouds.forEach((cloud, i) => {
-                    gsap.killTweensOf(cloud);
-                    gsap.to(cloud, {
-                        duration: 10 * getRandomArbitrary(1, 1.4) / this.settings.windSpeed,
-                        ease: "none",
-                        x: `+=${this.sizes.card.width+cloud.width}`,
-                        repeat: -1
-                    });
-                });
-        }
+        // animate clouds
+        this.clouds.forEach((cloud, i) => {
+            gsap.killTweensOf(cloud);
+            gsap.to(cloud, {
+                duration: 10 * getRandomArbitrary(1, 1.4) / this.settings.windSpeed,
+                ease: "none",
+                x: `+=${this.sizes.card.width+cloud.width}`,
+                repeat: -1
+            });
+        });
     }
 
     changeWeather(dayWeather) {
@@ -612,12 +605,12 @@ class WeatherCard {
         this.updateTempText(dayWeather.temp);
         this.updateDateText(new Date(dayWeather.dt * 1000));
 
-
         this.dayWeather = dayWeather;
         this.currentWeather = {
             "type": dayWeather.ui_params.type,
             "intensity": dayWeather.ui_params.intensity,
-            "name": dayWeather.ui_params.name
+            "name": dayWeather.ui_params.name,
+            "clouds": dayWeather.clouds
         };
         gsap.killTweensOf(this.summary);
         gsap.to(this.summary, {
@@ -645,6 +638,7 @@ class WeatherCard {
     }
 
     adaptToDayTime(colorMap) {
+        // TODO: do not change colors every minute
         this.clouds.forEach(c => {
             let hsl = hexToHsl(colorMap.cloud);
             hsl.l = Math.min(getRandomArbitrary(0.95, 1.1) * hsl.l, 1);
@@ -653,7 +647,6 @@ class WeatherCard {
                 r.tint = color;
             })
         });
-        this.fog.forEach(c => c.tint = colorMap.cloud);
         this.#setSunPosition();
     }
 
