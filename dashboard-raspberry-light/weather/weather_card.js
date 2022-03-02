@@ -44,6 +44,7 @@ class WeatherCard {
         this.hail_count = 0;
         this.cloud_count = 0;
         this.colorMap = null;
+        this.precipitation = false;
 
         // create sizes object, we update this later
 
@@ -297,14 +298,14 @@ class WeatherCard {
         }
     }
 
-    makeCloud(precip=false) {
+    makeCloud() {
         // ==== 2 MIDDLE PARTS =======
         const cloudMiddle1Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
         const cloudMiddle2Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
         const cloudMiddle1Width = cloudMiddle1Height * getRandomArbitrary(1.1, 1.5);
         const cloudMiddle2Width = cloudMiddle2Height * getRandomArbitrary(1.1, 1.5);
         let topOffset;
-        if (precip) {
+        if (this.precipitation) {
             topOffset = this.sizes.card.height * getRandomArbitrary(0, 0.3) - Math.max(cloudMiddle1Height, cloudMiddle2Height);
         } else {
             const cloudTotal = this.settings.cloudCount;
@@ -592,12 +593,15 @@ class WeatherCard {
     #setClouds() {
         switch (this.currentWeather.type) {
             case 'cloud':
-                this.settings.cloudCount = Math.ceil(this.currentWeather.clouds/8);;
+                this.precipitation = false;
+                this.settings.cloudCount = Math.ceil(this.currentWeather.clouds/8);
                 break;
             case 'sun':
                 this.settings.cloudCount = 0;
+                this.precipitation = false;
                 break;
             default:
+                this.precipitation = true;
                 this.settings.cloudCount = 10;
                 break;
         }
