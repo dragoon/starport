@@ -9,9 +9,7 @@ class WeatherCard {
             leafCount: 0,
             snowCount: 0,
             fogCount: 0,
-            cloudHeight: 100,
-            cloudSpace: 30,
-            cloudArch: 50,
+            cloudCount: 0,
             splashBounce: 80,
             makeSplash: false
         };
@@ -44,6 +42,8 @@ class WeatherCard {
         this.leaf_count = 0;
         this.flake_count = 0;
         this.hail_count = 0;
+        this.cloud_count = 0;
+        this.colorMap = null;
 
         // create sizes object, we update this later
 
@@ -51,10 +51,6 @@ class WeatherCard {
             container: {width: 0, height: 0},
             card: {width: 0, height: 0}
         };
-
-        // cloud containers
-        this.clouds = [];
-        this.fog = [];
 
         this.summary = document.querySelector(`#${elem_id} .card .details #summary`);
         this.date = document.querySelector(`#${elem_id} .card .details #date`);
@@ -290,7 +286,18 @@ class WeatherCard {
         }
     }
 
-    drawCloud(cloudTotal, precip=false) {
+    onCloudEnd(cloud) {
+        this.cloud_count -= 1;
+        this.scene.removeChild(cloud);
+        cloud.destroy();
+        cloud = null;
+
+        if (this.cloud_count < this.settings.cloudCount) {
+            this.makeCloud();
+        }
+    }
+
+    makeCloud(precip=false) {
         // ==== 2 MIDDLE PARTS =======
         const cloudMiddle1Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
         const cloudMiddle2Height = getRandomInt(this.sizes.card.width/7, this.sizes.card.width/5.5);
@@ -300,8 +307,11 @@ class WeatherCard {
         if (precip) {
             topOffset = this.sizes.card.height * getRandomArbitrary(0, 0.3) - Math.max(cloudMiddle1Height, cloudMiddle2Height);
         } else {
+            const cloudTotal = this.settings.cloudCount;
             topOffset = this.sizes.card.height/2 + this.sizes.card.height/2 * getRandomArbitrary(-0.1*cloudTotal, Math.min(0.1*cloudTotal, 1));
         }
+
+        const color = this.#getCloudColor()
 
         // === need to define some right part as we use it in the offset computation
         const cloudRightHeight = cloudMiddle2Height * getRandomArbitrary(0.5, 0.7);
@@ -310,12 +320,12 @@ class WeatherCard {
         const left1Offset = cloudMiddle1Width + cloudRightWidth;
 
         let cloudMiddle1 = new PIXI.Graphics()
-                .beginFill(0xffffff, 1)
+                .beginFill(color, 1)
                 .drawEllipse(-left1Offset, topOffset, cloudMiddle1Width, cloudMiddle1Height);
 
         const left2Offset = cloudMiddle2Width + left1Offset;
         let cloudMiddle2 = new PIXI.Graphics()
-                .beginFill(0xffffff, 1)
+                .beginFill(color, 1)
                 .drawEllipse(-left2Offset, topOffset, cloudMiddle2Width, cloudMiddle2Height);
 
         // ===== LEFT PART OF THE CLOUD =====
@@ -324,13 +334,13 @@ class WeatherCard {
         const cloudLeftOffsetTop = topOffset + cloudLeftHeight*getRandomArbitrary(-0.3, 0.3);
         const cloudLeftOffsetLeft = left2Offset + cloudMiddle1Width;
         let cloudLeft = new PIXI.Graphics()
-                .beginFill(0xffffff, 1)
+                .beginFill(color, 1)
                 .drawEllipse(-cloudLeftOffsetLeft, cloudLeftOffsetTop, cloudLeftWidth, cloudLeftHeight);
 
         // ===== RIGHT PART OF THE CLOUD
         const cloudRightOffsetTop = topOffset + cloudRightHeight*getRandomArbitrary(-0.3, 0.3);
         let cloudRight = new PIXI.Graphics()
-                .beginFill(0xffffff, 1)
+                .beginFill(color, 1)
                 .drawEllipse(-cloudRightWidth, cloudRightOffsetTop, cloudRightWidth, cloudRightHeight);
 
         let cloud = new PIXI.Container();
@@ -348,7 +358,17 @@ class WeatherCard {
         cloud.filters = [voidFilter];
 
         this.weatherContainers[0].addChild(cloud);
-        return cloud;
+        this.cloud_count += 1;
+
+        // animate clouds
+        gsap.to(cloud, {
+            duration: getRandomArbitrary(8, 20) / this.settings.windSpeed,
+            ease: "none",
+            x: `+=${this.sizes.card.width+cloud.width}`,
+            onComplete: this.onCloudEnd.bind(this),
+            onCompleteParams: [cloud],
+        });
+
     }
 
     makeSnow(flake = null) {
@@ -570,34 +590,17 @@ class WeatherCard {
     }
 
     #setClouds() {
-        this.clouds.forEach((cloud, i) => {
-            gsap.killTweensOf(cloud);
-            this.scene.removeChild(cloud);
-            cloud.destroy();
-        });
-        let cloudTotal = Math.ceil(this.currentWeather.clouds/8);
         switch (this.currentWeather.type) {
             case 'cloud':
-                this.clouds = [...Array(cloudTotal).keys()].map(i => this.drawCloud(cloudTotal));
+                this.settings.cloudCount = Math.ceil(this.currentWeather.clouds/8);;
                 break;
             case 'sun':
-                this.clouds = [];
+                this.settings.cloudCount = 0;
                 break;
             default:
-                this.clouds = [...Array(10).keys()].map(i => this.drawCloud(0, true));
+                this.settings.cloudCount = 10;
                 break;
         }
-
-        // animate clouds
-        this.clouds.forEach((cloud, i) => {
-            gsap.killTweensOf(cloud);
-            gsap.to(cloud, {
-                duration: 10 * getRandomArbitrary(1, 1.4) / this.settings.windSpeed,
-                ease: "none",
-                x: `+=${this.sizes.card.width+cloud.width}`,
-                repeat: -1
-            });
-        });
     }
 
     changeWeather(dayWeather) {
@@ -638,16 +641,14 @@ class WeatherCard {
     }
 
     adaptToDayTime(colorMap) {
-        // TODO: do not change colors every minute
-        this.clouds.forEach(c => {
-            let hsl = hexToHsl(colorMap.cloud);
-            hsl.l = Math.min(getRandomArbitrary(0.95, 1.1) * hsl.l, 1);
-            let color = hslToHex(hsl.h, hsl.s, hsl.l);
-            c.children.forEach(r => {
-                r.tint = color;
-            })
-        });
+        this.colorMap = colorMap;
         this.#setSunPosition();
+    }
+
+    #getCloudColor() {
+        let hsl = hexToHsl(this.colorMap.cloud);
+        hsl.l = Math.min(getRandomArbitrary(0.95, 1.1) * hsl.l, 1);
+        return hslToHex(hsl.h, hsl.s, hsl.l);
     }
 
     #updateSummaryText() {
@@ -717,6 +718,7 @@ class WeatherCard {
             if (this.flake_count < this.settings.snowCount) this.makeSnow();
             if (this.leaf_count < this.settings.leafCount) this.makeLeaf();
             if (this.hail_count < this.settings.hailCount) this.makeHail();
+            if (this.cloud_count < this.settings.cloudCount) this.makeCloud();
             this.start = timestamp;
         }
 

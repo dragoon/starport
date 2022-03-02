@@ -77,8 +77,6 @@ class WeatherManager {
     }
 
     tick(timestamp) {
-        this.cards.forEach(card => card.tick(timestamp));
-
         if (!this.currentWeather) return;
         
         const elapsed = timestamp - this.start; // float in milliseconds
@@ -93,6 +91,7 @@ class WeatherManager {
                 this.adaptToDaytime();
             }
         }
+        this.cards.forEach(card => card.tick(timestamp));
     }
 
     #computeBrightness() {
