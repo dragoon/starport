@@ -39,9 +39,16 @@ $(function () {
     }
 
     function onGetLocation(position) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
         var weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
-        $.getJSON(weather_url).done(function (weather) {
-
+        fetch(weather_url, {
+        headers: {
+            'Authorization': `token ${token}`,
+        }
+    })
+        .then(response => response.json())
+        .then(function (weather) {
             cards.forEach((card, i) => {
                 let day_weather;
                 if (i===0) {
