@@ -41,10 +41,11 @@ $(function () {
     function onGetLocation(position) {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
-        var weather_url = `https://transport-api.herokuapp.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
+        const weather_url = `https://dashboard25.p.rapidapi.com/v1/weather/forecast/daily?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
         fetch(weather_url, {
         headers: {
-            'Authorization': `token ${token}`,
+            'X-RapidAPI-Key': `${token}`,
+            'X-RapidAPI-Host': 'dashboard25.p.rapidapi.com'
         }
     })
         .then(response => response.json())
